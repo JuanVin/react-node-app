@@ -9,7 +9,7 @@ const noIndexItems = require('../models/NoIndexFiles')
 const file = require('../models/File');
 const dates = require('../models/FileDate')
 const technician = require('../models/Technical');
-
+const detail = require('../models/Detail')
 
 const data = []
 
@@ -25,8 +25,9 @@ fs.createReadStream(__dirname + '/list.csv')
         migrateDB()
     })
 
-let migrateDB = async () => {
-    let oficinas = [], unidades = []
+let migrateDB = async() => {
+    let oficinas = [],
+        unidades = []
     await loadData()
     for (const item of data) {
         if (await officeComparator(item.office)) {
@@ -45,7 +46,7 @@ let migrateDB = async () => {
 }
 
 
-let officeComparator = async (office) => {
+let officeComparator = async(office) => {
     for (const o of off) {
         if (o.name === office) {
             return true
@@ -54,7 +55,7 @@ let officeComparator = async (office) => {
     return false
 }
 
-let unitComparator = async (office) => {
+let unitComparator = async(office) => {
     for (const u of unit) {
         if (u.name === office) {
             return true
@@ -63,7 +64,7 @@ let unitComparator = async (office) => {
     return false
 }
 
-let loadData = async () => {
+let loadData = async() => {
     off = await fiscalOffice.findAll()
     unit = await fiscalUnit.findAll()
     technicians = await technician.findAll()
@@ -74,7 +75,7 @@ function convertToDate(dateString) {
 
     let d, dat
     if (dateString === "") dat = null
-    else if(!dateString.includes('/')) dat=null
+    else if (!dateString.includes('/')) dat = null
     else {
         d = dateString.split("/");
         dat = new Date(d[2] + '/' + d[1] + '/' + d[0]);
@@ -82,8 +83,8 @@ function convertToDate(dateString) {
     return dat;
 
 }
-officeToSql = async (oficinas, option) => {
-    let dato, datos, datosExpediente
+officeToSql = async(oficinas, option) => {
+    let dato, datos, datosExpediente, expediente
     for (const oficina of oficinas) {
         datos = {
             shift_date: oficina.shift_date = convertToDate(oficina.shift_date),
@@ -91,7 +92,7 @@ officeToSql = async (oficinas, option) => {
             egress_date: oficina.egress_date = convertToDate(oficina.egress_date)
         }
         dato = await dates.create(datos)
-        if(option){
+        if (option) {
             datosExpediente = {
                 file_number: oficina.file_number,
                 shift_granted: oficina.shift_granted,
@@ -101,7 +102,7 @@ officeToSql = async (oficinas, option) => {
                 TechnicalId: getTechId(oficina.technical),
                 ConditionId: getConditionId(oficina.condition)
             }
-        }else {
+        } else {
             datosExpediente = {
                 file_number: oficina.file_number,
                 shift_granted: oficina.shift_granted,
@@ -112,14 +113,18 @@ officeToSql = async (oficinas, option) => {
                 ConditionId: getConditionId(oficina.condition)
             }
         }
-        file.create(datosExpediente)
+        expediente = await file.create(datosExpediente)
+        detail.create({
+            detail: oficina.detail,
+            FileId: expediente.id
+        })
     }
 }
 getOfficeId = (office) => {
     let id
     for (const o of off) {
         if (o.name === office) {
-            return o.id  
+            return o.id
         }
     }
     return null
@@ -133,16 +138,16 @@ getUnitId = (office) => {
     return null
 }
 getTechId = (tech) => {
-    for (const t of technicians){
-        if (t.name === tech){
+    for (const t of technicians) {
+        if (t.name === tech) {
             return t.id
         }
     }
     return null
 }
 getConditionId = (cond) => {
-    for (const c of conditions){
-        if (c.condition === cond){
+    for (const c of conditions) {
+        if (c.condition === cond) {
             return c.id
         }
     }
