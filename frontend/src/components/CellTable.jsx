@@ -1,4 +1,4 @@
-function File(row) {
+function CellTable(row) {
     return (
         <tr>
             {row.map(cell => {
@@ -8,4 +8,4 @@ function File(row) {
     )
 }
 
-export default File
+export default CellTable

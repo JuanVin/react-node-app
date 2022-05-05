@@ -19,5 +19,6 @@ const FiscalUnit = sequelize.define('FiscalUnit', {
 })
 
 FiscalUnit.hasMany(File)
+File.belongsTo(FiscalUnit)
 
 module.exports = FiscalUnit

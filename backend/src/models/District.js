@@ -17,5 +17,6 @@ const District = sequelize.define('District', {
 })
 
 District.hasMany(FiscalUnit);
+FiscalUnit.belongsTo(District)
 
 module.exports = District

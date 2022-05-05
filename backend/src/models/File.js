@@ -21,6 +21,9 @@ const Files = sequelize.define('File', {
 
 })
 Files.belongsTo(Dates)
+Dates.hasOne(Files)
+
 Files.hasMany(Detail)
+
 
 module.exports = Files

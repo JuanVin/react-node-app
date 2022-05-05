@@ -17,7 +17,7 @@ app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
     const syncTables = async() => {
         try {
-            await sequelize.sync({ force: true })
+            await sequelize.sync({ force: false })
             await console.log("All models were synchronized successfully.");
         } catch (error) {
             console.log(error)

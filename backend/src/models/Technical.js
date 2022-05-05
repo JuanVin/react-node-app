@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/db'),
     File = require('./File')
+
 const Technical = sequelize.define('Technical', {
 
     id: {
@@ -16,5 +17,6 @@ const Technical = sequelize.define('Technical', {
 })
 
 Technical.hasMany(File)
+File.belongsTo(Technical)
 
 module.exports = Technical

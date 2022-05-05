@@ -10,11 +10,11 @@ const FileDate = sequelize.define('FileDate', {
         primaryKey: true
     },
     admission_date: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATEONLY,
         allowNull: true
     },
     egress_date: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATEONLY,
         allowNull: true
     },
     shift_date: {

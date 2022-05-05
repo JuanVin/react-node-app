@@ -9,7 +9,7 @@ const Detail = sequelize.define('Detail', {
         primaryKey: true
     },
     detail: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: true
     }
 

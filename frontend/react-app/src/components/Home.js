@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import File from "./File"
 import { Table } from "react-bootstrap"
 function Home() {
     const [files, setFiles] = useState(null)
@@ -26,7 +27,7 @@ function Home() {
                 </thead>
                 <tbody>
                     {files.map(row => {
-                        
+                        <File data={row}></File>
                     })}
                 </tbody>
             </Table>
