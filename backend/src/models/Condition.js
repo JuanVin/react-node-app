@@ -17,5 +17,6 @@ const Condition = sequelize.define('Condition', {
 })
 
 Condition.hasMany(File);
+File.belongsTo(Condition)
 
 module.exports = Condition

@@ -1,18 +1,19 @@
-import { useEffect, useState } from "react"
-import { Table } from "react-bootstrap"
+import { useEffect, useState, useParams } from "react"
 import CellTable from "./CellTable"
 import apis from "./apiFunctions"
+import NavBar from "./NavBar"
 
 function FileTable() {
+
     const [files, setFiles] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
+
     useEffect(() => {
         getFetchData()
     },[isLoading])
 
     const getFetchData = async () => {
         let fetchData = await apis.getCurrentDayFiles()
-        console.log(fetchData)
         setFiles(fetchData)
         setIsLoading(false)
     }
@@ -25,6 +26,7 @@ function FileTable() {
 
     return (
         <>
+        <NavBar></NavBar>
         <div className="container" style={{ display: "flex", justifyContent: "center"}}>
             <CellTable data={files}></CellTable>
         </div>        

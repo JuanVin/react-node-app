@@ -5,7 +5,7 @@ const apis = {
         return data
     },
     getFileByFileNumber: async(file_number) => {
-        let data = await fetch(`http://localhost:3000/files/number/${file_number}`)
+        let data = await fetch(`http://localhost:3000/files/21817-17`)
         data = await data.json()
         return data
     },
@@ -20,6 +20,7 @@ const apis = {
         return data
     },
     getFileByShiftDate: async(date) => {
+        date = "2022-1-7"
         let data = await fetch(`http://localhost:3000/files/date/shift/${date}`)
         data = await data.json()
         return data
@@ -31,6 +32,11 @@ const apis = {
     },
     getCurrentDayFiles: async() => {
         let data = await fetch(`http://localhost:3000/files/date/current_day`)
+        data = await data.json()
+        return data
+    },
+    getFormData: async() => {
+        let data = await fetch(`http://localhost:3000/files/form/data`)
         data = await data.json()
         return data
     }

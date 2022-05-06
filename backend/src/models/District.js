@@ -13,7 +13,6 @@ const District = sequelize.define('District', {
         type: DataTypes.STRING,
         allowNull: false
     }
-
 })
 
 District.hasMany(FiscalUnit);

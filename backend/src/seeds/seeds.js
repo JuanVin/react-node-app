@@ -153,7 +153,44 @@ const unit = [{
             name: "transito",
             condition: true,
             DistrictId: 2
+        },
+        {
+            name: "fiscalia penal de menores",
+            condition: true,
+            DistrictId: 2
+        },
+        {
+            name: "violencia de genero y sexuales",
+            condition: true,
+            DistrictId: 2
+        },
+        {
+            name: "santa rosa - la paz",
+            condition: true,
+            DistrictId: 3
+        },
+        {
+            name: "correccional",
+            condition: true,
+            DistrictId: 3
+        },
+        {
+            name: "menores y transito",
+            condition: true,
+            DistrictId: 3
+        },
+        {
+            name: "violencia genero",
+            condition: true,
+            DistrictId: 3
         }
+        ,
+        {
+            name: "menores y transito",
+            condition: true,
+            DistrictId: 4
+        }
+
     ],
     conditions = [
         { condition: "turno otorgado" },
