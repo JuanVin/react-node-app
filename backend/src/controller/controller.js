@@ -9,16 +9,16 @@ const details = require('../models/Detail')
 const conditions = require('../models/Condition')
 const { Op } = require("sequelize");
 module.exports = controller = {
-    getFiles: async (req, res) => {
+    getFiles: async(req, res) => {
 
         data.push(await files.findAll())
         data.push(noIndex)
         res.send(data)
     },
-    getFileById: async (req, res) => {
+    getFileById: async(req, res) => {
 
     },
-    getByShiftDay: async (req, res) => {
+    getByShiftDay: async(req, res) => {
         let param = req.params.day,
             data = [],
             shift_dates
@@ -36,12 +36,11 @@ module.exports = controller = {
                     FileDateId: date.id
                 },
                 include: [dates, technician, fiscalOffice, fiscalUnit, details]
-            }
-            ))
+            }))
         }
         res.send(shift_dates)
     },
-    getByEgressDay: async (req, res) => {
+    getByEgressDay: async(req, res) => {
         let param = req.params.day,
             egress_dates
 
@@ -54,7 +53,7 @@ module.exports = controller = {
 
         res.send(egress_dates)
     },
-    getByAdmissionDay: async (req, res) => {
+    getByAdmissionDay: async(req, res) => {
         let param = req.params.day,
             admission_dates
 
@@ -67,7 +66,7 @@ module.exports = controller = {
 
         res.send(admission_dates)
     },
-    getCurrentDayFiles: async (req, res) => {
+    getCurrentDayFiles: async(req, res) => {
 
         let today = new Date(),
             dd = String(today.getDate()).padStart(2, '0'),
@@ -82,12 +81,12 @@ module.exports = controller = {
         }))
 
     },
-    getFileByFileNumber: async (req, res) => {
+    getFileByFileNumber: async(req, res) => {
         let fileNumber = req.params.file_number
         console.log(req.params)
         console.log(fileNumber)
 
-        fileNumber =  fileNumber.replace('-', '/')
+        fileNumber = fileNumber.replace('-', '/')
         console.log(fileNumber)
 
         res.send(await files.findAll({
@@ -96,7 +95,7 @@ module.exports = controller = {
                     [Op.like]: `%${fileNumber}%`
                 }
             },
-            include: dates
+            include: [dates, details, fiscalOffice, fiscalUnit]
         }))
 
     }
