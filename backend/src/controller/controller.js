@@ -67,7 +67,7 @@ module.exports = controller = {
         res.send(admission_dates)
     },
     getCurrentDayFiles: async(req, res) => {
-
+        console.log("me llaman")
         let today = new Date(),
             dd = String(today.getDate()).padStart(2, '0'),
             mm = String(today.getMonth() + 1).padStart(2, '0'), //January is 0!

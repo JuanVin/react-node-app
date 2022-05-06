@@ -5,33 +5,29 @@ import apis from "./apiFunctions"
 
 function FileTable() {
     const [files, setFiles] = useState(null)
-    console.log("asd")
+    const [isLoading, setIsLoading] = useState(true)
     useEffect(() => {
         getFetchData()
-    })
+    },[isLoading])
 
     const getFetchData = async () => {
-        setFiles(apis.getFiles())
+        let fetchData = await apis.getCurrentDayFiles()
+        console.log(fetchData)
+        setFiles(fetchData)
+        setIsLoading(false)
+    }
+
+    if(isLoading) {
+        return (
+            <h1>Cargando</h1>
+        )
     }
 
     return (
         <>
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Username</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {files.map(row => {
-                        <CellTable data={row}></CellTable>
-                    })}
-                </tbody>
-            </Table>
-
+        <div className="container" style={{ display: "flex", justifyContent: "center"}}>
+            <CellTable data={files}></CellTable>
+        </div>        
         </>
     )
 }
