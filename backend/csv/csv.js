@@ -171,16 +171,16 @@ fs.createReadStream(__dirname + '/list.csv')
             for (const key in item) {
                 item[key] = item[key].toLowerCase()
             }
-            item.estado = estados(item.estado)
-            item.auxiliar = auxiliares(item.auxiliar)
-            item.oficina = normalizar(item.oficina)
-            if (item.oficina.includes("robos, hurtos y sustraccion automotores - a")) {
-                item.oficina = "automotores"
+            item.condition = estados(item.condition)
+            item.technical = auxiliares(item.technical)
+            item.office = normalizar(item.office)
+            if (item.office.includes("robos, hurtos y sustraccion automotores - a")) {
+                item.office = "automotores"
             }
-            if (item.oficina.includes('ufi') || item.oficina.includes('unidad fiscal')) {
-                item.oficina = unidades(item.oficina)
-            } else if (item.oficina.includes('oficina') || item.oficina.includes('of') || item.oficina.includes('ofi')) {
-                item.oficina = oficinas(item.oficina)
+            if (item.office.includes('ufi') || item.office.includes('unidad fiscal')) {
+                item.office = unidades(item.office)
+            } else if (item.office.includes('oficina') || item.office.includes('of') || item.office.includes('ofi')) {
+                item.office = oficinas(item.office)
             }
         })
         write()

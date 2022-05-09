@@ -20,7 +20,8 @@ function UploadForm(params) {
         )
     }
     async function sendData() {
-
+        const radioButtons = document.querySelectorAll('input[name="opcion_turno"]');
+        const egress_date = document.getElementById("f_egreso")
         let fetchData = {
             FiscalOfficeId: document.getElementById("o_fiscal").value,
             FiscalUnitId: document.getElementById("u_fiscal").value,
@@ -30,11 +31,13 @@ function UploadForm(params) {
             shift_date: document.getElementById("f_turno").value,
             detail: document.getElementById("detalle").value,
             TechnicalId: document.getElementById("tecnico").value,
-            file_number: document.getElementById("expediente").value.replace('/', '')
+            file_number: document.getElementById("expediente").value.replace('/', ''),
+            file_type: document.getElementById("tipo_expediente").value,
         }
 
         setPostData(await apis.postFormData(fetchData))
         params.setRefreshData(1)
+
     }
     function loadTechnician() {
         let techData = []
@@ -119,14 +122,12 @@ function UploadForm(params) {
     return (
         <form className="w-75">
             <div className="form-group">
-
                 <p> Número de expediente </p>
-                <select style={{width: "75px"}} className="form-select d-inline" name="select">
-                    <option value="value1" selected>P-</option>
-                    <option value="value2">T-</option>
+                <select className="form-select d-inline w-25 text-center" id="tipo_expediente" name="select">
+                    <option value="1" selected>P-</option>
+                    <option value="2">T-</option>
                 </select>
-                <input type="text" id="expediente" className="form-control d-inline w-75" required />
-                
+                <input type="text" id="expediente" className="form-control d-inline  w-75" required />
             </div>
             <div className="form-group p-1">
                 <div className="form-group">
@@ -230,7 +231,6 @@ function UploadForm(params) {
                     <button className="mt-3 w-100 btn btn-primary" type="button" onClick={sendData}>Cargar expediente</button>
                 </div>
             </div>
-
             {postStatus()}
         </form>
     )

@@ -1,11 +1,7 @@
-body {
-    
-}
 .center { 
     display: flex;
     justify-content: center;
 }
 .background_row{
-    background-color: rgb(220, 247, 253);
-  
+    background-color: rgb(207, 245, 253);
 }

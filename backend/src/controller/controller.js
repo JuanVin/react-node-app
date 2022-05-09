@@ -145,12 +145,19 @@ module.exports = controller = {
 
         let request = req.body
 
+        console.log(request)
+
         for (const key in request) {
             if (request[key] === '' || request[key] === '0') {
                 request[key] = null
             }
         }
         request.file_number = request.file_number.slice(0, -2) + "/" + request.file_number.slice(-2)
+        if(request.file_type === "1"){
+            request.file_number = "p-"+request.file_number
+        }else{
+            request.file_number = "t-"+request.file_number
+        }
 
         try {
             newDates = await dates.create({
@@ -166,8 +173,7 @@ module.exports = controller = {
                 ConditionId: request.ConditionId,
                 shift_granted: "si",
                 file_number: request.file_number
-            })
-            
+            })  
             newDetail = await details.create({
                 detail: request.detail,
                 FileId: newFile.id

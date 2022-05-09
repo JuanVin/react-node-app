@@ -1,15 +1,15 @@
 import { Accordion } from "react-bootstrap"
-
+import "./styles/accordionFile.css"
 function AccordionFile(files) {
 
     let accordion = []
-
+    console.log(files)
     function formatDate(data, option) {
         let date
         if (data !== null) {
             date = new Date(data)
-            if (option === 1){
-                return new Intl.DateTimeFormat('es').format(date) + " a las " + date.getHours() +":"+date.getMinutes()+"hrs"
+            if (option === 1) {
+                return new Intl.DateTimeFormat('es').format(date) + " a las " + date.getHours() + ":" + date.getMinutes() + "hrs"
             }
             return new Intl.DateTimeFormat('es').format(date)
         }
@@ -39,7 +39,12 @@ function AccordionFile(files) {
     }
 
     function formCondition(condition) {
+
         if (condition !== null) {
+            if (condition.condition === "turno otorgado") return <p class="text-primary">{condition.condition.toUpperCase()}</p>
+            else if (condition.condition === "falta comenzar") return <p class="text-secondary">{condition.condition.toUpperCase()}</p>
+            else if (condition.condition === "falta terminar") return <p class="text-warning">{condition.condition.toUpperCase()}</p>
+            else if (condition.condition === "archivado") return <p class="text-success">{condition.condition.toUpperCase()}</p>
             return condition.condition.toUpperCase()
         }
         return "NO REGISTRA"
@@ -47,11 +52,12 @@ function AccordionFile(files) {
 
     files.data.map((rowData, index) => {
         accordion.push(
-            <Accordion.Item eventKey={index}>
+            <Accordion.Item eventKey={index} flush>
                 <Accordion.Header><b>{rowData.file_number.toUpperCase()}</b></Accordion.Header>
                 <Accordion.Body style={{
                     display: "flex",
-                    justifyContent: "center"
+                    justifyContent: "center",
+
                 }}>
                     <table className="table w-75" >
                         <thead className="thead-dark">
@@ -81,7 +87,7 @@ function AccordionFile(files) {
                         <tbody>
                             <tr>
                                 <th scope="row">Unidad Fiscal</th>
-                                <td>{formatOffice(rowData.FiscalUnit)}</td>
+                                <td>{formatOffice(rowData.FiscalUnit) + " - " +rowData.FiscalUnit.DistrictId+"C"}</td>
                             </tr>
 
                             <tr>
@@ -99,12 +105,12 @@ function AccordionFile(files) {
                             <tr>
                                 <th scope="row">Detalle</th>
                                 <td>{
-                                formatDetail(rowData.Details)
+                                    formatDetail(rowData.Details)
                                 }</td>
                             </tr>
                             <tr>
                                 <th scope="row"></th>
-                                <td><button className="btn btn-outline-primary">Modificar</button></td>
+                                <td><button className="btn btn-primary">Modificar</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -115,7 +121,7 @@ function AccordionFile(files) {
 
     return (
         <>
-            <Accordion className="w-100 mt-3" defaultActiveKey="0">
+            <Accordion className="w-100 mt-3" defaultActiveKey="0">     
                 {accordion}
             </Accordion>
         </>
