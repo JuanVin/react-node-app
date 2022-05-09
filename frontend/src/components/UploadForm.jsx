@@ -119,8 +119,37 @@ function UploadForm(params) {
     return (
         <form className="w-75">
             <div className="form-group">
-                <label className="p-1" for="expediente">Número de expediente</label>
-                <input type="text" id="expediente" className="form-control" required />
+
+                <p> Número de expediente </p>
+                <select style={{width: "75px"}} className="form-select d-inline" name="select">
+                    <option value="value1" selected>P-</option>
+                    <option value="value2">T-</option>
+                </select>
+                <input type="text" id="expediente" className="form-control d-inline w-75" required />
+                
+            </div>
+            <div className="form-group p-1">
+                <div className="form-group">
+                    <p>Turno otorgado: </p>
+                </div>
+                <div className="form-check form-check-inline">
+                    <input className="form-check-input" type="radio" name="opcion_turno" id="opcion_turno1" value="1"></input>
+                    <label className="form-check-label" for="opcion_turno1">
+                        Si
+                    </label>
+                </div>
+                <div className="form-check form-check-inline">
+                    <input className="form-check-input" type="radio" name="opcion_turno" id="opcion_turno2" value="2" checked></input>
+                    <label className="form-check-label" for="opcion_turno2">
+                        No
+                    </label>
+                </div>
+                <div className="form-check form-check-inline">
+                    <input className="form-check-input" type="radio" name="opcion_turno" id="opcion_turno3" value="3"></input>
+                    <label className="form-check-label" for="opcion_turno3">
+                        Acto
+                    </label>
+                </div>
             </div>
             <div className="row">
                 <div className="col-sm">
