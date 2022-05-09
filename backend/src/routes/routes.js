@@ -9,5 +9,7 @@ router.get('/files/date/shift/:day', controller.getByShiftDay)
 router.get('/files/date/current_day', controller.getCurrentDayFiles)
 router.get('/files/:file_number', controller.getFileByFileNumber)
 router.get('/files/form/data', controller.getFormData)
+router.get('/files/last/:number', controller.getLastFiles)
+router.post('/files/form/new_file', controller.newFile)
 
 module.exports = router

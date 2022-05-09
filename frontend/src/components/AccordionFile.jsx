@@ -1,43 +1,50 @@
 import { Accordion } from "react-bootstrap"
 
-function CellTable(files) {
+function AccordionFile(files) {
 
     let accordion = []
-    
-    function formatDate(data) {
+
+    function formatDate(data, option) {
         let date
         if (data !== null) {
             date = new Date(data)
-            return new Intl.DateTimeFormat('en-US').format(date)
+            if (option === 1){
+                return new Intl.DateTimeFormat('es').format(date) + " a las " + date.getHours() +":"+date.getMinutes()+"hrs"
+            }
+            return new Intl.DateTimeFormat('es').format(date)
         }
         return "No registra"
     }
+
     function formatOffice(office) {
         if (office !== null) {
             return office.name.toUpperCase()
         }
         return "No registra"
     }
+
     function formatDetail(detail) {
-        console.log(detail[0].detail)
+
         if (detail[0].detail !== "") {
             return detail[0].detail
         }
         return "Sin detalles"
     }
+
     function formatTechnician(technician) {
         if (technician !== null) {
             return technician.name.toUpperCase()
         }
         return "No asignado"
     }
-    function formCondition(condition){
-        if(condition !== null){
+
+    function formCondition(condition) {
+        if (condition !== null) {
             return condition.condition.toUpperCase()
         }
         return "NO REGISTRA"
     }
-    
+
     files.data.map((rowData, index) => {
         accordion.push(
             <Accordion.Item eventKey={index}>
@@ -49,26 +56,26 @@ function CellTable(files) {
                     <table className="table w-75" >
                         <thead className="thead-dark">
                             <tr>
-                                <th scope="col"><h4>Fechas</h4></th>
+                                <th scope="col"><h5>Fechas</h5></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <th scope="row">Fecha de Turno</th>
-                                <td>{formatDate(rowData.FileDate.shift_date)}</td>
+                                <td>{formatDate(rowData.FileDate.shift_date, 1)}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Fecha de ingreso</th>
-                                <td>{formatDate(rowData.FileDate.admission_date)}</td>
+                                <td>{formatDate(rowData.FileDate.admission_date, 0)}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Fecha de egreso</th>
-                                <td>{formatDate(rowData.FileDate.egress_date)}</td>
+                                <td>{formatDate(rowData.FileDate.egress_date, 0)}</td>
                             </tr>
                         </tbody>
                         <thead className="thead-dark">
                             <tr>
-                                <th scope="col"><h4>Datos</h4></th>
+                                <th scope="col"><h5>Datos</h5></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -91,7 +98,9 @@ function CellTable(files) {
                             </tr>
                             <tr>
                                 <th scope="row">Detalle</th>
-                                <td>{formatDetail(rowData.Details)}</td>
+                                <td>{
+                                formatDetail(rowData.Details)
+                                }</td>
                             </tr>
                             <tr>
                                 <th scope="row"></th>
@@ -103,17 +112,14 @@ function CellTable(files) {
             </Accordion.Item >
         )
     })
+
     return (
         <>
-
-            <div className="mt-5 w-75">
-                <Accordion defaultActiveKey="0">
-                    {accordion}
-                </Accordion>
-            </div>
-
+            <Accordion className="w-100 mt-3" defaultActiveKey="0">
+                {accordion}
+            </Accordion>
         </>
     )
 }
 
-export default CellTable
+export default AccordionFile

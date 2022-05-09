@@ -1,0 +1,11 @@
+body {
+    
+}
+.center { 
+    display: flex;
+    justify-content: center;
+}
+.background_row{
+    background-color: rgb(220, 247, 253);
+  
+}
