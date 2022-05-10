@@ -17,6 +17,14 @@ module.exports = controller = {
     },
     getFileById: async (req, res) => {
 
+        let id = req.params.id
+        res.send(await files.findOne({
+            where: {
+                id: id
+            },
+            include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions]
+        }
+        ))
     },
     getByShiftDay: async (req, res) => {
 
@@ -76,19 +84,19 @@ module.exports = controller = {
             yyyy = today.getFullYear(),
             ids = []
 
-            var newDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
-            var newDate1 = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 20, 59, 59, 0);
+        var newDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
+        var newDate1 = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 20, 59, 59, 0);
         console.log(newDate1)
-            todayDateFiles = await dates.findAll({
-                where: {
-                    shift_date: {
-                        [Op.between]: [newDate, newDate1]
-                    }
+        todayDateFiles = await dates.findAll({
+            where: {
+                shift_date: {
+                    [Op.between]: [newDate, newDate1]
                 }
-            })
+            }
+        })
 
-            console.log(todayDateFiles)
-            todayDateFiles.forEach((today) => {
+        console.log(todayDateFiles)
+        todayDateFiles.forEach((today) => {
             ids.push(today.id)
         })
 
@@ -141,6 +149,31 @@ module.exports = controller = {
         })
         res.send(results)
     },
+    updateFiles: async (req, res) => {
+
+        let newFile = req.body,
+            oldDate,
+            oldFile
+        
+        oldFile = await files.findByPk(newFile.file_id)
+        oldDate = await dates.findByPk(newFile.date_id)
+
+        oldDate.egress_date = newFile.egress_date
+        oldDate.admission_date = newFile.admission_date
+        oldDate.shift_date = newFile.shift_date
+
+        oldFile.ConditionId = newFile.ConditionId
+        oldFile.FiscalOfficeId = newFile.FiscalOfficeId
+        oldFile.FiscalUnitId = newFile.FiscalUnitId
+        oldFile.TechnicalId = newFile.TechnicalId
+        oldFile.file_number = newFile.file_number.slice(0, -2) + "/" + newFile.file_number.slice(-2)
+
+        oldDate = await oldDate.save()
+        oldFile = await oldFile.save()
+        
+    
+        res.send([oldFile, oldDate])
+    },
     newFile: async (req, res) => {
 
         let request = req.body
@@ -153,10 +186,10 @@ module.exports = controller = {
             }
         }
         request.file_number = request.file_number.slice(0, -2) + "/" + request.file_number.slice(-2)
-        if(request.file_type === "1"){
-            request.file_number = "p-"+request.file_number
-        }else{
-            request.file_number = "t-"+request.file_number
+        if (request.file_type === "1") {
+            request.file_number = "p-" + request.file_number
+        } else {
+            request.file_number = "t-" + request.file_number
         }
 
         try {
@@ -173,13 +206,13 @@ module.exports = controller = {
                 ConditionId: request.ConditionId,
                 shift_granted: "si",
                 file_number: request.file_number
-            })  
+            })
             newDetail = await details.create({
                 detail: request.detail,
                 FileId: newFile.id
             })
 
-        }catch(error){
+        } catch (error) {
             res.send({ message: "Ocurrió un error", status: 0 })
         }
         res.send({ message: "Expediente cargado correctamente", status: 1 })

@@ -1,9 +1,14 @@
 import { Accordion } from "react-bootstrap"
+import UpdateForm from "./UpdateForm"
 import "./styles/accordionFile.css"
-function AccordionFile(files) {
 
-    let accordion = []
-    console.log(files)
+function AccordionFile(componentData) {
+
+    let accordion = [],
+        files = componentData.data.files,
+        option = componentData.data.option
+
+    console.log(option)
     function formatDate(data, option) {
         let date
         if (data !== null) {
@@ -49,17 +54,16 @@ function AccordionFile(files) {
         }
         return "NO REGISTRA"
     }
-
-    files.data.map((rowData, index) => {
+    
+    files.map((rowData, index) => {
         accordion.push(
             <Accordion.Item eventKey={index} flush>
                 <Accordion.Header><b>{rowData.file_number.toUpperCase()}</b></Accordion.Header>
                 <Accordion.Body style={{
                     display: "flex",
                     justifyContent: "center",
-
                 }}>
-                    <table className="table w-75" >
+                    <table id={option+"table"+index} className="table w-75" >
                         <thead className="thead-dark">
                             <tr>
                                 <th scope="col"><h5>Fechas</h5></th>
@@ -87,7 +91,7 @@ function AccordionFile(files) {
                         <tbody>
                             <tr>
                                 <th scope="row">Unidad Fiscal</th>
-                                <td>{formatOffice(rowData.FiscalUnit) + " - " +rowData.FiscalUnit.DistrictId+"C"}</td>
+                                <td>{formatOffice(rowData.FiscalUnit) + " - " + rowData.FiscalUnit.DistrictId + "C"}</td>
                             </tr>
 
                             <tr>
@@ -110,18 +114,21 @@ function AccordionFile(files) {
                             </tr>
                             <tr>
                                 <th scope="row"></th>
-                                <td><button className="btn btn-primary">Modificar</button></td>
+                                <td>
+                                    <a href={`/update_form/${rowData.id}`}className="btn btn-primary">Modificar</a>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </Accordion.Body>
             </Accordion.Item >
         )
+
     })
 
     return (
         <>
-            <Accordion className="w-100 mt-3" defaultActiveKey="0">     
+            <Accordion className="w-100 mt-3" defaultActiveKey="0">
                 {accordion}
             </Accordion>
         </>

@@ -58,6 +58,26 @@ const apis = {
             response = await fetch(url, options)
             response = await response.json()
             return response
-    }
+    },
+    getFileById: async (file_id) => {
+        let data = await fetch(`http://localhost:3000/files/get/${file_id}`)
+        data = await data.json()
+        return data
+    },
+    postUpdateData: async (fetchData) => {
+        console.log(fetchData)
+        let options = {
+                method: 'post',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(fetchData)
+            },
+            url = `http://localhost:3000/files/update`,
+            response
+      
+            response = await fetch(url, options)
+            response = await response.json()
+            console.log(response)
+            return response
+    },
 }
 export default apis

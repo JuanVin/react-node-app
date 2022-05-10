@@ -1,17 +1,19 @@
-import NavBar from "./NavBar"
-import ShiftDay from "./ShiftDay"
-import UploadForm from "./UploadForm"
 import { useState, useEffect } from "react"
 import apis from "./apiFunctions"
 import AccordionFile from "./AccordionFile"
+import UploadForm from "./UploadForm"
+import NavBar from "./NavBar"
 import "./styles/home.css"
+
 function Home() {
     let [isLoading, setIsLoading] = useState(true)
     let [fetchLastData, setFetchLastData] = useState(null)
     let [fetchCurrentData, setFetchCurrentData] = useState(null)
     let [refreshData, setRefreshData] = useState(0)
+
     let morning_shift = [],
         late_shift = []
+
     useEffect(() => {
         getFetchData()
     }, [isLoading])
@@ -59,11 +61,11 @@ function Home() {
                                     <div className="w-100">
                                         <div className="p-3">
                                             <h3>Turno mañana</h3>
-                                            <AccordionFile data={morning_shift}></AccordionFile>
+                                            <AccordionFile data={{files: morning_shift, option: "a1"}}></AccordionFile>
                                         </div>
                                         <div className="p-3">
                                             <h3>Turno tarde</h3>
-                                            <AccordionFile data={late_shift}></AccordionFile>
+                                            <AccordionFile data={{files: late_shift, option: "a2"}}></AccordionFile>
                                         </div>
                                     </div>
                                 </div>
@@ -76,13 +78,14 @@ function Home() {
                                 </div>
                             </div>
                         </div>
-                        <hr className="my-5 mt-3"></hr>
+                        {/*<hr className="my-5 mt-3"></hr>
                         <h1 className="text-center">Últimos turnos dados</h1>
                         <div className="center">
                             <div className="w-75 shadow-sm p-3 mb-5">
-                                <AccordionFile data={fetchLastData}></AccordionFile>
+                                <AccordionFile data={{files: fetchLastData, option: "a3"}}></AccordionFile>
                             </div>
-                        </div>
+                        </div> */}
+                        
                     </div>
                 </div>
             </body>
