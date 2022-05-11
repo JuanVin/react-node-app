@@ -16,15 +16,21 @@ module.exports = controller = {
         }))
     },
     getFileById: async (req, res) => {
-
         let id = req.params.id
-        res.send(await files.findOne({
-            where: {
-                id: id
-            },
-            include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions]
-        }
-        ))
+        try{
+            const result = await sequelize.transaction(async (t) => {
+                const file = await files.findOne({
+                    where: {
+                        id: id
+                    },
+                    include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions]
+                }, {transaction: t});
+                res.send(file) 
+            })
+        }catch(error){
+            console.log(error)
+            res.send({message: "Ocurrió un error", status: 0})
+        } 
     },
     getByShiftDay: async (req, res) => {
 
@@ -80,7 +86,7 @@ module.exports = controller = {
         console.log("asdasd")
         let today = new Date(),
             dd = String(today.getDate()).padStart(2, '0'),
-            mm = String(today.getMonth() + 1).padStart(2, '0'), //January is 0!
+            mm = String(today.getMonth() + 1).padStart(2, '0'), 
             yyyy = today.getFullYear(),
             ids = []
 
@@ -124,39 +130,48 @@ module.exports = controller = {
         }))
     },
     getFormData: async (req, res) => {
-
-        let data
-
-        data = {
-            fiscalOffices: await fiscalOffice.findAll(),
-            fiscalUnits: await fiscalUnit.findAll({
-                include: districts
-            }),
-            condition: await conditions.findAll(),
-            technicians: await technician.findAll()
+        try{
+            const result = sequelize.transaction(async (t) => {
+                const data = {
+                    fiscalOffices: await fiscalOffice.findAll({transaction: t}),
+                    fiscalUnits: await fiscalUnit.findAll({
+                        include: districts,
+                        transaction: t
+                    }),
+                    condition: await conditions.findAll({transaction: t}),
+                    technicians: await technician.findAll({transaction: t})
+                }
+                res.send(data)
+            }) 
+        }catch(error){
+            res.send({message: "Algo ocurrio mal", status: 0})
         }
-
-        res.send(data)
-
     },
     getLastFiles: async (req, res) => {
-
         let number = parseInt(req.params.number)
-        const results = await files.findAll({
-            limit: number,
-            order: [['id', 'DESC']],
-            include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions]
-        })
-        res.send(results)
+        try {
+            const result = await sequelize.transaction(async (t) => {
+                const lastFiles = await files.findAll({
+                    limit: number,
+                    order: [['id', 'DESC']],
+                    include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions]
+                }, {transaction: t})
+                res.send(lastFiles)
+            })
+        }catch (error){
+            res.send({message: "Ocurrió un error", status: 0})
+        }
+        
     },
     updateFiles: async (req, res) => {
 
         let newFile = req.body,
             oldDate,
             oldFile
-        
+
+        console.log(newFile)
         for (const key in newFile) {
-            if(newFile[key] === 0 || newFile[key] === "0"){
+            if (newFile[key] === 0 || newFile[key] === "0" || newFile[key] === '') {
                 newFile[key] = null
             }
         }
@@ -173,10 +188,16 @@ module.exports = controller = {
         oldFile.TechnicalId = newFile.TechnicalId
         oldFile.file_number = newFile.file_number.slice(0, -2) + "/" + newFile.file_number.slice(-2)
 
-        oldDate = await oldDate.save()
-        oldFile = await oldFile.save()
-        
-        res.send([oldFile, oldDate])
+        oldDate = await oldDate.save().catch(function (error) {
+            console.log(error)
+            res.send({ message: "Error con las fechas", status: 0 })
+        })
+        oldFile = await oldFile.save().catch(function (error) {
+            console.log(error)
+            res.send({ message: "Error al actualizar", status: 0 })
+        })
+
+        res.send({ message: "Expediente " + newFile.file_number + " actualizado correctamente", status: 1 })
     },
     newFile: async (req, res) => {
 

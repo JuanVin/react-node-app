@@ -217,7 +217,19 @@ function UploadForm(params) {
                 <label className="p-1" for="detalle_act">Detalle</label>
                 <textarea class="form-control" id="detalle_act" rows="3" required></textarea>
             </div>
-            <button className="mt-3 w-100 btn btn-primary" type="button" onClick={sendUploadData}>Cargar expediente</button>
+            <div className="form-group">
+                <div className="row">
+                    <div className="col">
+                        <div className="form-check mt-3">
+                            <input type="checkbox" class="form-check-input" id="exampleCheck1"></input>
+                            <label class="form-check-label" for="exampleCheck1">Enviar correo</label>
+                        </div>
+                    </div>
+                    <div className="col">
+                        <button className="mt-3 w-100 btn btn-success" type="button" onClick={sendUploadData}>Cargar expediente</button>
+                    </div>
+                </div>
+            </div>
             {postStatus()}
         </div>
     )

@@ -1,24 +1,22 @@
 import { Accordion } from "react-bootstrap"
-import UpdateForm from "./UpdateForm"
 import "./styles/accordionFile.css"
-
+import { useState } from "react"
+import React, { Suspense } from 'react';
 function AccordionFile(componentData) {
 
     let accordion = [],
         files = componentData.data.files,
         option = componentData.data.option
-
-    console.log(option)
+       
     function formatDate(data, option) {
      
         let date
         if (data !== null) {
-            console.log(data)
             date = new Date(data)
             if (option === 1) {
-                return date.getDay()+"/"+date.getMonth()+"/"+date.getFullYear() + " a las " + date.getHours() + ":" + date.getMinutes() + "hrs"
+                return date.toLocaleDateString("es-ES") + " a las " + date.getHours() +":"+date.getMinutes()
             }
-            return date.getDay()+"/"+date.getMonth()+"/"+date.getFullYear()
+            return date.toLocaleDateString("es-ES")
         }
         return "No registra"
     }
@@ -48,15 +46,16 @@ function AccordionFile(componentData) {
     function formCondition(condition) {
 
         if (condition !== null) {
-            if (condition.condition === "turno otorgado") return <p class="text-primary">{condition.condition.toUpperCase()}</p>
-            else if (condition.condition === "falta comenzar") return <p class="text-secondary">{condition.condition.toUpperCase()}</p>
-            else if (condition.condition === "falta terminar") return <p class="text-warning">{condition.condition.toUpperCase()}</p>
-            else if (condition.condition === "archivado") return <p class="text-success">{condition.condition.toUpperCase()}</p>
+            if (condition.condition === "turno otorgado") return <p className="text-primary">{condition.condition.toUpperCase()}</p>
+            else if (condition.condition === "falta comenzar") return <p className="text-secondary">{condition.condition.toUpperCase()}</p>
+            else if (condition.condition === "falta terminar") return <p className="text-warning">{condition.condition.toUpperCase()}</p>
+            else if (condition.condition === "archivado") return <p className="text-success">{condition.condition.toUpperCase()}</p>
             return condition.condition.toUpperCase()
         }
         return "NO REGISTRA"
     }
-    
+
+
     files.map((rowData, index) => {
         accordion.push(
             <Accordion.Item eventKey={index} flush>
@@ -64,7 +63,8 @@ function AccordionFile(componentData) {
                 <Accordion.Body style={{
                     display: "flex",
                     justifyContent: "center",
-                }}>
+                }}> 
+
                     <table id={option+"table"+index} className="table w-75" >
                         <thead className="thead-dark">
                             <tr>
@@ -117,7 +117,7 @@ function AccordionFile(componentData) {
                             <tr>
                                 <th scope="row"></th>
                                 <td>
-                                    <a href={`/update_form/${rowData.id}`}className="btn btn-primary">Modificar</a>
+                                    <a href={`/update_form/${rowData.id}`} className="btn btn-success">Modificar</a>
                                 </td>
                             </tr>
                         </tbody>
@@ -125,7 +125,6 @@ function AccordionFile(componentData) {
                 </Accordion.Body>
             </Accordion.Item >
         )
-
     })
 
     return (
