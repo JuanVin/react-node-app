@@ -64,7 +64,7 @@ function Form(params) {
     function loadFiscalOffices(param) {
         let fiscalData = []
         fiscalData.push(
-            <option value={0}>{"Sin asignar"}</option>
+            <option value={0}>No asignado</option>
         )
         data.fiscalOffices.sort()
         data.fiscalOffices.map((fiscalOffice) => {
@@ -83,7 +83,7 @@ function Form(params) {
     function loadFiscalUnits(param) {
         let fiscalData = []
         fiscalData.push(
-            <option value={0}>{"Sin asignar"}</option>
+            <option value={0}>No asignado</option>
         )
         data.fiscalUnits.sort()
         data.fiscalUnits.map((fiscalUnit) => {

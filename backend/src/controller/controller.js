@@ -155,6 +155,11 @@ module.exports = controller = {
             oldDate,
             oldFile
         
+        for (const key in newFile) {
+            if(newFile[key] === 0 || newFile[key] === "0"){
+                newFile[key] = null
+            }
+        }
         oldFile = await files.findByPk(newFile.file_id)
         oldDate = await dates.findByPk(newFile.date_id)
 
@@ -171,7 +176,6 @@ module.exports = controller = {
         oldDate = await oldDate.save()
         oldFile = await oldFile.save()
         
-    
         res.send([oldFile, oldDate])
     },
     newFile: async (req, res) => {

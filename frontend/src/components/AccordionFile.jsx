@@ -10,13 +10,15 @@ function AccordionFile(componentData) {
 
     console.log(option)
     function formatDate(data, option) {
+     
         let date
         if (data !== null) {
+            console.log(data)
             date = new Date(data)
             if (option === 1) {
-                return new Intl.DateTimeFormat('es').format(date) + " a las " + date.getHours() + ":" + date.getMinutes() + "hrs"
+                return date.getDay()+"/"+date.getMonth()+"/"+date.getFullYear() + " a las " + date.getHours() + ":" + date.getMinutes() + "hrs"
             }
-            return new Intl.DateTimeFormat('es').format(date)
+            return date.getDay()+"/"+date.getMonth()+"/"+date.getFullYear()
         }
         return "No registra"
     }

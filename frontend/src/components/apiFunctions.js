@@ -65,7 +65,7 @@ const apis = {
         return data
     },
     postUpdateData: async (fetchData) => {
-        console.log(fetchData)
+      
         let options = {
                 method: 'post',
                 headers: { 'Content-Type': 'application/json' },
@@ -76,7 +76,6 @@ const apis = {
       
             response = await fetch(url, options)
             response = await response.json()
-            console.log(response)
             return response
     },
 }
