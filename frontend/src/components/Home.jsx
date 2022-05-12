@@ -16,12 +16,11 @@ function Home() {
 
     useEffect(() => {
         getFetchData()
-    }, [isLoading])
+    },[fetchCurrentData !== null])
 
     let getFetchData = async () => {
-        setFetchLastData(await apis.getLastFiles(10))
         setFetchCurrentData(await apis.getCurrentDayFiles())
-        setIsLoading(false)
+        await setIsLoading(false)
     }
 
     if (isLoading) {
@@ -36,8 +35,8 @@ function Home() {
         getFetchData()
     }
 
-    if (fetchCurrentData != null) {
-
+    if (fetchCurrentData !== null) {
+        console.log(fetchCurrentData)
         fetchCurrentData.map(data => {
             if (new Date(data.FileDate.shift_date).getHours() <= 11) {
                 morning_shift.push(data)

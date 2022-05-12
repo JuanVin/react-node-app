@@ -7,6 +7,7 @@ const dates = require('../models/FileDate')
 const details = require('../models/Detail')
 const conditions = require('../models/Condition')
 const districts = require("../models/District")
+const type = require("../models/FileType")
 const { Op } = require("sequelize");
 module.exports = controller = {
 
@@ -19,13 +20,12 @@ module.exports = controller = {
         let id = req.params.id
         try {
             const result = await sequelize.transaction(async (t) => {
-                const file = await files.findOne({
+                res.send(await files.findOne({
                     where: {
                         id: id
                     },
                     include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions]
-                }, { transaction: t });
-                res.send(file)
+                }, { transaction: t }));
             })
         } catch (error) {
             console.log(error)
@@ -39,87 +39,96 @@ module.exports = controller = {
             shift_dates
 
         try {
-            const result = sequelize.transaction(async (t) => {
+            const result = await sequelize.transaction(async (t) => {
                 shift_dates = await dates.findAll({
                     where: {
                         shift_date: new Date(param),
                     },
                     include: files
-                },{transaction: t})
+                }, { transaction: t })
 
                 for (date of shift_dates) {
                     data.push(await files.findAll({
                         where: {
                             FileDateId: date.id
                         },
-                        include: [dates, technician, fiscalOffice, fiscalUnit, details]
-                    },{transaction: t}))
+                        include: [dates, technician, fiscalOffice, fiscalUnit, details, type]
+                    }, { transaction: t }))
                 }
                 res.send(shift_dates)
             })
-        }catch(error){
+        } catch (error) {
             console.log(error)
         }
     },
     getByEgressDay: async (req, res) => {
-        let param = req.params.day,
-            egress_dates
 
-        egress_dates = await dates.findAll({
-            where: {
-                egress_date: new Date(param),
-            },
-            include: files
-        })
-
-        res.send(egress_dates)
+        let param = req.params.day
+        try {
+            const results = sequelize.transaction(async (t) => {
+                res.send(await dates.findAll({
+                    where: {
+                        egress_date: new Date(param),
+                    },
+                    include: files
+                }, { transaction: t }))
+            })
+        } catch (error) {
+            console.log(error)
+        }
     },
     getByAdmissionDay: async (req, res) => {
         let param = req.params.day,
             admission_dates
 
-        admission_dates = await dates.findAll({
-            where: {
-                egress_date: new Date(param),
-            },
-            include: files
-        })
-
-        res.send(admission_dates)
+        try {
+            const results = await sequelize.transaction(async (t) => {
+                res.send(await dates.findAll({
+                    where: {
+                        egress_date: new Date(param),
+                    },
+                    include: files
+                }, { transaction: t }))
+            })
+        } catch (error) {
+            console.log(error)
+        }
     },
     getCurrentDayFiles: async (req, res) => {
-        console.log("asdasd")
+
         let today = new Date(),
             dd = String(today.getDate()).padStart(2, '0'),
             mm = String(today.getMonth() + 1).padStart(2, '0'),
             yyyy = today.getFullYear(),
             ids = []
 
-        var newDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
-        var newDate1 = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 20, 59, 59, 0);
-        console.log(newDate1)
-        todayDateFiles = await dates.findAll({
-            where: {
-                shift_date: {
-                    [Op.between]: [newDate, newDate1]
-                }
-            }
-        })
+        try {
+            const results = sequelize.transaction(async (t) => {
+                let startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0),
+                    finalDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 20, 59, 59, 0),
+                    betweenDates = await dates.findAll({
+                        where: {
+                            shift_date: {
+                                [Op.between]: [startDate, finalDate]
+                            }
+                        }
+                    }, { transaction: t })
 
-        console.log(todayDateFiles)
-        todayDateFiles.forEach((today) => {
-            ids.push(today.id)
-        })
+                betweenDates.forEach((today) => {
+                    ids.push(today.id)
+                })
 
-        let todayFile = await files.findAll({
-            where: {
-                FileDateId: ids
-            },
-            include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions]
-        })
+                res.send(await files.findAll({
+                    where: {
+                        FileDateId: ids
+                    },
+                    include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions, type]
+                }, { transaction: t }))
 
-        res.send(todayFile)
-
+            })
+        } catch (error) {
+            console.log(error)
+        }
     },
     getFileByFileNumber: async (req, res) => {
         let fileNumber = req.params.file_number
@@ -132,7 +141,7 @@ module.exports = controller = {
                             [Op.like]: `%${fileNumber}%`
                         }
                     },
-                    include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions],
+                    include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions, type],
                 }, { transaction: t }))
             })
         } catch (error) {
@@ -143,16 +152,15 @@ module.exports = controller = {
     getFormData: async (req, res) => {
         try {
             const result = sequelize.transaction(async (t) => {
-                const data = {
+                res.send({
                     fiscalOffices: await fiscalOffice.findAll({ transaction: t }),
                     fiscalUnits: await fiscalUnit.findAll({
                         include: districts,
-                        transaction: t
-                    }),
+                    }, { transaction: t }),
                     condition: await conditions.findAll({ transaction: t }),
-                    technicians: await technician.findAll({ transaction: t })
-                }
-                res.send(data)
+                    technicians: await technician.findAll({ transaction: t }),
+                    types: await type.findAll({ transaction: t })
+                })
             })
         } catch (error) {
             res.send({ message: "Algo ocurrio mal", status: 0 })
@@ -198,6 +206,7 @@ module.exports = controller = {
         oldFile.FiscalUnitId = newFile.FiscalUnitId
         oldFile.TechnicalId = newFile.TechnicalId
         oldFile.file_number = newFile.file_number.slice(0, -2) + "/" + newFile.file_number.slice(-2)
+        oldFile.FileTypeId = newFile.file_type
 
         oldDate = await oldDate.save().catch(function (error) {
             console.log(error)
@@ -217,7 +226,7 @@ module.exports = controller = {
         console.log(request)
 
         for (const key in request) {
-            if (request[key] === '' || request[key] === '0') {
+            if (request[key] === '' || request[key] === '0' || request[key] === 0) {
                 request[key] = null
             }
         }
@@ -241,7 +250,8 @@ module.exports = controller = {
                 TechnicalId: request.TechnicalId,
                 ConditionId: request.ConditionId,
                 shift_granted: "si",
-                file_number: request.file_number
+                file_number: request.file_number,
+                FileTypeId: request.file_type
             })
             newDetail = await details.create({
                 detail: request.detail,
@@ -252,6 +262,20 @@ module.exports = controller = {
             res.send({ message: "Ocurrió un error", status: 0 })
         }
         res.send({ message: "Expediente cargado correctamente", status: 1 })
-    }
-
+    },
+    updateDetail: async (req, res) => {
+        let params = req.body
+        console.log(params)
+        try {
+            const result = await sequelize.transaction(async (t) => {
+                let detail = await details.findByPk(params.detail_id, { transaction: t })
+                detail.detail = params.detail
+                detail = await detail.save({ transaction: t })
+                res.send(detail)
+            })
+        } catch (error) {
+            console.log(error)
+            res.send({ message: "Ocurrió un error", status: 0 })
+        }
+    },
 }

@@ -10,7 +10,7 @@ const file = require('../models/File');
 const dates = require('../models/FileDate')
 const technician = require('../models/Technical');
 const detail = require('../models/Detail')
-
+const type = require('../models/FileType')
 const data = []
 
 let off,
@@ -69,6 +69,7 @@ let loadData = async() => {
     unit = await fiscalUnit.findAll()
     technicians = await technician.findAll()
     conditions = await condition.findAll()
+    types = await type.findAll()
 }
 
 function convertToDate(dateString) {
@@ -94,23 +95,25 @@ officeToSql = async(oficinas, option) => {
         dato = await dates.create(datos)
         if (option) {
             datosExpediente = {
-                file_number: oficina.file_number,
+                file_number: oficina.file_number.replace("p", "").replace("t","").replace("-", ""),
                 shift_granted: oficina.shift_granted,
                 FileDateId: dato.id,
                 FiscalOfficeId: null,
                 FiscalUnitId: getUnitId(oficina.office),
                 TechnicalId: getTechId(oficina.technical),
-                ConditionId: getConditionId(oficina.condition)
+                ConditionId: getConditionId(oficina.condition),
+                FileTypeId: getTypeId(oficina.type)
             }
         } else {
             datosExpediente = {
-                file_number: oficina.file_number,
+                file_number: oficina.file_number.replace("p", "").replace("t","").replace("-", ""),
                 shift_granted: oficina.shift_granted,
                 FileDateId: dato.id,
                 FiscalOfficeId: getOfficeId(oficina.office),
                 FiscalUnitId: null,
                 TechnicalId: getTechId(oficina.technical),
-                ConditionId: getConditionId(oficina.condition)
+                ConditionId: getConditionId(oficina.condition),
+                FileTypeId: getTypeId(oficina.type)
             }
         }
         expediente = await file.create(datosExpediente)
@@ -149,6 +152,14 @@ getConditionId = (cond) => {
     for (const c of conditions) {
         if (c.condition === cond) {
             return c.id
+        }
+    }
+    return null
+}
+getTypeId = (t) => {
+    for (const item of types) {
+        if (item.type === t) {
+            return item.id
         }
     }
     return null

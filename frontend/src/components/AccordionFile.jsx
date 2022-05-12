@@ -2,11 +2,11 @@ import { Accordion } from "react-bootstrap"
 import "./styles/accordionFile.css"
 
 function AccordionFile(componentData) {
-        console.log(componentData)
+       
     let accordion = [],
         files = componentData.data.files,
         option = componentData.data.option
-       
+   
     function formatDate(data, option) {
      
         let date
@@ -55,7 +55,7 @@ function AccordionFile(componentData) {
     files.map((rowData, index) => {
         accordion.push(
             <Accordion.Item eventKey={index} flush>
-                <Accordion.Header><b>{rowData.file_number.toUpperCase()}</b></Accordion.Header>
+                <Accordion.Header><b>{rowData.FileType.type.toUpperCase() + "- " + rowData.file_number.toUpperCase()} <span className="text-success">{" - Turno: " + formatDate(rowData.FileDate.shift_date, 0)}</span></b></Accordion.Header>
                 <Accordion.Body style={{
                     display: "flex",
                     justifyContent: "center",

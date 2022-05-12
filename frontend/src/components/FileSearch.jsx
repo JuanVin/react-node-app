@@ -13,9 +13,8 @@ function FileSearch() {
 
 
     async function getFetchData() {
-        let inputValue = await document.getElementById("file_number").value.trim()
+        let inputValue = await document.getElementById("file_number").value.trim().replace("/","-")
         if(inputValue !== null && inputValue !== ''){
-            console.log(inputValue)
             setData(await apis.getFileByFileNumber(inputValue))
             handleShow()
         }
@@ -39,13 +38,13 @@ function FileSearch() {
                         keyboard={false}
                     >
                         <Modal.Header closeButton className="bg-light">
-                            <Modal.Title>{data[0].file_number.toUpperCase()}</Modal.Title>
+                            <Modal.Title>{"Expedientes encontrados"}</Modal.Title>
                         </Modal.Header>
                         <Modal.Body className="bg-white">
                             <AccordionFile data={{ files: data, option: "a3" }}></AccordionFile>
                         </Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="secondary" onClick={handleClose}>
+                        <Modal.Footer className="bg-light">
+                            <Button variant="success" onClick={handleClose}>
                                 Close
                             </Button>
                         </Modal.Footer>

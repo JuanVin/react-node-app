@@ -13,5 +13,5 @@ router.get('/files/last/:number', controller.getLastFiles)
 router.post('/files/form/new_file', controller.newFile)
 router.get('/files/get/:id', controller.getFileById)
 router.post('/files/form/update', controller.updateFiles)
-
+router.post('/files/details/update', controller.updateDetail)
 module.exports = router

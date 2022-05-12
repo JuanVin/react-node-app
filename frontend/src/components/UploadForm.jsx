@@ -89,6 +89,18 @@ function UploadForm(params) {
         })
         return fileCondition
     }
+    function loadTypes (){
+        let fileType = []
+        data.types.map(type => {
+            fileType.push(
+                <option value={type.id}>{type.type.toUpperCase()+"-"}</option>
+            )
+        })
+        fileType.push(
+            <option value={0}>{"Sin asignar"}</option>
+        )
+        return fileType
+    }
     function postStatus() {
         if (postData != null)
             if (postData.status === 1) {
@@ -123,8 +135,7 @@ function UploadForm(params) {
             <div className="form-group">
                 <p> Número de expediente </p>
                 <select className="form-select d-inline w-25 text-center" id="tipo_expediente_act" name="select">
-                    <option value="1" selected>P-</option>
-                    <option value="2">T-</option>
+                    {loadTypes()}
                 </select>
                 <input type="text" id="expediente_act" className="form-control d-inline w-75" required />
             </div>

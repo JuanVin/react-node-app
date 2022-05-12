@@ -1,14 +1,14 @@
 import apis from "./apiFunctions"
 import { useState, useEffect } from "react"
-
+import ModalDetails from "./ModalDetails"
 function Form(params) {
-
+    console.log(params)
     const [isLoading, setIsLoading] = useState(true)
     const [data, setData] = useState(null)
     const [postData, setPostData] = useState(null)
 
     let fileData = params.data
-    console.log(fileData)
+
     useEffect(() => {
         getFetchData()
     }, [isLoading])
@@ -32,7 +32,6 @@ function Form(params) {
             admission_date: document.getElementById("f_ingreso_act").value,
             egress_date: document.getElementById("f_egreso_act").value,
             shift_date: document.getElementById("f_turno_act").value,
-            detail: document.getElementById("detalle_act").value,
             TechnicalId: document.getElementById("tecnico_act").value,
             file_number: document.getElementById("expediente_act").value.replace('/', '').trim(),
             file_type: document.getElementById("tipo_expediente_act").value,
@@ -118,6 +117,24 @@ function Form(params) {
         })
         return fileCondition
     }
+    function loadTypes(param) {
+        let fileType = []
+        data.types.map(type => {
+            if (type.id === param) {
+                fileType.push(
+                    <option value={type.id} selected>{type.type.toUpperCase() + "-"}</option>
+                )
+            } else {
+                fileType.push(
+                    <option value={type.id}>{type.type.toUpperCase() + "-"}</option>
+                )
+            }
+        })
+        fileType.push(
+            <option value={0}>{"Sin asignar"}</option>
+        )
+        return fileType
+    }
     function setValueDates(param, option) {
         if (param !== null) {
             let date = new Date(param)
@@ -153,7 +170,6 @@ function Form(params) {
                             {postData.message}
                         </div>
                     </div>
-
                 )
             }
         return null
@@ -164,8 +180,7 @@ function Form(params) {
             <div className="form-group">
                 <p> Número de expediente </p>
                 <select className="form-select d-inline w-25 text-center" id="tipo_expediente_act" name="select" >
-                    <option value="1" selected>P-</option>
-                    <option value="2">T-</option>
+                    {loadTypes(fileData.FileTypeId)}
                 </select>
                 <input type="text" id="expediente_act" className="form-control d-inline w-75" defaultValue={fileData.file_number.replace('p-', '')} required />
             </div><div className="form-group p-1">
@@ -229,7 +244,8 @@ function Form(params) {
                 <input className="form-control" type="datetime-local" id="f_turno_act"
                     name="meeting-time"
                     min="2022-01-01T00:00" max="2100-06-14T00:00" defaultValue={setValueDates(fileData.FileDate.shift_date, 1)} required></input>
-            </div><div className="row">
+            </div>
+            <div className="row">
                 <div className="col">
                     <div className="mt-3 form-group">
                         <label className="p-1" for="condicion_act">Condición </label>
@@ -246,11 +262,15 @@ function Form(params) {
                         </select>
                     </div>
                 </div>
-            </div><div className="form-group mt-3">
-                <label className="p-1" for="detalle_act">Detalle</label>
-                <textarea class="form-control" id="detalle_act" rows="3" required></textarea>
             </div>
-            <button className="mt-3 w-100 btn btn-primary" type="button" onClick={sendUpdateData}>Cargar expediente</button>
+            <div className="row">
+                <div className="col">
+                    <ModalDetails details={fileData.Details}></ModalDetails>
+                </div>
+                <div className="col">
+                    <button className="mt-3 btn btn-primary w-100 m-1" type="button" onClick={sendUpdateData}>Cargar expediente</button>
+                </div>
+            </div>
         </>
     )
 }

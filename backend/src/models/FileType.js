@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/db')
-
+const File = require('./File')
 const FileType = sequelize.define('FileType', {
 
     id: {
@@ -13,5 +13,8 @@ const FileType = sequelize.define('FileType', {
         allowNull: true
     },
 })
+
+FileType.hasMany(File)
+File.belongsTo(FileType)
 
 module.exports = FileType
