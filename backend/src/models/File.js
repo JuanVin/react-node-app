@@ -18,7 +18,6 @@ const Files = sequelize.define('File', {
         type: DataTypes.STRING,
         allowNull: true
     }
-
 })
 Files.belongsTo(Dates)
 Dates.hasOne(Files)

@@ -252,7 +252,6 @@ function Form(params) {
             </div>
             <button className="mt-3 w-100 btn btn-primary" type="button" onClick={sendUpdateData}>Cargar expediente</button>
         </>
-
     )
 }
 

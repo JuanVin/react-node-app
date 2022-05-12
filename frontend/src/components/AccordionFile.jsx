@@ -1,9 +1,8 @@
 import { Accordion } from "react-bootstrap"
 import "./styles/accordionFile.css"
-import { useState } from "react"
-import React, { Suspense } from 'react';
-function AccordionFile(componentData) {
 
+function AccordionFile(componentData) {
+        console.log(componentData)
     let accordion = [],
         files = componentData.data.files,
         option = componentData.data.option
@@ -22,10 +21,7 @@ function AccordionFile(componentData) {
     }
 
     function formatOffice(office) {
-        if (office !== null) {
             return office.name.toUpperCase()
-        }
-        return "No registra"
     }
 
     function formatDetail(detail) {
@@ -93,12 +89,12 @@ function AccordionFile(componentData) {
                         <tbody>
                             <tr>
                                 <th scope="row">Unidad Fiscal</th>
-                                <td>{formatOffice(rowData.FiscalUnit) + " - " + rowData.FiscalUnit.DistrictId + "C"}</td>
+                                <td>{(rowData.FiscalUnit !== null)  ? formatOffice(rowData.FiscalUnit) + " - " + rowData.FiscalUnit.DistrictId + "C" : "No registra"}</td>
                             </tr>
 
                             <tr>
                                 <th scope="row">Oficina Fiscal</th>
-                                <td>{formatOffice(rowData.FiscalOffice)}</td>
+                                <td>{(rowData.FiscalOffice !== null ) ?  formatOffice(rowData.FiscalOffice) : "No registra" }</td>
                             </tr>
                             <tr>
                                 <th scope="row">Estado</th>

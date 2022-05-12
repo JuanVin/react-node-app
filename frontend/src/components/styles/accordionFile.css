@@ -1,18 +1,17 @@
 .accordion-button {
     background-color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity)) !important;
-    display:block;
+    display: block;
     color: white;
     transition: all .1s ease-in-out;
 }
 .accordion-button:focus {
     box-shadow: none;
-    
 }
 .accordion-button:hover{
-    padding-left: 40%;
+    text-align: center;
 }
 .accordion-button:not(.collapsed) {
-    padding-left: 40%;
+    text-align: center;
     color: rgb(206, 206, 253);
     transform: scale(1.02);
 }

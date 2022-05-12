@@ -17,20 +17,20 @@ module.exports = controller = {
     },
     getFileById: async (req, res) => {
         let id = req.params.id
-        try{
+        try {
             const result = await sequelize.transaction(async (t) => {
                 const file = await files.findOne({
                     where: {
                         id: id
                     },
                     include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions]
-                }, {transaction: t});
-                res.send(file) 
+                }, { transaction: t });
+                res.send(file)
             })
-        }catch(error){
+        } catch (error) {
             console.log(error)
-            res.send({message: "Ocurrió un error", status: 0})
-        } 
+            res.send({ message: "Ocurrió un error", status: 0 })
+        }
     },
     getByShiftDay: async (req, res) => {
 
@@ -38,23 +38,28 @@ module.exports = controller = {
             data = [],
             shift_dates
 
+        try {
+            const result = sequelize.transaction(async (t) => {
+                shift_dates = await dates.findAll({
+                    where: {
+                        shift_date: new Date(param),
+                    },
+                    include: files
+                },{transaction: t})
 
-        shift_dates = await dates.findAll({
-            where: {
-                shift_date: new Date(param),
-            },
-            include: files
-        })
-
-        for (date of shift_dates) {
-            data.push(await files.findAll({
-                where: {
-                    FileDateId: date.id
-                },
-                include: [dates, technician, fiscalOffice, fiscalUnit, details]
-            }))
+                for (date of shift_dates) {
+                    data.push(await files.findAll({
+                        where: {
+                            FileDateId: date.id
+                        },
+                        include: [dates, technician, fiscalOffice, fiscalUnit, details]
+                    },{transaction: t}))
+                }
+                res.send(shift_dates)
+            })
+        }catch(error){
+            console.log(error)
         }
-        res.send(shift_dates)
     },
     getByEgressDay: async (req, res) => {
         let param = req.params.day,
@@ -86,7 +91,7 @@ module.exports = controller = {
         console.log("asdasd")
         let today = new Date(),
             dd = String(today.getDate()).padStart(2, '0'),
-            mm = String(today.getMonth() + 1).padStart(2, '0'), 
+            mm = String(today.getMonth() + 1).padStart(2, '0'),
             yyyy = today.getFullYear(),
             ids = []
 
@@ -119,32 +124,38 @@ module.exports = controller = {
     getFileByFileNumber: async (req, res) => {
         let fileNumber = req.params.file_number
         fileNumber = fileNumber.replace('-', '/')
-
-        res.send(await files.findAll({
-            where: {
-                file_number: {
-                    [Op.like]: `%${fileNumber}%`
-                }
-            },
-            include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions]
-        }))
+        try {
+            const result = sequelize.transaction(async (t) => {
+                res.send(await files.findAll({
+                    where: {
+                        file_number: {
+                            [Op.like]: `%${fileNumber}%`
+                        }
+                    },
+                    include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions],
+                }, { transaction: t }))
+            })
+        } catch (error) {
+            console.log(error)
+            res.send({ message: "Algo ocurrió mal", status: 0 })
+        }
     },
     getFormData: async (req, res) => {
-        try{
+        try {
             const result = sequelize.transaction(async (t) => {
                 const data = {
-                    fiscalOffices: await fiscalOffice.findAll({transaction: t}),
+                    fiscalOffices: await fiscalOffice.findAll({ transaction: t }),
                     fiscalUnits: await fiscalUnit.findAll({
                         include: districts,
                         transaction: t
                     }),
-                    condition: await conditions.findAll({transaction: t}),
-                    technicians: await technician.findAll({transaction: t})
+                    condition: await conditions.findAll({ transaction: t }),
+                    technicians: await technician.findAll({ transaction: t })
                 }
                 res.send(data)
-            }) 
-        }catch(error){
-            res.send({message: "Algo ocurrio mal", status: 0})
+            })
+        } catch (error) {
+            res.send({ message: "Algo ocurrio mal", status: 0 })
         }
     },
     getLastFiles: async (req, res) => {
@@ -155,13 +166,13 @@ module.exports = controller = {
                     limit: number,
                     order: [['id', 'DESC']],
                     include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions]
-                }, {transaction: t})
+                }, { transaction: t })
                 res.send(lastFiles)
             })
-        }catch (error){
-            res.send({message: "Ocurrió un error", status: 0})
+        } catch (error) {
+            res.send({ message: "Ocurrió un error", status: 0 })
         }
-        
+
     },
     updateFiles: async (req, res) => {
 

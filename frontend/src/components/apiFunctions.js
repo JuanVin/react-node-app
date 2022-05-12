@@ -5,7 +5,8 @@ const apis = {
         return data
     },
     getFileByFileNumber: async (file_number) => {
-        let data = await fetch(`http://localhost:3000/files/21817-17`)
+        console.log(file_number)
+        let data = await fetch(`http://localhost:3000/files/${file_number}`)
         data = await data.json()
         return data
     },
@@ -71,7 +72,7 @@ const apis = {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(fetchData)
             },
-            url = `http://localhost:3000/files/update`,
+            url = `http://localhost:3000/files/form/update`,
             response
       
             response = await fetch(url, options)

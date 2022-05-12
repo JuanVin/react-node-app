@@ -78,19 +78,6 @@ function Home() {
                                 </div>
                             </div>
                         </div>
-                        {
-                        /*
-                        <hr className="my-5 mt-3"></hr>
-                        <h1 className="text-center">Últimos turnos dados</h1>
-                        <div className="center">
-                            <div className="w-75 shadow-sm p-3 mb-5">
-                                <AccordionFile data={{files: fetchLastData, option: "a3"}}></AccordionFile>
-                            </div>
-                        </div> 
-                        
-                        */
-                        }
-                        
                     </div>
                 </div>
             </body>
