@@ -1,4 +1,5 @@
 const sequelize = require('../database/db')
+
 const fiscalUnit = require('../models/FiscalUnit')
 const fiscalOffice = require('../models/FiscalOffice')
 const technician = require('../models/Technical')
@@ -9,6 +10,7 @@ const conditions = require('../models/Condition')
 const districts = require("../models/District")
 const type = require("../models/FileType")
 const { Op } = require("sequelize");
+
 module.exports = controller = {
 
     getFiles: async (req, res) => {
@@ -278,4 +280,5 @@ module.exports = controller = {
             res.send({ message: "Ocurrió un error", status: 0 })
         }
     },
+    
 }
