@@ -94,5 +94,20 @@ const apis = {
             return response
 
     },
+    newDetail: async (fetchData) => {
+      
+        let options = {
+                method: 'post',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(fetchData)
+            },
+            url = `http://localhost:3000/files/details/new_detail`,
+            response
+      
+            response = await fetch(url, options)
+            response = await response.json()
+            return response
+
+    },
 }
 export default apis

@@ -51,7 +51,7 @@ function Home() {
             <body>
                 <NavBar></NavBar>
                 <div className="container">
-                    <div className="bg-light">
+                    <div className="bg-light shadow p-3 rounded" style={{height: "100%"}}>
                         <div className="row p-3">
                             <div className="col w-100">
                                 <h1 style={{ marginLeft: "50px" }}>Turnos del día</h1>

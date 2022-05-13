@@ -2,7 +2,7 @@ import apis from "./apiFunctions"
 import { useState, useEffect } from "react"
 import ModalDetails from "./ModalDetails"
 function Form(params) {
-    console.log(params)
+    
     const [isLoading, setIsLoading] = useState(true)
     const [data, setData] = useState(null)
     const [postData, setPostData] = useState(null)
@@ -268,7 +268,7 @@ function Form(params) {
                     <ModalDetails details={fileData.Details}></ModalDetails>
                 </div>
                 <div className="col">
-                    <button className="mt-3 btn btn-primary w-100 m-1" type="button" onClick={sendUpdateData}>Cargar expediente</button>
+                    <button className="mt-3 btn btn-dark w-100 m-1 btn-lg" type="button" onClick={sendUpdateData}>Actualizar expediente</button>
                 </div>
             </div>
         </>

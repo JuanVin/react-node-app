@@ -2,18 +2,18 @@ import { Accordion } from "react-bootstrap"
 import "./styles/accordionFile.css"
 
 function AccordionFile(componentData) {
-       
+
     let accordion = [],
         files = componentData.data.files,
         option = componentData.data.option
-   
+
     function formatDate(data, option) {
-     
+
         let date
         if (data !== null) {
             date = new Date(data)
             if (option === 1) {
-                return date.toLocaleDateString("es-ES") + " a las " + date.getHours() +":"+date.getMinutes()
+                return date.toLocaleDateString("es-ES") + " a las " + date.getHours() + ":" + date.getMinutes()
             }
             return date.toLocaleDateString("es-ES")
         }
@@ -21,13 +21,19 @@ function AccordionFile(componentData) {
     }
 
     function formatOffice(office) {
-            return office.name.toUpperCase()
+        return office.name.toUpperCase()
     }
 
     function formatDetail(detail) {
 
         if (detail[0].detail !== "") {
-            return detail[0].detail
+            let details = []
+            detail.map((singleDetail, index) => {
+                details.push(
+                    <p><b>N°{index+1}: </b> {singleDetail.detail.toUpperCase()}</p>
+                )
+            })
+            return details
         }
         return "Sin detalles"
     }
@@ -55,13 +61,13 @@ function AccordionFile(componentData) {
     files.map((rowData, index) => {
         accordion.push(
             <Accordion.Item eventKey={index} flush>
-                <Accordion.Header><b>{rowData.FileType.type.toUpperCase() + "- " + rowData.file_number.toUpperCase()} <span className="text-success">{" - Turno: " + formatDate(rowData.FileDate.shift_date, 0)}</span></b></Accordion.Header>
+                <Accordion.Header><b>{rowData.FileType.type.toUpperCase() + "- " + rowData.file_number.toUpperCase()} {(option === "a3") ? <span className="text-success">{" - Turno: " + formatDate(rowData.FileDate.shift_date, 0)}</span> : ""}</b></Accordion.Header>
                 <Accordion.Body style={{
                     display: "flex",
                     justifyContent: "center",
-                }}> 
+                }}>
 
-                    <table id={option+"table"+index} className="table w-75" >
+                    <table id={option + "table" + index} className="table w-75" >
                         <thead className="thead-dark">
                             <tr>
                                 <th scope="col"><h5>Fechas</h5></th>
@@ -89,12 +95,12 @@ function AccordionFile(componentData) {
                         <tbody>
                             <tr>
                                 <th scope="row">Unidad Fiscal</th>
-                                <td>{(rowData.FiscalUnit !== null)  ? formatOffice(rowData.FiscalUnit) + " - " + rowData.FiscalUnit.DistrictId + "C" : "No registra"}</td>
+                                <td>{(rowData.FiscalUnit !== null) ? formatOffice(rowData.FiscalUnit) + " - " + rowData.FiscalUnit.DistrictId + "C" : "No registra"}</td>
                             </tr>
 
                             <tr>
                                 <th scope="row">Oficina Fiscal</th>
-                                <td>{(rowData.FiscalOffice !== null ) ?  formatOffice(rowData.FiscalOffice) : "No registra" }</td>
+                                <td>{(rowData.FiscalOffice !== null) ? formatOffice(rowData.FiscalOffice) : "No registra"}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Estado</th>

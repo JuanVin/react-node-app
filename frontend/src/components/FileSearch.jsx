@@ -37,15 +37,15 @@ function FileSearch() {
                         onHide={handleClose}
                         keyboard={false}
                     >
-                        <Modal.Header closeButton className="bg-light">
-                            <Modal.Title>{"Expedientes encontrados"}</Modal.Title>
+                        <Modal.Header closeButton className="bg-dark text-white">
+                            <Modal.Title><b>Expedientes encontrados</b></Modal.Title>
                         </Modal.Header>
                         <Modal.Body className="bg-white">
                             <AccordionFile data={{ files: data, option: "a3" }}></AccordionFile>
                         </Modal.Body>
                         <Modal.Footer className="bg-light">
                             <Button variant="success" onClick={handleClose}>
-                                Close
+                                Cerrar
                             </Button>
                         </Modal.Footer>
                     </Modal>

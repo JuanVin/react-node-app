@@ -22,7 +22,7 @@ module.exports = controller = {
         let id = req.params.id
         try {
             const result = await sequelize.transaction(async (t) => {
-                res.send(await files.findOne({
+                res.status(200).send(await files.findOne({
                     where: {
                         id: id
                     },
@@ -31,7 +31,7 @@ module.exports = controller = {
             })
         } catch (error) {
             console.log(error)
-            res.send({ message: "Ocurrió un error", status: 0 })
+            res.status(400).send({ message: "Ocurrió un error" })
         }
     },
     getByShiftDay: async (req, res) => {
@@ -57,10 +57,10 @@ module.exports = controller = {
                         include: [dates, technician, fiscalOffice, fiscalUnit, details, type]
                     }, { transaction: t }))
                 }
-                res.send(shift_dates)
+                res.status(200).send(shift_dates)
             })
         } catch (error) {
-            console.log(error)
+            res.status(400).send("Algo salió mal")
         }
     },
     getByEgressDay: async (req, res) => {
@@ -68,7 +68,7 @@ module.exports = controller = {
         let param = req.params.day
         try {
             const results = sequelize.transaction(async (t) => {
-                res.send(await dates.findAll({
+                res.status(200).send(await dates.findAll({
                     where: {
                         egress_date: new Date(param),
                     },
@@ -76,16 +76,15 @@ module.exports = controller = {
                 }, { transaction: t }))
             })
         } catch (error) {
-            console.log(error)
+            res.status(400).send({message: "Algo salió mal"})
         }
     },
     getByAdmissionDay: async (req, res) => {
-        let param = req.params.day,
-            admission_dates
-
+        let param = req.params.day
+    
         try {
             const results = await sequelize.transaction(async (t) => {
-                res.send(await dates.findAll({
+                res.status(200).send(await dates.findAll({
                     where: {
                         egress_date: new Date(param),
                     },
@@ -93,15 +92,12 @@ module.exports = controller = {
                 }, { transaction: t }))
             })
         } catch (error) {
-            console.log(error)
+            res.status(400).send({message: "Algo salió mal"})
         }
     },
     getCurrentDayFiles: async (req, res) => {
 
         let today = new Date(),
-            dd = String(today.getDate()).padStart(2, '0'),
-            mm = String(today.getMonth() + 1).padStart(2, '0'),
-            yyyy = today.getFullYear(),
             ids = []
 
         try {
@@ -119,17 +115,15 @@ module.exports = controller = {
                 betweenDates.forEach((today) => {
                     ids.push(today.id)
                 })
-
-                res.send(await files.findAll({
+                res.status(200).send(await files.findAll({
                     where: {
                         FileDateId: ids
                     },
                     include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions, type]
                 }, { transaction: t }))
-
             })
         } catch (error) {
-            console.log(error)
+            res.status(400).send({message: "Algo salió mal"})
         }
     },
     getFileByFileNumber: async (req, res) => {
@@ -137,7 +131,7 @@ module.exports = controller = {
         fileNumber = fileNumber.replace('-', '/')
         try {
             const result = sequelize.transaction(async (t) => {
-                res.send(await files.findAll({
+                res.status(200).send(await files.findAll({
                     where: {
                         file_number: {
                             [Op.like]: `%${fileNumber}%`
@@ -148,13 +142,13 @@ module.exports = controller = {
             })
         } catch (error) {
             console.log(error)
-            res.send({ message: "Algo ocurrió mal", status: 0 })
+            res.status(400).send({ message: "Algo ocurrió mal"})
         }
     },
     getFormData: async (req, res) => {
         try {
             const result = sequelize.transaction(async (t) => {
-                res.send({
+                res.status(200).send({
                     fiscalOffices: await fiscalOffice.findAll({ transaction: t }),
                     fiscalUnits: await fiscalUnit.findAll({
                         include: districts,
@@ -165,7 +159,7 @@ module.exports = controller = {
                 })
             })
         } catch (error) {
-            res.send({ message: "Algo ocurrio mal", status: 0 })
+            res.status(400).send({ message: "Algo ocurrio mal"})
         }
     },
     getLastFiles: async (req, res) => {
@@ -177,10 +171,10 @@ module.exports = controller = {
                     order: [['id', 'DESC']],
                     include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions]
                 }, { transaction: t })
-                res.send(lastFiles)
+                res.status(200).send(lastFiles)
             })
         } catch (error) {
-            res.send({ message: "Ocurrió un error", status: 0 })
+            res.status(400).send({ message: "Ocurrió un error"})
         }
 
     },
@@ -240,30 +234,32 @@ module.exports = controller = {
         }
 
         try {
-            newDates = await dates.create({
-                shift_date: new Date(request.shift_date),
-                admission_date: new Date(request.admission_date),
-                egress_date: new Date(request.egress_date)
+            const results = sequelize.transaction(async (t) => {
+                newDates = await dates.create({
+                    shift_date: new Date(request.shift_date),
+                    admission_date: new Date(request.admission_date),
+                    egress_date: new Date(request.egress_date)
+                }, {transaction: t})
+                newFile = await files.create({
+                    FiscalOfficeId: request.FiscalOfficeId,
+                    FiscalUnitId: request.FiscalUnitId,
+                    FileDateId: newDates.id,
+                    TechnicalId: request.TechnicalId,
+                    ConditionId: request.ConditionId,
+                    shift_granted: "si",
+                    file_number: request.file_number,
+                    FileTypeId: request.file_type
+                }, {transaction: t})
+                newDetail = await details.create({
+                    detail: request.detail,
+                    FileId: newFile.id
+                }, {transaction: t})    
             })
-            newFile = await files.create({
-                FiscalOfficeId: request.FiscalOfficeId,
-                FiscalUnitId: request.FiscalUnitId,
-                FileDateId: newDates.id,
-                TechnicalId: request.TechnicalId,
-                ConditionId: request.ConditionId,
-                shift_granted: "si",
-                file_number: request.file_number,
-                FileTypeId: request.file_type
-            })
-            newDetail = await details.create({
-                detail: request.detail,
-                FileId: newFile.id
-            })
-
+            res.status(200).send({ message: "Expediente cargado correctamente", status: 1 })
         } catch (error) {
-            res.send({ message: "Ocurrió un error", status: 0 })
+            res.status(400).send({ message: "Ocurrió un error" })
         }
-        res.send({ message: "Expediente cargado correctamente", status: 1 })
+        
     },
     updateDetail: async (req, res) => {
         let params = req.body
@@ -273,12 +269,31 @@ module.exports = controller = {
                 let detail = await details.findByPk(params.detail_id, { transaction: t })
                 detail.detail = params.detail
                 detail = await detail.save({ transaction: t })
-                res.send(detail)
+                res.statusCode = 200
+                res.send({ message: "Detalle actualizado correctamente", detail: detail })
             })
         } catch (error) {
-            console.log(error)
-            res.send({ message: "Ocurrió un error", status: 0 })
+            res.status(400).send({ message: "Ocurrió un error", detail: null })
         }
     },
-    
+    newDetail: async (req, res) => {
+        let params = req.body
+        try {
+            const resuls = await sequelize.transaction(async (t) => {
+                let detail = await details.create(
+                    {
+                        FileId: params.file_id,
+                        detail: params.detail
+                    },
+                    {
+                        transaction: t
+                    }
+                )
+                res.status(200).send({ message: "Detalle cargado correctamente", detail: detail })
+            })
+        } catch (error) {
+            res.status(400).send({ message: "Ocurrió un error", detail: null })
+        }
+    },
+
 }
