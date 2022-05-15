@@ -36,7 +36,6 @@ function Home() {
     }
 
     if (fetchCurrentData !== null) {
-        console.log(fetchCurrentData)
         fetchCurrentData.map(data => {
             if (new Date(data.FileDate.shift_date).getHours() <= 11) {
                 morning_shift.push(data)

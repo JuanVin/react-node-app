@@ -8,18 +8,21 @@ function ModalDetails(params) {
     const [show, setShow] = useState(false);
     const [showNewDetail, setShowNewDetail] = useState(false)
     const [message, setMessage] = useState(null)
-    const [tableDetails, setTableDetails] = useState(params.details)
+    const [tableDetails, setTableDetails] = useState(params.details.file_detail)
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
     const handleShowNewDetail = () => setShowNewDetail(true)
     const handleCloseNewDetail = () => setShowNewDetail(false)
+   
+    console.log(params)
 
     async function postNewDetail(params) {
-        let newDetail = document.getElementById("textarea_detail").value.trim()
+        let newDetail = document.getElementById("textarea_detail").value.trim(),
+        response = null
         if (newDetail !== null && newDetail !== "") {
-            let response = await apis.newDetail({ detail: newDetail, file_id: params.details[0].id })
-            if(response.status === 1){
+            response = await apis.newDetail({ detail: newDetail, file_id: params.details.file_id })
+            if(response.status === 200){
                 tableDetails.push(response.detail)
                 setTableDetails(tableDetails)
                 handleCloseNewDetail()
@@ -28,10 +31,11 @@ function ModalDetails(params) {
         } else (
             console.log("detalle nulo")
         )
+        setMessage(null)
     }
     function postStatus() {
         if (message != null)
-            if (message.status === 1) {
+            if (message.status === 200) {
                 return (
                     <div class="alert alert-success d-flex align-items-center mt-3" role="alert">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">

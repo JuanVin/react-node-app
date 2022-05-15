@@ -2,11 +2,11 @@ import { Accordion } from "react-bootstrap"
 import "./styles/accordionFile.css"
 
 function AccordionFile(componentData) {
-
+    
     let accordion = [],
         files = componentData.data.files,
         option = componentData.data.option
-
+    console.log(files)
     function formatDate(data, option) {
 
         let date
@@ -25,9 +25,8 @@ function AccordionFile(componentData) {
     }
 
     function formatDetail(detail) {
-
-        if (detail[0].detail !== "") {
-            let details = []
+        let details = []
+        if (detail[0].detail !== "" && detail[0].detail !== null) { 
             detail.map((singleDetail, index) => {
                 details.push(
                     <p><b>N°{index+1}: </b> {singleDetail.detail.toUpperCase()}</p>

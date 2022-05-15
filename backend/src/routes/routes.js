@@ -15,4 +15,6 @@ router.get('/files/get/:id', controller.getFileById)
 router.post('/files/form/update', controller.updateFiles)
 router.post('/files/details/update', controller.updateDetail)
 router.post('/files/details/new_detail', controller.newDetail)
+router.delete('/files/details/delete/:id', controller.deleteDetail)
+
 module.exports = router

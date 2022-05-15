@@ -109,5 +109,18 @@ const apis = {
             return response
 
     },
+    deteleDetail: async (id) => {
+      
+        let options = {
+                method: 'delete',
+            },
+            url = `http://localhost:3000/files/details/delete/${id}`,
+            response
+      
+            response = await fetch(url, options)
+            response = await response.json()
+            return response
+
+    },
 }
 export default apis

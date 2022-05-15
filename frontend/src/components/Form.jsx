@@ -265,7 +265,7 @@ function Form(params) {
             </div>
             <div className="row">
                 <div className="col">
-                    <ModalDetails details={fileData.Details}></ModalDetails>
+                    <ModalDetails details={{file_detail: fileData.Details, file_id: fileData.id}}></ModalDetails>
                 </div>
                 <div className="col">
                     <button className="mt-3 btn btn-dark w-100 m-1 btn-lg" type="button" onClick={sendUpdateData}>Actualizar expediente</button>

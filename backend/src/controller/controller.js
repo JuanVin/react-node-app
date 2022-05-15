@@ -289,10 +289,24 @@ module.exports = controller = {
                         transaction: t
                     }
                 )
-                res.status(200).send({ message: "Detalle cargado correctamente", detail: detail })
+                res.send({ message: "Detalle cargado correctamente", detail: detail, status: 200 })
             })
         } catch (error) {
-            res.status(400).send({ message: "Ocurrió un error", detail: null })
+            res.send({ message: "Ocurrió un error", detail: null, status: 400 })
+        }
+    },
+    deleteDetail: async (req, res) => {
+        
+        let id = req.params.id
+
+        try {
+            const resuls = await sequelize.transaction(async (t) => {
+                let detail = await details.findByPk(id, {transaction: t})
+                await detail.destroy({transaction: t})
+                res.send({ message: "Detalle borrado correctamente", status:200})
+            })
+        } catch (error) {
+            res.send({ message: "Ocurrió un error", status: 400})
         }
     },
 

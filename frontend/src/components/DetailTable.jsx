@@ -1,13 +1,14 @@
 import { useState } from "react"
 import apis from "./apiFunctions"
 function DetailTable(params) {
-    console.log(params)
-    const [showTextArea, setShowTextArea] = useState(0)
-    const [message, setMessage] = useState(null)
 
+    const [message, setMessage] = useState(null)
     const [details, setDetails] = useState(params.details)
-    const handleShowTextArea = (index) => setShowTextArea(index)
-    const handleCloseTextArea = () => setShowTextArea(0)
+    const [showOptions, setShowOptiones] = useState({ index: null, opt: null })
+    const handleShowTextArea = (index, opt) => setShowOptiones({ index: index, opt: opt })
+    const handleCloseTextArea = () => setShowOptiones({ index: null, opt: null })
+    const handleShowWarning = (index, opt) => setShowOptiones({ index: index, opt: opt })
+
 
     let trParam = []
 
@@ -27,31 +28,61 @@ function DetailTable(params) {
         } catch (error) {
             console.log(error)
         }
-        setMessage({ message: response.message })
+        setMessage({ message: response.message, status: response.status })
         handleCloseTextArea()
+        
     }
-
+    async function postDeleteDetail(id, index) {
+        let response
+        try {
+            response = await apis.deteleDetail(id)
+            if (response.status === 200) {
+                details.splice(index, 1)
+                setDetails(details)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+        setMessage({ message: response.message, status: response.status })
+        handleCloseTextArea()
+       
+    }
     details.map((param, index) => {
+        console.log(param)
         trParam.push(
             <tr key={param.id}>
                 <th>{index + 1}</th>
                 {
-                    (showTextArea !== 0 && showTextArea === param.id)
+                    (showOptions.index !== null && showOptions.index === param.id)
                         ?
-                        <>
-                            <td><textarea className="form-control" defaultValue={param.detail} id={"newDetail" + param.id}></textarea></td>
-                            <td><button className="btn btn-outline-warning w-100" onClick={() => { postUpdDetail(param.id, index) }}> <b>Agregar</b> </button></td>
-                            <td><button className="btn btn-outline-primary w-100" onClick={handleCloseTextArea}> <b>Volver</b> </button></td>
-                        </>
+                        (
+                            (showOptions.opt === 0)
+                                ?
+                                <>
+                                    <td><textarea className="form-control" defaultValue={param.detail} id={"newDetail" + param.id}></textarea></td>
+                                    <td><button className="btn btn-outline-warning w-100" onClick={() => { postUpdDetail(param.id, index) }}> <b>Agregar</b> </button>
+                                    </td><td><button className="btn btn-outline-primary w-100" onClick={handleCloseTextArea}> <b>Volver</b> </button></td>
+                                </>
+                                :
+                                <>
+                                    <td>
+                                        <div class="alert alert-warning text-center" role="alert">
+                                            <strong>¿Seguro desea borrar este el comentario? </strong>
+                                        </div>
+                                    </td>
+                                    <td><button className="btn btn-outline-primary w-100" onClick={() => postDeleteDetail(param.id, index)}><b>Aceptar</b> </button></td>
+                                    <td><button className="btn btn-outline-danger w-100" onClick={handleCloseTextArea}> <b>Cancelar</b> </button></td>
+                                </>
+                        )
                         :
-                        <>
+                        (<>
                             <td>{(param.detail !== "") ? param.detail : "Sin detalle"}</td>
-                            <td><button className="btn btn-outline-success" onClick={() => handleShowTextArea(param.id)}> <b>Modificar</b> </button></td>
-                            <td><button className="btn btn-outline-danger"> <b>Borrar  </b> </button></td>
-                        </>
+                            <td><button className="btn btn-outline-success" onClick={() => handleShowTextArea(param.id, 0)}> <b>Modificar</b> </button></td>
+                            <td><button className="btn btn-outline-danger" onClick={() => handleShowWarning(param.id, 1)}> <b>Borrar  </b> </button></td>
+                        </>)
 
                 }
-            </tr>
+            </tr >
         )
     })
     function postStatus() {
@@ -73,6 +104,7 @@ function DetailTable(params) {
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
                             <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
                         </svg>
+
                         <div>
                             {message.message}
                         </div>
