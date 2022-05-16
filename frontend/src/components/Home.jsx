@@ -59,11 +59,19 @@ function Home() {
                                     <div className="w-100">
                                         <div className="p-3">
                                             <h3>Turno mañana</h3>
+                                            {(morning_shift.length >= 1) ? 
                                             <AccordionFile data={{files: morning_shift, option: "a1"}}></AccordionFile>
+                                            :
+                                            <h3 style={{color: "grey"}} className="text-center mt-5">Sin turnos</h3>
+                                            }
                                         </div>
                                         <div className="p-3">
                                             <h3>Turno tarde</h3>
+                                            {(late_shift.length >= 1) ? 
                                             <AccordionFile data={{files: late_shift, option: "a2"}}></AccordionFile>
+                                            :
+                                            <h3 style={{color: "grey"}} className="text-center mt-5">Sin turnos</h3>
+                                            }
                                         </div>
                                     </div>
                                 </div>

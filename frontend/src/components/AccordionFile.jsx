@@ -2,7 +2,7 @@ import { Accordion } from "react-bootstrap"
 import "./styles/accordionFile.css"
 
 function AccordionFile(componentData) {
-    
+
     let accordion = [],
         files = componentData.data.files,
         option = componentData.data.option
@@ -11,11 +11,16 @@ function AccordionFile(componentData) {
 
         let date
         if (data !== null) {
-            date = new Date(data)
-            if (option === 1) {
-                return date.toLocaleDateString("es-ES") + " a las " + date.getHours() + ":" + date.getMinutes()
+            try {
+                date = new Date(data)
+                if (option === 1) {
+                    return date.toLocaleDateString("es-ES") + " a las " + date.getHours() + ":" + date.getMinutes()
+                }
+                return date.toLocaleDateString("es-ES")
+            }catch (error){
+             
+                return "No registra"
             }
-            return date.toLocaleDateString("es-ES")
         }
         return "No registra"
     }
@@ -26,13 +31,15 @@ function AccordionFile(componentData) {
 
     function formatDetail(detail) {
         let details = []
-        if (detail[0].detail !== "" && detail[0].detail !== null) { 
-            detail.map((singleDetail, index) => {
-                details.push(
-                    <p><b>N°{index+1}: </b> {singleDetail.detail.toUpperCase()}</p>
-                )
-            })
-            return details
+        if (detail.length > 0) {
+            if (detail[0].detail !== "" && detail[0].detail !== null) {
+                detail.map((singleDetail, index) => {
+                    details.push(
+                        <p><b>N°{index + 1}: </b> {singleDetail.detail.toUpperCase()}</p>
+                    )
+                })
+                return details
+            }
         }
         return "Sin detalles"
     }

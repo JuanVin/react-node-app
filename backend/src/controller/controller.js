@@ -218,27 +218,30 @@ module.exports = controller = {
     newFile: async (req, res) => {
 
         let request = req.body
-
-        console.log(request)
+        let shiftDate = new Date(request.shift_date),
+            admissionDate = new Date(request.admission_date),
+            egressDate = new Date(request.egress_date)
 
         for (const key in request) {
             if (request[key] === '' || request[key] === '0' || request[key] === 0) {
                 request[key] = null
             }
         }
+
+        [shiftDate, admissionDate, egressDate].forEach(date => {
+            if(date.getFullYear < 2000){
+                date = null
+            }
+        })
+
         request.file_number = request.file_number.slice(0, -2) + "/" + request.file_number.slice(-2)
-        if (request.file_type === "1") {
-            request.file_number = "p-" + request.file_number
-        } else {
-            request.file_number = "t-" + request.file_number
-        }
 
         try {
             const results = sequelize.transaction(async (t) => {
                 newDates = await dates.create({
-                    shift_date: new Date(request.shift_date),
-                    admission_date: new Date(request.admission_date),
-                    egress_date: new Date(request.egress_date)
+                    shift_date: shiftDate,
+                    admission_date: admissionDate,
+                    egress_date: egressDate
                 }, {transaction: t})
                 newFile = await files.create({
                     FiscalOfficeId: request.FiscalOfficeId,
