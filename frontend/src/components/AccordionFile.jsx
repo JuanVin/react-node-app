@@ -6,21 +6,16 @@ function AccordionFile(componentData) {
     let accordion = [],
         files = componentData.data.files,
         option = componentData.data.option
-    console.log(files)
+  
     function formatDate(data, option) {
 
         let date
         if (data !== null) {
-            try {
-                date = new Date(data)
-                if (option === 1) {
-                    return date.toLocaleDateString("es-ES") + " a las " + date.getHours() + ":" + date.getMinutes()
-                }
-                return date.toLocaleDateString("es-ES")
-            }catch (error){
-             
-                return "No registra"
+            date = new Date(data)
+            if (option === 1) {
+                return date.toLocaleDateString("es-ES") + " a las " + date.getHours() + ":" + date.getMinutes()
             }
+            return date.toLocaleDateString("es-ES")
         }
         return "No registra"
     }

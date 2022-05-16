@@ -136,14 +136,16 @@ function Form(params) {
         return fileType
     }
     function setValueDates(param, option) {
+        console.log(param)
         if (param !== null) {
+            console.log(param)
             let date = new Date(param)
             if (option === 1) {
                 date.setHours(date.getHours() - 3)
                 return date.toISOString().substr(0, 16)
             }
             return date.toISOString().substr(0, 10)
-        }
+        } 
         return param
     }
     function postStatus() {

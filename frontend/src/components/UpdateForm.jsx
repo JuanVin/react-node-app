@@ -10,7 +10,7 @@ function UpdateForm() {
     const [postData, setPostData] = useState(null)
 
     let { id } = useParams();
-    console.log(id)
+  
     useEffect(() => {
         getFetchData()
     }, [isLoading])
@@ -25,9 +25,6 @@ function UpdateForm() {
         return (
             <h1>Cargando</h1>
         )
-    }
-    if (!isLoading) {
-        console.log(fetchFile)
     }
     return (
         <>

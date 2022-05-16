@@ -190,6 +190,7 @@ module.exports = controller = {
                 newFile[key] = null
             }
         }
+        
         oldFile = await files.findByPk(newFile.file_id)
         oldDate = await dates.findByPk(newFile.date_id)
 
@@ -218,30 +219,21 @@ module.exports = controller = {
     newFile: async (req, res) => {
 
         let request = req.body
-        let shiftDate = new Date(request.shift_date),
-            admissionDate = new Date(request.admission_date),
-            egressDate = new Date(request.egress_date)
-
+ 
         for (const key in request) {
             if (request[key] === '' || request[key] === '0' || request[key] === 0) {
                 request[key] = null
             }
         }
-
-        [shiftDate, admissionDate, egressDate].forEach(date => {
-            if(date.getFullYear < 2000){
-                date = null
-            }
-        })
-
+  
         request.file_number = request.file_number.slice(0, -2) + "/" + request.file_number.slice(-2)
 
         try {
             const results = sequelize.transaction(async (t) => {
                 newDates = await dates.create({
-                    shift_date: shiftDate,
-                    admission_date: admissionDate,
-                    egress_date: egressDate
+                    shift_date: request.shift_date,
+                    admission_date: request.admission_date,
+                    egress_date: request.egress_date
                 }, {transaction: t})
                 newFile = await files.create({
                     FiscalOfficeId: request.FiscalOfficeId,
@@ -265,6 +257,7 @@ module.exports = controller = {
         
     },
     updateDetail: async (req, res) => {
+
         let params = req.body
         console.log(params)
         try {

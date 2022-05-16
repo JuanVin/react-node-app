@@ -9,13 +9,13 @@ function ModalDetails(params) {
     const [showNewDetail, setShowNewDetail] = useState(false)
     const [message, setMessage] = useState(null)
     const [tableDetails, setTableDetails] = useState(params.details.file_detail)
+
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
     const handleShowNewDetail = () => setShowNewDetail(true)
     const handleCloseNewDetail = () => setShowNewDetail(false)
-   
-    console.log(params)
+
 
     async function postNewDetail(params) {
         let newDetail = document.getElementById("textarea_detail").value.trim(),
@@ -31,7 +31,6 @@ function ModalDetails(params) {
         } else (
             console.log("detalle nulo")
         )
-        setMessage(null)
     }
     function postStatus() {
         if (message != null)

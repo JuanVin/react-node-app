@@ -21,6 +21,7 @@ function Home() {
     let getFetchData = async () => {
         setFetchCurrentData(await apis.getCurrentDayFiles())
         await setIsLoading(false)
+
     }
 
     if (isLoading) {
