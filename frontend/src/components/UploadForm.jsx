@@ -1,13 +1,20 @@
 import { useEffect, useState } from "react"
 import apis from "./apiFunctions"
+import Message from "./Message"
 function UploadForm(params) {
+
     const [isLoading, setIsLoading] = useState(true)
     const [data, setData] = useState(null)
     const [postData, setPostData] = useState(null)
+    const [message, setMessage] = useState(null)
 
     useEffect(() => {
         getFetchData()
     }, [isLoading])
+
+    useEffect(() => {
+        if(postData !== null) setMessage({ message: postData.message, status: postData.status })
+    },[postData !== null])
 
     const getFetchData = async () => {
         setData(await apis.getFormData())
@@ -43,7 +50,7 @@ function UploadForm(params) {
         techData.push(
             <option value={0}>No asignado</option>
         )
-        data.technicians.map(technician => {
+        data.technicians.forEach(technician => {
             techData.push(
                 <option value={technician.id}>{(technician.name).toUpperCase()}</option>
             )
@@ -57,7 +64,7 @@ function UploadForm(params) {
             <option value={0}>{"Sin asignar"}</option>
         )
         data.fiscalOffices.sort()
-        data.fiscalOffices.map((fiscalOffice) => {
+        data.fiscalOffices.forEach((fiscalOffice) => {
             fiscalData.push(
                 <option value={fiscalOffice.id}>{capitalizarPrimeraLetra(fiscalOffice.name)}</option>
             )
@@ -70,7 +77,7 @@ function UploadForm(params) {
             <option value={0}>{"Sin asignar"}</option>
         )
         data.fiscalUnits.sort()
-        data.fiscalUnits.map((fiscalUnit) => {
+        data.fiscalUnits.forEach((fiscalUnit) => {
             fiscalData.push(
                 <option value={fiscalUnit.id}>{fiscalUnit.District.name + " - " + capitalizarPrimeraLetra(fiscalUnit.name)}</option>
             )
@@ -82,7 +89,7 @@ function UploadForm(params) {
     }
     function loadCondition() {
         let fileCondition = []
-        data.condition.map((singleCondition) => {
+        data.condition.forEach((singleCondition) => {
             fileCondition.push(
                 <option value={singleCondition.id}>{capitalizarPrimeraLetra(singleCondition.condition)}</option>
             )
@@ -91,7 +98,7 @@ function UploadForm(params) {
     }
     function loadTypes (){
         let fileType = []
-        data.types.map(type => {
+        data.types.forEach(type => {
             fileType.push(
                 <option value={type.id}>{type.type.toUpperCase()+"-"}</option>
             )
@@ -101,37 +108,11 @@ function UploadForm(params) {
         )
         return fileType
     }
-    function postStatus() {
-        if (postData != null)
-            if (postData.status === 1) {
-                return (
-                    <div class="alert alert-success d-flex align-items-center mt-3" role="alert">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
-                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                        </svg>
-                        <div>
-                            {postData.message}
-                        </div>
-                    </div>
-                )
-            } else {
-                return (
-
-                    <div class="alert alert-danger d-flex align-items-center mt-3" role="alert">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
-                            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-                        </svg>
-                        <div>
-                            {postData.message}
-                        </div>
-                    </div>
-
-                )
-            }
-        return null
-    }
+ 
     return (
+        
         <div className="w-75">
+            <Message props={message}></Message>
             <div className="form-group">
                 <p> Número de expediente </p>
                 <select className="form-select d-inline w-25 text-center" id="tipo_expediente_act" name="select">
@@ -223,7 +204,6 @@ function UploadForm(params) {
                     </div>
                 </div>
             </div>
-
             <div className="form-group mt-3">
                 <label className="p-1" for="detalle_act">Detalle</label>
                 <textarea class="form-control" id="detalle_act" rows="3" required></textarea>
@@ -241,7 +221,6 @@ function UploadForm(params) {
                     </div>
                 </div>
             </div>
-            {postStatus()}
         </div>
     )
 }

@@ -5,7 +5,6 @@ const apis = {
         return data
     },
     getFileByFileNumber: async (file_number) => {
-        console.log(file_number)
         let data = await fetch(`http://localhost:3000/files/${file_number}`)
         data = await data.json()
         return data
@@ -47,7 +46,6 @@ const apis = {
         return data
     },
     postFormData: async (fetchData) => {
-        console.log(fetchData)
         let options = {
                 method: 'post',
                 headers: { 'Content-Type': 'application/json' },

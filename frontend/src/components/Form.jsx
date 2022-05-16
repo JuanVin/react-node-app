@@ -1,23 +1,29 @@
 import apis from "./apiFunctions"
 import { useState, useEffect } from "react"
 import ModalDetails from "./ModalDetails"
+import Message from "./Message"
 function Form(params) {
-    
+
     const [isLoading, setIsLoading] = useState(true)
     const [data, setData] = useState(null)
     const [postData, setPostData] = useState(null)
-
+    const [message, setMessage] = useState(null)
     let fileData = params.data
 
     useEffect(() => {
         getFetchData()
     }, [isLoading])
 
+    useEffect(() => {
+        if(postData !== null){
+            setMessage({ message: postData.message, status: postData.status })
+        } 
+    },[postData !== null])
+
     const getFetchData = async () => {
         setData(await apis.getFormData())
         setIsLoading(false)
     }
-
     if (isLoading) {
         return (
             <h1>Cargando</h1>
@@ -39,13 +45,14 @@ function Form(params) {
             date_id: fileData.FileDateId
         }
         setPostData(await apis.postUpdateData(fetchData))
+        
     }
     function loadTechnician(param) {
         let techData = []
         techData.push(
             <option value={0}>No asignado</option>
         )
-        data.technicians.map(technician => {
+        data.technicians.forEach(technician => {
             if (technician.id === param) {
                 techData.push(
                     <option value={technician.id} selected>{(technician.name).toUpperCase()}</option>
@@ -65,7 +72,7 @@ function Form(params) {
             <option value={0}>No asignado</option>
         )
         data.fiscalOffices.sort()
-        data.fiscalOffices.map((fiscalOffice) => {
+        data.fiscalOffices.forEach((fiscalOffice) => {
             if (fiscalOffice.id === param) {
                 fiscalData.push(
                     <option value={fiscalOffice.id} selected>{capitalizarPrimeraLetra(fiscalOffice.name)}</option>
@@ -84,7 +91,7 @@ function Form(params) {
             <option value={0}>No asignado</option>
         )
         data.fiscalUnits.sort()
-        data.fiscalUnits.map((fiscalUnit) => {
+        data.fiscalUnits.forEach((fiscalUnit) => {
             if (fiscalUnit.id === param) {
                 fiscalData.push(
                     <option value={fiscalUnit.id} selected>{fiscalUnit.District.name + " - " + capitalizarPrimeraLetra(fiscalUnit.name)}</option>
@@ -104,7 +111,7 @@ function Form(params) {
     function loadCondition(param) {
 
         let fileCondition = []
-        data.condition.map((singleCondition) => {
+        data.condition.forEach((singleCondition) => {
             if (singleCondition.id === param) {
                 fileCondition.push(
                     <option value={singleCondition.id} selected>{capitalizarPrimeraLetra(singleCondition.condition)}</option>
@@ -119,7 +126,7 @@ function Form(params) {
     }
     function loadTypes(param) {
         let fileType = []
-        data.types.map(type => {
+        data.types.forEach(type => {
             if (type.id === param) {
                 fileType.push(
                     <option value={type.id} selected>{type.type.toUpperCase() + "-"}</option>
@@ -136,49 +143,20 @@ function Form(params) {
         return fileType
     }
     function setValueDates(param, option) {
-        console.log(param)
         if (param !== null) {
-            console.log(param)
             let date = new Date(param)
             if (option === 1) {
                 date.setHours(date.getHours() - 3)
                 return date.toISOString().substr(0, 16)
             }
             return date.toISOString().substr(0, 10)
-        } 
+        }
         return param
-    }
-    function postStatus() {
-        if (postData != null)
-            if (postData.status === 1) {
-                return (
-                    <div class="alert alert-success d-flex align-items-center mt-3" role="alert">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
-                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                        </svg>
-                        <div>
-                            {postData.message}
-                        </div>
-                    </div>
-                )
-            } else {
-                return (
-
-                    <div class="alert alert-danger d-flex align-items-center mt-3" role="alert">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
-                            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-                        </svg>
-                        <div>
-                            {postData.message}
-                        </div>
-                    </div>
-                )
-            }
-        return null
     }
     return (
 
-        <>  {postStatus()}
+        <>
+            <Message props={message}></Message>
             <div className="form-group">
                 <p> Número de expediente </p>
                 <select className="form-select d-inline w-25 text-center" id="tipo_expediente_act" name="select" >
@@ -267,7 +245,7 @@ function Form(params) {
             </div>
             <div className="row">
                 <div className="col">
-                    <ModalDetails details={{file_detail: fileData.Details, file_id: fileData.id}}></ModalDetails>
+                    <ModalDetails details={{ file_detail: fileData.Details, file_id: fileData.id }}></ModalDetails>
                 </div>
                 <div className="col">
                     <button className="mt-3 btn btn-dark w-100 m-1 btn-lg" type="button" onClick={sendUpdateData}>Actualizar expediente</button>

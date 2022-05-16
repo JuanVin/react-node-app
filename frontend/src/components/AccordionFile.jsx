@@ -6,14 +6,14 @@ function AccordionFile(componentData) {
     let accordion = [],
         files = componentData.data.files,
         option = componentData.data.option
-  
+
     function formatDate(data, option) {
 
         let date
         if (data !== null) {
             date = new Date(data)
             if (option === 1) {
-                return date.toLocaleDateString("es-ES") + " a las " + date.getHours() + ":" + date.getMinutes()
+                return date.toLocaleDateString("es-ES") + " a las " + date.getHours() + ":" + date.getMinutes() + "hrs"
             }
             return date.toLocaleDateString("es-ES")
         }
@@ -61,13 +61,14 @@ function AccordionFile(componentData) {
 
     files.map((rowData, index) => {
         accordion.push(
-            <Accordion.Item eventKey={index} flush>
-                <Accordion.Header><b>{rowData.FileType.type.toUpperCase() + "- " + rowData.file_number.toUpperCase()} {(option === "a3") ? <span className="text-success">{" - Turno: " + formatDate(rowData.FileDate.shift_date, 0)}</span> : ""}</b></Accordion.Header>
+            <Accordion.Item eventKey={index + option} flush>
+                <Accordion.Header>
+                    <b>{rowData.FileType.type.toUpperCase() + "- " + rowData.file_number.toUpperCase()} {(option === "a3") ? <span className="text-success">{" - Turno: " + formatDate(rowData.FileDate.shift_date, 0)}</span> : ""}</b>
+                </Accordion.Header>
                 <Accordion.Body style={{
                     display: "flex",
                     justifyContent: "center",
                 }}>
-
                     <table id={option + "table" + index} className="table w-75" >
                         <thead className="thead-dark">
                             <tr>
@@ -120,7 +121,13 @@ function AccordionFile(componentData) {
                             <tr>
                                 <th scope="row"></th>
                                 <td>
-                                    <a href={`/update_form/${rowData.id}`} className="btn btn-success">Modificar</a>
+                                    <a href={`/update_form/${rowData.id}`} className="btn btn-outline-dark w-50">Actas</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"></th>
+                                <td>
+                                    <a href={`/update_form/${rowData.id}`} className="btn btn-success w-50">Modificar</a>
                                 </td>
                             </tr>
                         </tbody>

@@ -160,7 +160,9 @@ const auxiliares = (auxiliar) => {
     }
     return auxiliar
 }
-
+const expediente = (expediente) => {
+    return expediente.replace("p-", "").replace("t-", "").replace("sum-", "").replace("p2-", "")
+}
 fs.createReadStream(__dirname + '/list.csv')
     .pipe(csv({}))
     .on('data', (row) => {
@@ -174,6 +176,7 @@ fs.createReadStream(__dirname + '/list.csv')
             item.condition = estados(item.condition)
             item.technical = auxiliares(item.technical)
             item.office = normalizar(item.office)
+            item.file_number = expediente(item.file_number)
             if (item.office.includes("robos, hurtos y sustraccion automotores - a")) {
                 item.office = "automotores"
             }
