@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import apis from "./apiFunctions"
 import Message from "./Message"
+import Loading from "./Loading"
 function UploadForm(params) {
 
     const [isLoading, setIsLoading] = useState(true)
@@ -109,6 +110,11 @@ function UploadForm(params) {
         return fileType
     }
  
+    if(isLoading){
+        return (
+            <Loading></Loading>
+        )
+    }
     return (
         
         <div className="w-75">

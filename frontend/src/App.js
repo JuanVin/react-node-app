@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import Home from "./components/Home"
 import UpdateForm from './components/UpdateForm';
 import Login from './components/Login';
-
+import Extraction from './components/Extraction';
 const App = () => (
 
     <Router>
@@ -13,6 +13,7 @@ const App = () => (
             <Route path='/' element={< Home />} />
             <Route path='/login' element={< Login />} />
             <Route path='/update_form/:id' element={<UpdateForm/>} />
+            <Route path='/extraction/:id' element={<Extraction/>} />
         </Routes>
     </Router>
 

@@ -121,7 +121,7 @@ function AccordionFile(componentData) {
                             <tr>
                                 <th scope="row"></th>
                                 <td>
-                                    <a href={`/update_form/${rowData.id}`} className="btn btn-outline-dark w-50">Actas</a>
+                                    <a href={`/extraction/${rowData.id}`} className="btn btn-outline-dark w-50">Cargar Extracción</a>
                                 </td>
                             </tr>
                             <tr>
@@ -139,7 +139,7 @@ function AccordionFile(componentData) {
 
     return (
         <>
-            <Accordion className="w-100 mt-3" defaultActiveKey="0">
+            <Accordion className="w-100" defaultActiveKey="0">
                 {accordion}
             </Accordion>
         </>

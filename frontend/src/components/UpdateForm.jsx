@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom"
 import apis from "./apiFunctions"
 import NavBar from "./NavBar"
 import Form from "./Form"
-
+import Loading from "./Loading"
 function UpdateForm() {
     const [isLoading, setIsLoading] = useState(true)
     const [fetchFile, setFetchFile] = useState(null)
@@ -22,7 +22,7 @@ function UpdateForm() {
 
     if (isLoading) {
         return (
-            <h1>Cargando</h1>
+            <Loading></Loading>
         )
     }
     return (

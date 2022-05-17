@@ -23,7 +23,6 @@ function FileSearch() {
 
     return (
         <div className="my-2 my-lg-0 d-flex">
-            
             <input style={{ marginRight: "5px" }} className="form-control mr-sm-2" type="search" placeholder="Expediente" id="file_number" required></input>
             <Button variant="success" onClick={getFetchData}>
                 Buscar

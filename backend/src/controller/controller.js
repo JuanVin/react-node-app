@@ -26,7 +26,7 @@ module.exports = controller = {
                     where: {
                         id: id
                     },
-                    include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions]
+                    include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions, type]
                 }, { transaction: t }));
             })
         } catch (error) {

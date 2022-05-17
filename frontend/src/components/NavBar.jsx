@@ -8,7 +8,7 @@ const NavBar = () => {
             <Container>
                 <Navbar.Brand href="#home"><strong>U.D.A.P.I.F.</strong> <small className="text-muted d-block">Departamento de informática forense</small></Navbar.Brand>
                 <Nav>
-                    <Nav.Link style={{ fontSize: "18px" }} href="#home">Home</Nav.Link>
+                    <Nav.Link style={{ fontSize: "18px" }} href="/">Home</Nav.Link>
                     <Nav.Link style={{ fontSize: "18px" }} href="#features">Buscador</Nav.Link>
                     <Nav.Link style={{ fontSize: "18px", marginRight: "50px" }} href="#pricing">Actas</Nav.Link>
                     <FileSearch></FileSearch>

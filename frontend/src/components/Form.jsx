@@ -15,10 +15,10 @@ function Form(params) {
     }, [isLoading])
 
     useEffect(() => {
-        if(postData !== null){
+        if (postData !== null) {
             setMessage({ message: postData.message, status: postData.status })
-        } 
-    },[postData !== null])
+        }
+    }, [postData !== null])
 
     const getFetchData = async () => {
         setData(await apis.getFormData())
@@ -45,7 +45,7 @@ function Form(params) {
             date_id: fileData.FileDateId
         }
         setPostData(await apis.postUpdateData(fetchData))
-        
+
     }
     function loadTechnician(param) {
         let techData = []
@@ -163,7 +163,8 @@ function Form(params) {
                     {loadTypes(fileData.FileTypeId)}
                 </select>
                 <input type="text" id="expediente_act" className="form-control d-inline w-75" defaultValue={fileData.file_number.replace('p-', '')} required />
-            </div><div className="form-group p-1">
+            </div>
+            <div className="form-group p-1">
                 <div className="form-group">
                     <p>Turno otorgado: </p>
                 </div>

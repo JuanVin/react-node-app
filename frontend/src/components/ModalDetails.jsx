@@ -55,7 +55,8 @@ function ModalDetails(params) {
                         <DetailTable details={tableDetails}></DetailTable>}
                 </Modal.Body>
                 <Modal.Footer className="bg-dark">
-                    {showNewDetail ?
+                    {
+                    showNewDetail ?
                         <>
                             <Button variant="light" onClick={() => postNewDetail(params)}>
                                 Agregar
