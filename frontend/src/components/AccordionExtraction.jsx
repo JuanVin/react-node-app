@@ -9,7 +9,7 @@ function AccordionExtraction(param) {
         accordion.push(
             <Accordion.Item eventKey={index} flush>
                 <Accordion.Header>
-                    <b>Dispositivo N° {index+1}</b>
+                    <b>Dispositivo N° {index+1} - SAMSUNG SM-G532M</b>
                 </Accordion.Header>
                 <Accordion.Body style={{
                     display: "flex",

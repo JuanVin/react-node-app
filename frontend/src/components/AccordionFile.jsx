@@ -121,7 +121,7 @@ function AccordionFile(componentData) {
                             <tr>
                                 <th scope="row"></th>
                                 <td>
-                                    <a href={`/extraction/${rowData.id}`} className="btn btn-outline-dark w-50">Cargar Extracción</a>
+                                    <a href={`/extraction/${rowData.id}`} className="btn btn-outline-dark w-50">Ver Extracción</a>
                                 </td>
                             </tr>
                             <tr>

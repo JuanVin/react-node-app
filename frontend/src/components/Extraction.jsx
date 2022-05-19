@@ -57,6 +57,7 @@ const Extraction = () => {
                 }>
                     <h2><b>Extracciones</b></h2>
                     <h3 className="mt-1" style={{ color: "grey" }}>Expte N° {data.FileType.type.toUpperCase() + "- " + data.file_number}</h3>
+                    <hr></hr>
                     {
                         showDevicesFields
                             ?
