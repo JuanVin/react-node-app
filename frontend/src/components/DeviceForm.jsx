@@ -1,4 +1,4 @@
-import { AiOutlineCheck, AiOutlineCloseCircle, AiOutlineWarning } from "react-icons/ai";
+import { AiOutlineCheck, AiOutlineCloseCircle, AiOutlineWarning,AiOutlineRight } from "react-icons/ai";
 
 function DeviceForm() {
     return (
@@ -8,15 +8,16 @@ function DeviceForm() {
             <div className="w-100 p-1">
                 <div className="form-group">
                     <h3 style={{ color: "grey", marginLeft: "15px" }}>Física</h3>
-                    <table className="table table-sm">
+                    <table className="table table-sm table-bordered">
                         <thead>
                             <tr className="text-center">
-                                <th scope="col" style={{ maxWidth: "100px" }}>Decrypted Boot Loader </th>
-                                <th scope="col" style={{ maxWidth: "100px" }}>Boot Loader</th>
-                                <th scope="col" style={{ maxWidth: "100px" }}>ADB</th>
-                                <th scope="col" style={{ maxWidth: "100px" }}>EDL</th>
-                                <th scope="col" style={{ maxWidth: "100px" }}>Qualcomm</th>
-                                <th scope="col" style={{ maxWidth: "100px" }}>Advanced ADB</th>
+                                <th scope="col" style={{ maxWidth: "100px", minWidth: "70px" }}>Decrypted Boot Loader </th>
+                                <th scope="col" style={{ maxWidth: "100px"}}>Boot Loader</th>
+                                <th scope="col" style={{ maxWidth: "100px"}}>ADB</th>
+                                <th scope="col" style={{ maxWidth: "100px"}}>EDL</th>
+                                <th scope="col" style={{ maxWidth: "100px"}}>Qualcomm</th>
+                                <th scope="col" style={{ maxWidth: "100px"}}>Advanced ADB</th>
+                                <th scope="col" style={{ maxWidth: "100px"}}>Rooteado</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -27,6 +28,7 @@ function DeviceForm() {
                                 <td className="text-center" style={{ color: "grey", fontSize: "20px" }}></td>
                                 <td className="text-center" style={{ color: "rgb(180, 180, 0)", fontSize: "30px" }}> <AiOutlineWarning /></td>
                                 <td className="text-center" style={{ color: "grey", fontSize: "20px" }}></td>
+                                <td className="text-center" style={{ color: "grey", fontSize: "20px" }}></td>
                             </tr>
                         </tbody>
                     </table>
@@ -34,7 +36,7 @@ function DeviceForm() {
 
                 <div className="form-group">
                     <h3 style={{ color: "grey", marginLeft: "15px" }}>Lógica</h3>
-                    <table className="table table-sm">
+                    <table className="table table-sm table-bordered">
                         <thead>
                             <tr className="text-center">
                                 <th scope="col">Lógica</th>
@@ -81,7 +83,7 @@ function DeviceForm() {
                     <div className="row">
                         <div className="col">
                             <h3 style={{ color: "grey", marginLeft: "15px" }}>Simcard</h3>
-                            <table class="table table-sm">
+                            <table className="table table-sm">
                                 <thead>
                                     <tr className="text-center">
                                         <th scope="col">Volcado</th>
@@ -98,7 +100,7 @@ function DeviceForm() {
                         </div>
                         <div className="col">
                             <h3 style={{ color: "grey", marginLeft: "15px" }}>MicroSD</h3>
-                            <table class="table table-sm">
+                            <table className="table table-sm">
                                 <thead>
                                     <tr className="text-center">
                                         <th scope="col">Volcado</th>

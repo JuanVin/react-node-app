@@ -14,8 +14,8 @@ function UploadForm(params) {
     }, [isLoading])
 
     useEffect(() => {
-        if(postData !== null) setMessage({ message: postData.message, status: postData.status })
-    },[postData !== null])
+        if (postData !== null) setMessage({ message: postData.message, status: postData.status })
+    }, [postData !== null])
 
     const getFetchData = async () => {
         setData(await apis.getFormData())
@@ -97,11 +97,11 @@ function UploadForm(params) {
         })
         return fileCondition
     }
-    function loadTypes (){
+    function loadTypes() {
         let fileType = []
         data.types.forEach(type => {
             fileType.push(
-                <option value={type.id}>{type.type.toUpperCase()+"-"}</option>
+                <option value={type.id}>{type.type.toUpperCase() + "-"}</option>
             )
         })
         fileType.push(
@@ -109,41 +109,43 @@ function UploadForm(params) {
         )
         return fileType
     }
- 
-    if(isLoading){
+
+    if (isLoading) {
         return (
             <Loading></Loading>
         )
     }
     return (
-        
+
         <div className="w-75">
             <Message props={message}></Message>
             <div className="form-group">
                 <p> Número de expediente </p>
-                <select className="form-select d-inline w-25 text-center" id="tipo_expediente_act" name="select">
-                    {loadTypes()}
-                </select>
-                <input type="text" id="expediente_act" className="form-control d-inline w-75" required />
+                <div className="input-group w-100">
+                    <select className="form-select d-inline w-25 text-center" id="tipo_expediente_act" name="select">
+                        {loadTypes()}
+                    </select>
+                    <input type="text" id="expediente_act" className="form-control d-inline w-75" required />
+                </div>
             </div>
             <div className="form-group p-1">
                 <div className="form-group">
                     <p>Turno otorgado: </p>
                 </div>
                 <div className="form-check form-check-inline">
-                    <input className="form-check-input" type="radio" name="opcion_turno" id="opcion_turno1" value="1"></input>
+                    <input className="form-check-input" type="radio" name="opcion_turno" id="opcion_turno1" defaultValue="1"></input>
                     <label className="form-check-label" for="opcion_turno1">
                         Si
                     </label>
                 </div>
                 <div className="form-check form-check-inline">
-                    <input className="form-check-input" type="radio" name="opcion_turno" id="opcion_turno2" value="2" checked></input>
+                    <input className="form-check-input" type="radio" name="opcion_turno" id="opcion_turno2" defaultValue="2" checked></input>
                     <label className="form-check-label" for="opcion_turno2">
                         No
                     </label>
                 </div>
                 <div className="form-check form-check-inline">
-                    <input className="form-check-input" type="radio" name="opcion_turno" id="opcion_turno3" value="3"></input>
+                    <input className="form-check-input" type="radio" name="opcion_turno" id="opcion_turno3" defaultValue="3"></input>
                     <label className="form-check-label" for="opcion_turno3">
                         Acto
                     </label>

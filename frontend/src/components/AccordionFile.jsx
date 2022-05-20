@@ -2,7 +2,7 @@ import { Accordion } from "react-bootstrap"
 import "./styles/accordionFile.css"
 
 function AccordionFile(componentData) {
-
+    console.log(componentData)
     let accordion = [],
         files = componentData.data.files,
         option = componentData.data.option

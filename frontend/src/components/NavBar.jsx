@@ -10,7 +10,7 @@ const NavBar = () => {
                 <Nav>
                     <Nav.Link style={{ fontSize: "18px" }} href="/">Home</Nav.Link>
                     <Nav.Link style={{ fontSize: "18px" }} href="#features">Buscador</Nav.Link>
-                    <Nav.Link style={{ fontSize: "18px", marginRight: "50px" }} href="#pricing">Actas</Nav.Link>
+                    <Nav.Link style={{ fontSize: "18px", marginRight: "50px" }} href="#pricing">Mis expedientes</Nav.Link>
                     <FileSearch></FileSearch>
                 </Nav>
             </Container>

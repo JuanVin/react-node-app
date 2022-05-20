@@ -127,7 +127,6 @@ module.exports = controller = {
         }
     },
     getFileByFileNumber: async (req, res) => {
-        console.log("asdasdadasd")
         let fileNumber = req.params.file_number
         fileNumber = fileNumber.replace('-', '/')
         try {
@@ -138,7 +137,15 @@ module.exports = controller = {
                             [Op.like]: `%${fileNumber}%`
                         }
                     },
-                    include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions, type],
+                    include: [
+                        { model: dates, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: details, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: fiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: fiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: conditions, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: type, attributes: { exclude: ["createdAt", "updatedAt"] } }
+                    ]
                 }, { transaction: t }))
             })
         } catch (error) {
@@ -152,7 +159,12 @@ module.exports = controller = {
                 res.status(200).send({
                     fiscalOffices: await fiscalOffice.findAll({ transaction: t }),
                     fiscalUnits: await fiscalUnit.findAll({
-                        include: districts,
+                        include: [
+                            {
+                                model: districts,
+                                attributes: { exclude: ["createdAt", "updatedAt"] }
+                            }
+                        ],
                     }, { transaction: t }),
                     condition: await conditions.findAll({ transaction: t }),
                     technicians: await technician.findAll({ transaction: t }),
@@ -205,16 +217,16 @@ module.exports = controller = {
         oldFile.TechnicalId = newFile.TechnicalId
         oldFile.file_number = newFile.file_number.slice(0, -2) + "/" + newFile.file_number.slice(-2)
         oldFile.FileTypeId = newFile.file_type
-       
+
         try {
             const results = sequelize.transaction(async (t) => {
-                oldDate = await oldDate.save({transaction: t})
-                oldFile = await oldFile.save({transaction: t})
+                oldDate = await oldDate.save({ transaction: t })
+                oldFile = await oldFile.save({ transaction: t })
                 res.status(200).send({ message: "Expediente " + newFile.file_number + " actualizado correctamente", status: 200 })
             })
-        }catch (error){
-            res.status(400).send({message: "Algo ocurrió mal", status: 400})
-        }   
+        } catch (error) {
+            res.status(400).send({ message: "Algo ocurrió mal", status: 400 })
+        }
     },
     newFile: async (req, res) => {
 
@@ -305,5 +317,39 @@ module.exports = controller = {
             res.send({ message: "Ocurrió un error", status: 400 })
         }
     },
+    getStadistics: async (req, res) => {
+        let stadistics = []
 
+        try {
+            const results = await sequelize.transaction(async (t) => {
+                let today = new Date()
+                let startDate = new Date(today.getFullYear(), today.getMonth() - 2, today.getDate(), 0, 0, 0, 0),
+                    finalDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 20, 59, 59, 0),
+                    _conditions = await conditions.findAll({ transaction: t }),
+                    total = 0
+                for (const key in _conditions) {
+                    stadistics.push({
+                        name: (_conditions[key].condition).replace(" ", "_"),
+                        amount: await dates.count({
+                            where: {
+                                admission_date: {
+                                    [Op.between]: [startDate, finalDate]
+                                }
+                            },
+                            include: {
+                                model: files, where: {
+                                    ConditionId: _conditions[key].id,
+                                }
+                            }
+                        }, { transaction: t })
+                    })
+                    total += stadistics[key].amount
+                } 
+                stadistics.push({ total: total })
+                res.send(stadistics)
+            })
+        } catch (error) {
+            res.send("error")
+        }
+    }
 }

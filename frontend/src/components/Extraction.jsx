@@ -46,7 +46,7 @@ const Extraction = () => {
 
     return (
         <>
-            <NavBar></NavBar>
+     
             <div className="container">
                 <div className="p-5 bg-light shadow rounded" style={
                     {

@@ -47,16 +47,16 @@ const apis = {
     },
     postFormData: async (fetchData) => {
         let options = {
-                method: 'post',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(fetchData)
-            },
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(fetchData)
+        },
             url = `http://localhost:3000/files/form/new_file`,
             response
-      
-            response = await fetch(url, options)
-            response = await response.json()
-            return response
+
+        response = await fetch(url, options)
+        response = await response.json()
+        return response
     },
     getFileById: async (file_id) => {
         let data = await fetch(`http://localhost:3000/files/get/${file_id}`)
@@ -64,60 +64,67 @@ const apis = {
         return data
     },
     postUpdateData: async (fetchData) => {
-      
+
         let options = {
-                method: 'post',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(fetchData)
-            },
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(fetchData)
+        },
             url = `http://localhost:3000/files/form/update`,
             response
-      
-            response = await fetch(url, options)
-            response = await response.json()
-            return response
+
+        response = await fetch(url, options)
+        response = await response.json()
+        return response
     },
     updateDetail: async (fetchData) => {
-      
+
         let options = {
-                method: 'post',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(fetchData)
-            },
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(fetchData)
+        },
             url = `http://localhost:3000/files/details/update`,
             response
-      
-            response = await fetch(url, options)
-            response = await response.json()
-            return response
+
+        response = await fetch(url, options)
+        response = await response.json()
+        return response
 
     },
     newDetail: async (fetchData) => {
-      
+
         let options = {
-                method: 'post',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(fetchData)
-            },
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(fetchData)
+        },
             url = `http://localhost:3000/files/details/new_detail`,
             response
-      
-            response = await fetch(url, options)
-            response = await response.json()
-            return response
+
+        response = await fetch(url, options)
+        response = await response.json()
+        return response
 
     },
     deteleDetail: async (id) => {
-      
+
         let options = {
-                method: 'delete',
-            },
+            method: 'delete',
+        },
             url = `http://localhost:3000/files/details/delete/${id}`,
             response
-      
-            response = await fetch(url, options)
-            response = await response.json()
-            return response
+
+        response = await fetch(url, options)
+        response = await response.json()
+        return response
+
+    },
+    getStadistics: async () => {
+
+        let data = await fetch(`http://localhost:3000/files/stadistics/all`)
+        data = await data.json()
+        return data
 
     },
 }

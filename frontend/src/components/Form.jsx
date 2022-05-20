@@ -157,8 +157,8 @@ function Form(params) {
 
         <>
             <Message props={message}></Message>
-            <div className="form-group">
-                <p> Número de expediente </p>
+            <p className="p-1"> Número de expediente </p>
+            <div className="input-group w-100">
                 <select className="form-select d-inline w-25 text-center" id="tipo_expediente_act" name="select" >
                     {loadTypes(fileData.FileTypeId)}
                 </select>
@@ -169,19 +169,19 @@ function Form(params) {
                     <p>Turno otorgado: </p>
                 </div>
                 <div className="form-check form-check-inline">
-                    <input className="form-check-input" type="radio" name="opcion_turno" id="opcion_turno1" value="1"></input>
+                    <input className="form-check-input" type="radio" name="opcion_turno" id="opcion_turno1" defaultValue="1"></input>
                     <label className="form-check-label" for="opcion_turno1">
                         Si
                     </label>
                 </div>
                 <div className="form-check form-check-inline">
-                    <input className="form-check-input" type="radio" name="opcion_turno" id="opcion_turno2" value="2" checked></input>
+                    <input className="form-check-input" type="radio" name="opcion_turno" id="opcion_turno2" defaultValue="2" checked></input>
                     <label className="form-check-label" for="opcion_turno2">
                         No
                     </label>
                 </div>
                 <div className="form-check form-check-inline">
-                    <input className="form-check-input" type="radio" name="opcion_turno" id="opcion_turno3" value="3"></input>
+                    <input className="form-check-input" type="radio" name="opcion_turno" id="opcion_turno3" defaultValue="3"></input>
                     <label className="form-check-label" for="opcion_turno3">
                         Acto
                     </label>
@@ -195,7 +195,7 @@ function Form(params) {
                         </select>
                     </div>
                 </div>
-                <div class="col-sm">
+                <div className="col-sm">
                     <div className="mt-3 form-group">
                         <label className="p-1" or="o_fiscal_act">Oficina Fiscal</label>
                         <select className="form-control" id="o_fiscal_act" required>
@@ -204,7 +204,7 @@ function Form(params) {
                     </div>
                 </div>
             </div><div className="row">
-                <div class="col-sm">
+                <div className="col-sm">
                     <div className="form-group mt-3">
                         <label className="p-1" for="f_ingreso_act">Fecha ingreso</label>
                         <input className="form-control" type="date" id="f_ingreso_act"
@@ -212,7 +212,7 @@ function Form(params) {
                             min="2022-01-01" max="2100-06-14"></input>
                     </div>
                 </div>
-                <div class="col-sm">
+                <div className="col-sm">
                     <div className="form-group mt-3">
                         <label className="p-1" for="f_egreso_act">Fecha egreso</label>
                         <input className="form-control" type="date" id="f_egreso_act"

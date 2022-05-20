@@ -6,16 +6,21 @@ import Home from "./components/Home"
 import UpdateForm from './components/UpdateForm';
 import Login from './components/Login';
 import Extraction from './components/Extraction';
+import NavBar from './components/NavBar';
+import Stadistics from './components/Stadistics';
 const App = () => (
-
-    <Router>
-        <Routes>
-            <Route path='/' element={< Home />} />
-            <Route path='/login' element={< Login />} />
-            <Route path='/update_form/:id' element={<UpdateForm/>} />
-            <Route path='/extraction/:id' element={<Extraction/>} />
-        </Routes>
-    </Router>
+    <>
+        <NavBar></NavBar>
+        <Router>
+            <Routes>
+                <Route path='/' element={<Home />} />
+                <Route path='/login' element={<Login />} />
+                <Route path='/update_form/:id' element={<UpdateForm />} />
+                <Route path='/extraction/:id' element={<Extraction />} />
+                <Route path='/stadistics' element={<Stadistics />} />
+            </Routes>
+        </Router>
+    </>
 
 )
 
