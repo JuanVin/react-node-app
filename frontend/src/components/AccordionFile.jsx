@@ -7,6 +7,7 @@ function AccordionFile(componentData) {
         files = componentData.data.files,
         option = componentData.data.option
 
+        
     function formatDate(data, option) {
 
         let date

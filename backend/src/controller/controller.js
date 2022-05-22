@@ -317,39 +317,102 @@ module.exports = controller = {
             res.send({ message: "Ocurrió un error", status: 400 })
         }
     },
-    getStadistics: async (req, res) => {
-        let stadistics = []
+    getStadisticsByDate: async (req, res) => {
+        let fileStadistic = [],
+            technicianStadistic = [],
+            pendingFiles,
+            startDate = new Date(req.body.start),
+            endDate = new Date(req.body.end),
+            total = 0
 
+        console.log(startDate, "   ", endDate)
         try {
             const results = await sequelize.transaction(async (t) => {
-                let today = new Date()
-                let startDate = new Date(today.getFullYear(), today.getMonth() - 2, today.getDate(), 0, 0, 0, 0),
-                    finalDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 20, 59, 59, 0),
-                    _conditions = await conditions.findAll({ transaction: t }),
-                    total = 0
+                let _conditions = await conditions.findAll({ transaction: t }),
+                    _technicians = await technician.findAll({ transaction: t })
+
                 for (const key in _conditions) {
-                    stadistics.push({
-                        name: (_conditions[key].condition).replace(" ", "_"),
-                        amount: await dates.count({
-                            where: {
-                                admission_date: {
-                                    [Op.between]: [startDate, finalDate]
-                                }
-                            },
-                            include: {
-                                model: files, where: {
-                                    ConditionId: _conditions[key].id,
-                                }
+                    fileStadistic.push(
+                        {
+                            name: (_conditions[key].condition).replace(" ", "_"),
+                            amount: await dates.count(
+                                {
+                                    where: {
+                                        shift_date: {
+                                            [Op.between]: [startDate, endDate]
+                                        }
+                                    },
+                                    include: {
+                                        model: files, where: {
+                                            ConditionId: _conditions[key].id,
+                                        }
+                                    }
+                                }, { transaction: t })
+                        }
+                    )
+                    total += fileStadistic[key].amount
+                }
+                for (const key in _technicians) {
+                    technicianStadistic.push(
+                        {
+                            name: _technicians[key].name,
+                            amount: await dates.count(
+                                {
+                                    where: {
+                                        shift_date: {
+                                            [Op.between]: [startDate, endDate]
+                                        }
+                                    },
+                                    include: {
+                                        model: files, where: {
+                                            TechnicalId: _technicians[key].id,
+                                            ConditionId: 5
+                                        }
+                                    }
+                                },
+                                { transaction: t }
+                            ),
+                            amount2: await dates.count(
+                                {
+                                    where: {
+                                        shift_date: {
+                                            [Op.between]: [startDate, endDate]
+                                        }
+                                    },
+                                    include: {
+                                        model: files, where: {
+                                            TechnicalId: _technicians[key].id,
+                                            ConditionId: 6
+                                        }
+                                    }
+                                },
+                                { transaction: t }
+                            ),
+                        }
+                    )
+                }
+                pendingFiles = await dates.findAll(
+                    {
+                        where: {
+                            shift_date: {
+                                [Op.between]: [startDate, endDate]
                             }
-                        }, { transaction: t })
-                    })
-                    total += stadistics[key].amount
-                } 
-                stadistics.push({ total: total })
-                res.send(stadistics)
-            })
-        } catch (error) {
-            res.send("error")
-        }
+                        },
+                        include: {
+                            model: files, where: {
+                                ConditionId: 2
+                            }
+                        }
+                    },
+                    { transaction: t }
+                )
+
+            fileStadistic.push({ total: total })
+
+            res.send({ fileStadistic: fileStadistic, technicianStadistic: technicianStadistic, pendingFiles: pendingFiles})
+        })
+    } catch(error) {
+        res.send("error")
     }
+}
 }

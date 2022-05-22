@@ -17,7 +17,7 @@ router.post('/files/form/update', controller.updateFiles)
 router.post('/files/details/update', controller.updateDetail)
 router.post('/files/details/new_detail', controller.newDetail)
 router.delete('/files/details/delete/:id', controller.deleteDetail)
-router.get('/files/stadistics/all', controller.getStadistics)
+router.post('/files/stadistics/all', controller.getStadisticsByDate)
 
 
 module.exports = router

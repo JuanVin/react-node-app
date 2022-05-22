@@ -160,7 +160,7 @@ function UploadForm(params) {
                         </select>
                     </div>
                 </div>
-                <div class="col-sm">
+                <div className="col-sm">
                     <div className="mt-3 form-group">
                         <label className="p-1" or="o_fiscal_act">Oficina Fiscal</label>
                         <select className="form-control" id="o_fiscal_act" required>
@@ -170,7 +170,7 @@ function UploadForm(params) {
                 </div>
             </div>
             <div className="row">
-                <div class="col-sm">
+                <div className="col-sm">
                     <div className="form-group mt-3">
                         <label className="p-1" for="f_ingreso_act">Fecha ingreso</label>
                         <input className="form-control" type="date" id="f_ingreso_act"
@@ -178,7 +178,7 @@ function UploadForm(params) {
                             min="2022-01-01" max="2100-06-14"></input>
                     </div>
                 </div>
-                <div class="col-sm">
+                <div className="col-sm">
                     <div className="form-group mt-3">
                         <label className="p-1" for="f_egreso_act">Fecha egreso</label>
                         <input className="form-control" type="date" id="f_egreso_act"
@@ -214,14 +214,14 @@ function UploadForm(params) {
             </div>
             <div className="form-group mt-3">
                 <label className="p-1" for="detalle_act">Detalle</label>
-                <textarea class="form-control" id="detalle_act" rows="3" required></textarea>
+                <textarea className="form-control" id="detalle_act" rows="3" required></textarea>
             </div>
             <div className="form-group">
                 <div className="row">
                     <div className="col">
                         <div className="form-check mt-3">
-                            <input type="checkbox" class="form-check-input" id="exampleCheck1"></input>
-                            <label class="form-check-label" for="exampleCheck1">Enviar correo</label>
+                            <input type="checkbox" className="form-check-input" id="exampleCheck1"></input>
+                            <label className="form-check-label" for="exampleCheck1">Enviar correo</label>
                         </div>
                     </div>
                     <div className="col">

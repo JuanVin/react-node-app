@@ -11,15 +11,17 @@ import Stadistics from './components/Stadistics';
 const App = () => (
     <>
         <NavBar></NavBar>
-        <Router>
-            <Routes>
-                <Route path='/' element={<Home />} />
-                <Route path='/login' element={<Login />} />
-                <Route path='/update_form/:id' element={<UpdateForm />} />
-                <Route path='/extraction/:id' element={<Extraction />} />
-                <Route path='/stadistics' element={<Stadistics />} />
-            </Routes>
-        </Router>
+        <div className="container">
+            <Router>
+                <Routes>
+                    <Route path='/' element={<Home />} />
+                    <Route path='/login' element={<Login />} />
+                    <Route path='/update_form/:id' element={<UpdateForm />} />
+                    <Route path='/extraction/:id' element={<Extraction />} />
+                    <Route path='/stadistics' element={<Stadistics />} />
+                </Routes>
+            </Router>
+        </div>  
     </>
 
 )

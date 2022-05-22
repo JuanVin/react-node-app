@@ -46,42 +46,42 @@ const Extraction = () => {
 
     return (
         <>
-     
-            <div className="container">
-                <div className="p-5 bg-light shadow rounded" style={
-                    {
-                        display: "block",
-                        marginLeft: "auto",
-                        marginRight: "auto"
-                    }
-                }>
-                    <h2><b>Extracciones</b></h2>
-                    <h3 className="mt-1" style={{ color: "grey" }}>Expte N° {data.FileType.type.toUpperCase() + "- " + data.file_number}</h3>
-                    <hr></hr>
-                    {
-                        showDevicesFields
-                            ?
-                            <>
-                                <button className="btn btn-outline-success mt-1" onClick={handleHideDevices}>Volver</button>
-                                <div style={{
-                                    display: "flex",
-                                    justifyContent: "center"
-                                }}>
-                                    {loadDevicesFields()}
 
-                                </div>
-                            </>
-                            :
-                            <>
-                                <label for="numberOfDevices" className="p-1 mt-3">Número de dispositivos</label>
-                                <div className="input-group w-25">
-                                    <input type="number" className="form-control" id="numberOfDevices" defaultValue={0}></input>
-                                    <button className="btn btn-success" onClick={handleShowDevices}>Cargar</button>
-                                </div>
-                            </>
-                    }
-                </div>
+
+            <div className="p-5 bg-light shadow rounded" style={
+                {
+                    display: "block",
+                    marginLeft: "auto",
+                    marginRight: "auto"
+                }
+            }>
+                <h2><b>Extracciones</b></h2>
+                <h3 className="mt-1" style={{ color: "grey" }}>Expte N° {data.FileType.type.toUpperCase() + "- " + data.file_number}</h3>
+                <hr></hr>
+                {
+                    showDevicesFields
+                        ?
+                        <>
+                            <button className="btn btn-outline-success mt-1" onClick={handleHideDevices}>Volver</button>
+                            <div style={{
+                                display: "flex",
+                                justifyContent: "center"
+                            }}>
+                                {loadDevicesFields()}
+
+                            </div>
+                        </>
+                        :
+                        <>
+                            <label for="numberOfDevices" className="p-1 mt-3">Número de dispositivos</label>
+                            <div className="input-group w-25">
+                                <input type="number" className="form-control" id="numberOfDevices" defaultValue={0}></input>
+                                <button className="btn btn-success" onClick={handleShowDevices}>Cargar</button>
+                            </div>
+                        </>
+                }
             </div>
+
         </>
     )
 }
