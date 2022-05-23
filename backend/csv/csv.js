@@ -136,6 +136,9 @@ const estados = (estado) => {
 }
 const auxiliares = (auxiliar) => {
     switch (true) {
+        case (auxiliar.includes('juan') && auxiliar.includes('pablo')) || auxiliar.includes('jp'):
+            auxiliar = "jp"
+            break
         case auxiliar.includes('vinci') || auxiliar.includes('jv'):
             auxiliar = "jv"
             break
@@ -144,9 +147,6 @@ const auxiliares = (auxiliar) => {
             break
         case auxiliar.includes('cristian') || auxiliar.includes('nieto') || auxiliar.includes('cn'):
             auxiliar = "cn"
-            break
-        case auxiliar.includes('juan') || auxiliar.includes('pablo') || auxiliar.includes('jp'):
-            auxiliar = "jp"
             break
         case auxiliar.includes('sebastian') || auxiliar.includes('garcia') || auxiliar.includes('sg') || auxiliar.includes('seba'):
             auxiliar = "sg"
