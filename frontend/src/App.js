@@ -14,6 +14,7 @@ const App = () => (
                 <Route path='/login' element={<Login />} />
             </Routes>
         </Router>
+        
         <NavBar></NavBar>
         <div className="container">
             <Router>

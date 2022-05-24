@@ -1,5 +1,4 @@
 function PendingFilesTable(param) {
-  
     let pendingFiles = []
     param.props.forEach((file, index) => {
         pendingFiles.push(
