@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react"
+import {  useState } from "react"
 import apis from './apiFunctions';
 import BarGraphic from "./BarGraphic";
 import PendingFilesTable from "./PendingFilesTable";
+import FilesPercentage from "./FilesPercentage";
 
 function Stadistics() {
     const [fileStadistic, setFileStadistic] = useState(null)
@@ -40,38 +41,13 @@ function Stadistics() {
                             <BarGraphic props={{ data: fileStadistic, opt: 0 }}></BarGraphic>
                         </div>
                         <div className="col">
-                            <h3 className='text-center p-3'>Archivados (<span style={{ color: "rgb(0, 180, 120)" }}>{fileStadistic[5].amount}</span>) - Falta entregar (<span style={{ color: "rgb(0, 138, 180)" }}>{fileStadistic[3].amount}</span>)</h3>
+                            <h3 className='text-center p-3'>Archivados (<span style={{ color: "rgb(0, 180, 120)" }}>{fileStadistic[5].amount}</span>) - Falta entregar (<span style={{ color: "rgb(0, 138, 180)" }}>{fileStadistic[7].amount}</span>)</h3>
                             <BarGraphic props={{ data: technicianStadistic, opt: 1 }}></BarGraphic>
                         </div>
                         <h2 className="p-3">Porcentajes</h2>
                         <div className="p-5">
-                            Total
-                            <div className="progress">
-                                <div className="progress-bar" role="progressbar" style={{ width: "100%" }} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">100%</div>
-                            </div>
-                            Archivados
-                            <div className="progress">
-                                <div className="progress-bar" role="progressbar" style={{ width: `${(fileStadistic[fileStadistic.length - 1].total/fileStadistic[5].amount)*10}%` }} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{Math.trunc((fileStadistic[fileStadistic.length - 1].total/fileStadistic[5].amount)*10)+"%"}</div>
-                            </div>
-                            Falta Entregar
-                            <div className="progress">
-                                <div className="progress-bar" role="progressbar" style={{ width: `${(fileStadistic[fileStadistic.length - 1].total/fileStadistic[3].amount)*10}%` }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">{Math.trunc((fileStadistic[fileStadistic.length - 1].total/fileStadistic[3].amount)*10)+"%"}</div>
-                            </div>
-                            Turno otorgado
-                            <div className="progress">
-                                <div className="progress-bar" role="progressbar" style={{ width: "75%" }} aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">75%</div>
-                            </div>
-                            Falta comenzar
-                            <div className="progress">
-                                <div className="progress-bar" role="progressbar" style={{ width: "100%" }} aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">100%</div>
-                            </div>
-                            Sin efecto
-                            <div className="progress">
-                                <div className="progress-bar" role="progressbar" style={{ width: "35%" }} aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">35%</div>
-                            </div>
+                            <FilesPercentage props={{fileStadistic: fileStadistic, total: fileStadistic[fileStadistic.length - 1].total}}></FilesPercentage>
                         </div>
-
-
                         <hr className="mt-3"></hr>
                         <h2 className="p-3">Expedientes por comenzar: </h2>
                         <div className="p-5">

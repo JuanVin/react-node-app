@@ -366,7 +366,7 @@ module.exports = controller = {
                                     include: {
                                         model: files, where: {
                                             TechnicalId: _technicians[key].id,
-                                            ConditionId: 4
+                                            ConditionId: 6
                                         }
                                     }
                                 },
@@ -382,7 +382,7 @@ module.exports = controller = {
                                     include: {
                                         model: files, where: {
                                             TechnicalId: _technicians[key].id,
-                                            ConditionId: 6
+                                            ConditionId: 8
                                         }
                                     }
                                 },
@@ -400,7 +400,7 @@ module.exports = controller = {
                         },
                         include: {
                             model: files, where: {
-                                ConditionId: 1
+                                ConditionId: 4
                             }
                         }
                     },
