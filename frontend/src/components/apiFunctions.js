@@ -121,11 +121,7 @@ const apis = {
 
     },
     getStadisticsByDate: async (fetchData) => {
-/*
-        let data = await fetch(`http://localhost:3000/files/stadistics/all`)
-        data = await data.json()
-        return data
-*/
+
         console.log(fetchData)
         let options = {
             method: 'post',

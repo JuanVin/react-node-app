@@ -366,7 +366,11 @@ module.exports = controller = {
                                     include: {
                                         model: files, where: {
                                             TechnicalId: _technicians[key].id,
-                                            ConditionId: 6
+                                            ConditionId: (await conditions.findOne({
+                                                where: {
+                                                    condition: "archivado"
+                                                }
+                                            }, {transaction: t})).id
                                         }
                                     }
                                 },
@@ -382,7 +386,11 @@ module.exports = controller = {
                                     include: {
                                         model: files, where: {
                                             TechnicalId: _technicians[key].id,
-                                            ConditionId: 8
+                                            ConditionId: (await conditions.findOne({
+                                                where: {
+                                                    condition: "falta entregar"
+                                                }
+                                            }, {transaction: t})).id
                                         }
                                     }
                                 },
@@ -400,7 +408,11 @@ module.exports = controller = {
                         },
                         include: {
                             model: files, where: {
-                                ConditionId: 4
+                                ConditionId: (await conditions.findOne({
+                                    where: {
+                                        condition: "falta comenzar"
+                                    }
+                                }, {transaction: t})).id
                             }
                         }
                     },

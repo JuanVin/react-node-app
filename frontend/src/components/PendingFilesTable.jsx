@@ -3,7 +3,7 @@ function PendingFilesTable(param) {
     let pendingFiles = []
     param.props.forEach((file, index) => {
         pendingFiles.push(
-            <tr>
+            <tr ket={"t4"+index}>
                 <th scope="row">{index+1}</th>
                 <td style={{maxWidth: "100px"}}>{file.File.file_number}</td>
                 <td>{file.admission_date}</td>
