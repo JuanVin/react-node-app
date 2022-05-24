@@ -139,7 +139,7 @@ const auxiliares = (auxiliar) => {
         case (auxiliar.includes('juan') && auxiliar.includes('pablo')) || auxiliar.includes('jp'):
             auxiliar = "jp"
             break
-        case auxiliar.includes('vinci') || auxiliar.includes('jv'):
+        case auxiliar.includes('vinci') || auxiliar.includes('jv') || auxiliar.includes('juan v'):
             auxiliar = "jv"
             break
         case auxiliar.includes('luis') || auxiliar.includes('oliva') || auxiliar.includes('lo'):

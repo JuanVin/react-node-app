@@ -1,5 +1,5 @@
 function PendingFilesTable(param) {
-    console.log(param.props)
+  
     let pendingFiles = []
     param.props.forEach((file, index) => {
         pendingFiles.push(

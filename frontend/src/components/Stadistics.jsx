@@ -48,27 +48,27 @@ function Stadistics() {
                                 <BarGraphic props={{ data: fileStadistic, opt: 0 }}></BarGraphic>
                             </div>
                             <div className="col">
-                                <h3 className='text-center p-3'>Archivados (<span style={{ color: "rgb(0, 180, 120)" }}>{archivedFile.amount}</span>) - Falta entregar (<span style={{ color: "rgb(0, 138, 180)" }}>{deliverFile.amount}</span>)</h3>
+                                <h3 className='text-center p-3'>Archivados (<span style={{ color: "rgb(0, 138, 180)" }}>{archivedFile.amount}</span>) - Falta entregar (<span style={{ color: "rgb(0, 180, 120)" }}>{deliverFile.amount}</span>)</h3>
                                 <BarGraphic props={{ data: technicianStadistic, opt: 1 }}></BarGraphic>
                             </div>
                         </div>
                         <div className="row bg-dark text-light">
                             <div className="col p-5">
-                                <h2>Porcentajes</h2>
+                                <h2 className="text-center">Porcentajes</h2>
                                 <div className="p-3">
                                     <FilesPercentage props={{ fileStadistic: fileStadistic, total: total }}></FilesPercentage>
                                 </div>
                             </div>
-                            <div className="col">
-
+                            <div className="col p-5">
+                                <h2 className="text-center">Dispositivos</h2>
                             </div>
                         </div>
-                    
-                        <h2 className="p-3">Expedientes por comenzar: </h2><div className="p-5">
+
+                        <h2 className="p-3">Expedientes por comenzar: </h2>
+                        <div className="p-5">
                             <PendingFilesTable props={pendingFiles}></PendingFilesTable>
                         </div>
                     </>
-
                 }
             </div>
         </>

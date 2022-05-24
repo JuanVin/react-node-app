@@ -2,7 +2,7 @@ import { Accordion } from "react-bootstrap"
 import "./styles/accordionFile.css"
 
 function AccordionFile(componentData) {
-    console.log(componentData)
+
     let accordion = [],
         files = componentData.data.files,
         option = componentData.data.option
@@ -29,7 +29,7 @@ function AccordionFile(componentData) {
         let details = []
         if (detail.length > 0) {
             if (detail[0].detail !== "" && detail[0].detail !== null) {
-                detail.map((singleDetail, index) => {
+                detail.forEach((singleDetail, index) => {
                     details.push(
                         <p><b>N°{index + 1}: </b> {singleDetail.detail.toUpperCase()}</p>
                     )
@@ -60,7 +60,7 @@ function AccordionFile(componentData) {
     }
 
 
-    files.map((rowData, index) => {
+    files.forEach((rowData, index) => {
         accordion.push(
             <Accordion.Item eventKey={index + option} flush>
                 <Accordion.Header>
