@@ -60,7 +60,7 @@ function Stadistics() {
                                 </div>
                             </div>
                             <div className="col p-5">
-                                <h2 className="text-center">Dispositivos</h2>
+                                <h2 className="text-center">Pedidos</h2>
                             </div>
                         </div>
 
