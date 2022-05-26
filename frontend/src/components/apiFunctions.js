@@ -20,7 +20,6 @@ const apis = {
         return data
     },
     getFileByShiftDate: async (date) => {
-        date = "2022-1-7"
         let data = await fetch(`http://localhost:3000/files/date/shift/${date}`)
         data = await data.json()
         return data

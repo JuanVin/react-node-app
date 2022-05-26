@@ -2,7 +2,7 @@ import { Accordion } from "react-bootstrap"
 import "./styles/accordionFile.css"
 
 function AccordionFile(componentData) {
-
+    console.log(componentData)
     let accordion = [],
         files = componentData.data.files,
         option = componentData.data.option
@@ -12,11 +12,12 @@ function AccordionFile(componentData) {
 
         let date
         if (data !== null) {
-            date = new Date(data)
+            date = new Date(data)   
             if (option === 1) {
-                return date.toLocaleDateString("es-ES") + " a las " + date.getHours() + ":" + date.getMinutes() + "hrs"
+                return date.toLocaleDateString("es-AR") + " a las " + date.getHours() + ":" + date.getMinutes() + "hrs"
             }
-            return date.toLocaleDateString("es-ES")
+            date.setMinutes(date.getMinutes()+date.getTimezoneOffset())
+            return date.toLocaleDateString("es-AR")
         }
         return "No registra"
     }

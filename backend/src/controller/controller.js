@@ -36,10 +36,11 @@ module.exports = controller = {
     },
     getByShiftDay: async (req, res) => {
 
-        let param = req.params.day,
+        let param = new Date(req.params.day),
             data = [],
             shift_dates
 
+        param.setMinutes(param.getMinutes() + param.getTimezoneOffset())
         try {
             const result = await sequelize.transaction(async (t) => {
                 shift_dates = await dates.findAll({
@@ -65,7 +66,8 @@ module.exports = controller = {
     },
     getByEgressDay: async (req, res) => {
 
-        let param = req.params.day
+        let param = new Date(req.params.day)
+        param.setMinutes(param.getMinutes() + param.getTimezoneOffset())
         try {
             const results = sequelize.transaction(async (t) => {
                 res.status(200).send(await dates.findAll({
@@ -80,15 +82,20 @@ module.exports = controller = {
         }
     },
     getByAdmissionDay: async (req, res) => {
-        let param = req.params.day
+        let param = new Date(req.params.day)
+        param.setMinutes(param.getMinutes() + param.getTimezoneOffset())
 
         try {
             const results = await sequelize.transaction(async (t) => {
-                res.status(200).send(await dates.findAll({
-                    where: {
-                        egress_date: new Date(param),
+                res.status(200).send(await files.findAll({
+                    include: [{
+                        model: dates, where: {
+                            admission_date: {
+                                [Op.like]: `%${param}`
+                            },
+                        },
                     },
-                    include: files
+                    technician, fiscalOffice, fiscalUnit, details, type, conditions],
                 }, { transaction: t }))
             })
         } catch (error) {
@@ -370,7 +377,7 @@ module.exports = controller = {
                                                 where: {
                                                     condition: "archivado"
                                                 }
-                                            }, {transaction: t})).id
+                                            }, { transaction: t })).id
                                         }
                                     }
                                 },
@@ -390,7 +397,7 @@ module.exports = controller = {
                                                 where: {
                                                     condition: "falta entregar"
                                                 }
-                                            }, {transaction: t})).id
+                                            }, { transaction: t })).id
                                         }
                                     }
                                 },
@@ -412,19 +419,19 @@ module.exports = controller = {
                                     where: {
                                         condition: "falta comenzar"
                                     }
-                                }, {transaction: t})).id
+                                }, { transaction: t })).id
                             }
                         }
                     },
                     { transaction: t }
                 )
 
-            fileStadistic.push({ total: total })
+                fileStadistic.push({ total: total })
 
-            res.send({ fileStadistic: fileStadistic, technicianStadistic: technicianStadistic, pendingFiles: pendingFiles})
-        })
-    } catch(error) {
-        res.send("error")
+                res.send({ fileStadistic: fileStadistic, technicianStadistic: technicianStadistic, pendingFiles: pendingFiles })
+            })
+        } catch (error) {
+            res.send("error")
+        }
     }
-}
 }
