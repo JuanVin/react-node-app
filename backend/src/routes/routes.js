@@ -2,8 +2,6 @@ var express = require('express');
 var router = express.Router();
 let controller = require('../controller/controller')
 
-router.get('/files', controller.getFiles)
-
 router.get('/files/date/egress/:day', controller.getByEgressDay)
 router.get('/files/date/admission/:day', controller.getByAdmissionDay)
 router.get('/files/date/shift/:day', controller.getByShiftDay)

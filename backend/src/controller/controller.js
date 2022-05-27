@@ -13,11 +13,6 @@ const { Op } = require("sequelize");
 
 module.exports = controller = {
 
-    getFiles: async (req, res) => {
-        res.send(await files.findAll({
-            include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions]
-        }))
-    },
     getFileById: async (req, res) => {
         let id = req.params.id
         try {
@@ -95,7 +90,12 @@ module.exports = controller = {
                             },
                         },
                     },
-                    technician, fiscalOffice, fiscalUnit, details, type, conditions],
+                    { model: details, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: fiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: fiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: conditions, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: type, attributes: { exclude: ["createdAt", "updatedAt"] } }],
                 }, { transaction: t }))
             })
         } catch (error) {
@@ -103,30 +103,31 @@ module.exports = controller = {
         }
     },
     getCurrentDayFiles: async (req, res) => {
-
         let today = new Date(),
-            ids = []
-
+            startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0),
+            finalDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 20, 59, 59, 0)
         try {
             const results = sequelize.transaction(async (t) => {
-                let startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0),
-                    finalDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 20, 59, 59, 0),
-                    betweenDates = await dates.findAll({
-                        where: {
-                            shift_date: {
-                                [Op.between]: [startDate, finalDate]
-                            }
-                        }
-                    }, { transaction: t })
-
-                betweenDates.forEach((today) => {
-                    ids.push(today.id)
-                })
                 res.status(200).send(await files.findAll({
-                    where: {
-                        FileDateId: ids
-                    },
-                    include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions, type]
+                    include:
+                        [
+                            {
+                                model: dates, where: {
+                                    shift_date: {
+                                        [Op.between]: [startDate, finalDate]
+                                    }
+                                }
+                            },
+                            { model: details, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: fiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: fiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: conditions, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: type, attributes: { exclude: ["createdAt", "updatedAt"] } }
+                        ],
+                    attributes: {
+                        exclude: ["ConditionId", "FileDateId", "FileTypeId", "FiscalOfficeId", "createdAt", "updatedAt"]
+                    }
                 }, { transaction: t }))
             })
         } catch (error) {
@@ -152,7 +153,10 @@ module.exports = controller = {
                         { model: technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
                         { model: conditions, attributes: { exclude: ["createdAt", "updatedAt"] } },
                         { model: type, attributes: { exclude: ["createdAt", "updatedAt"] } }
-                    ]
+                    ],
+                    attributes: {
+                        exclude: ["ConditionId", "FileDateId", "FileTypeId", "FiscalOfficeId", "createdAt", "updatedAt"]
+                    }
                 }, { transaction: t }))
             })
         } catch (error) {
