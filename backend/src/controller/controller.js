@@ -1,5 +1,4 @@
 const sequelize = require('../database/db')
-
 const fiscalUnit = require('../models/FiscalUnit')
 const fiscalOffice = require('../models/FiscalOffice')
 const technician = require('../models/Technical')
@@ -12,7 +11,6 @@ const type = require("../models/FileType")
 const { Op } = require("sequelize");
 
 module.exports = controller = {
-
     getFileById: async (req, res) => {
         let id = req.params.id
         try {
@@ -31,45 +29,54 @@ module.exports = controller = {
     },
     getByShiftDay: async (req, res) => {
 
-        let param = new Date(req.params.day),
-            data = [],
-            shift_dates
+        let startDate = new Date(req.params.day)
+        startDate.setMinutes(startDate.getMinutes() + startDate.getTimezoneOffset())
 
-        param.setMinutes(param.getMinutes() + param.getTimezoneOffset())
+        let finalDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 20, 59, 59, 0)
+
         try {
             const result = await sequelize.transaction(async (t) => {
-                shift_dates = await dates.findAll({
-                    where: {
-                        shift_date: new Date(param),
-                    },
-                    include: files
-                }, { transaction: t })
-
-                for (date of shift_dates) {
-                    data.push(await files.findAll({
-                        where: {
-                            FileDateId: date.id
+                res.status(200).send(await files.findAll({
+                    include: [
+                        {
+                            model: dates, where: {
+                                shift_date: {
+                                    [Op.between]: [startDate, finalDate]
+                                }
+                            }
                         },
-                        include: [dates, technician, fiscalOffice, fiscalUnit, details, type]
-                    }, { transaction: t }))
-                }
-                res.status(200).send(shift_dates)
+                        { model: details, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: fiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: fiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: conditions, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: type, attributes: { exclude: ["createdAt", "updatedAt"] } }
+                    ],
+                }, { transaction: t }))
             })
         } catch (error) {
             res.status(400).send("Algo salió mal")
         }
     },
     getByEgressDay: async (req, res) => {
-
         let param = new Date(req.params.day)
         param.setMinutes(param.getMinutes() + param.getTimezoneOffset())
         try {
             const results = sequelize.transaction(async (t) => {
-                res.status(200).send(await dates.findAll({
-                    where: {
-                        egress_date: new Date(param),
+                res.status(200).send(await files.findAll({
+                    include: [{
+                        model: dates, where: {
+                            egress_date: {
+                                [Op.like]: `%${param}`
+                            },
+                        },
                     },
-                    include: files
+                    { model: details, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: fiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: fiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: conditions, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: type, attributes: { exclude: ["createdAt", "updatedAt"] } }],
                 }, { transaction: t }))
             })
         } catch (error) {
@@ -436,6 +443,51 @@ module.exports = controller = {
             })
         } catch (error) {
             res.send("error")
+        }
+    },
+    getTechnicians: async (req, res) => {
+        try {
+            const results = sequelize.transaction(async (t) => {
+                res.status(200).send(
+                    await technician.findAll()
+                )
+            }, { transaction: t })
+        } catch (error) {
+            res.status(400).send({ message: "Ha ocurrido un error" })
+        }
+    },
+    getFileByTechnician: async (req, res) => {
+        let data = req.body,
+            startDate = new Date(data.startDate),
+            endDate = new Date(data.endDate)
+            
+        try {
+            const results = sequelize.transaction(async (t) => {
+                res.status(200).send(
+                    await files.findAll({
+                        where: {
+                            TechnicalId: data.technician
+                        },
+                        include: [
+                            {
+                                model: dates, where: {
+                                    shift_date: {
+                                        [Op.between]: [startDate, endDate]
+                                    }
+                                },
+                            },
+                            { model: details, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: fiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: fiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: conditions, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: type, attributes: { exclude: ["createdAt", "updatedAt"] } }
+                        ]
+                    })
+                )
+            })
+        } catch (error) {
+            console.log(error)
         }
     }
 }

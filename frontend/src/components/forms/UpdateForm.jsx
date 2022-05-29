@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import apis from "./apiFunctions"
+import apis from "../apiCalls"
 import Form from "./Form"
-import Loading from "./Loading"
+import Loading from "../commons/Loading"
 
 function UpdateForm() {
     const [isLoading, setIsLoading] = useState(true)

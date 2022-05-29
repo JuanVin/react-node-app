@@ -1,8 +1,8 @@
 import { useState } from "react"
 import { Button, Modal } from "react-bootstrap"
-import apis from "./apiFunctions";
+import apis from "../../apiCalls";
 import DetailTable from "./DetailTable"
-import Message from "./Message";
+import Message from "../../commons/Message";
 function ModalDetails(params) {
 
     const [show, setShow] = useState(false);
@@ -16,7 +16,7 @@ function ModalDetails(params) {
     const handleShowNewDetail = () => setShowNewDetail(true)
     const handleCloseNewDetail = () => setShowNewDetail(false)
 
-
+    
     async function postNewDetail(params) {
         let newDetail = document.getElementById("textarea_detail").value.trim(),
         response = null

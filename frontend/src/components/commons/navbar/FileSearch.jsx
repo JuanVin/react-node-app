@@ -1,8 +1,8 @@
 import { Button, Modal } from "react-bootstrap"
 import { useState } from "react"
-import apis from "./apiFunctions"
-import AccordionFile from "./AccordionFile"
-import "./styles/modal.css"
+import apis from "../../apiCalls"
+import AccordionFile from "../AccordionFile"
+import "../../styles/modal.css"
 
 function FileSearch() {
 

@@ -1,9 +1,9 @@
 import { useState } from "react"
-import apis from './apiFunctions';
+import apis from '../apiCalls';
 import BarGraphic from "./BarGraphic";
 import PendingFilesTable from "./PendingFilesTable";
-import FilesPercentage from "./FilesPercentage";
 
+import FilesPercentage from "./FilesPercentage";
 function Stadistics() {
     const [fileStadistic, setFileStadistic] = useState(null)
     const [technicianStadistic, setTechnicianStadistic] = useState(null)
@@ -24,7 +24,6 @@ function Stadistics() {
         setArchivedFile(response.fileStadistic.find(element => element.name === "archivado"))
         setDeliverFile(response.fileStadistic.find(element => element.name === "falta_entregar"))
     }
-
     return (
         <>
             <div className="bg-light shadow p-3 rounded">
@@ -52,7 +51,7 @@ function Stadistics() {
                                 <BarGraphic props={{ data: technicianStadistic, opt: 1 }}></BarGraphic>
                             </div>
                         </div>
-                        <div className="row bg-dark text-light">
+                        <div className="row bg-dark text-light rounded">
                             <div className="col p-5">
                                 <h2 className="text-center">Porcentajes</h2>
                                 <div className="p-3">

@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react"
-import apis from "./apiFunctions"
-import AccordionFile from "./AccordionFile"
-import UploadForm from "./UploadForm"
+import apis from "./apiCalls"
+import UploadForm from "./forms/UploadForm"
 import "./styles/home.css"
+import AccordionFile from "./commons/AccordionFile"
 
 function Home() {
     let [isLoading, setIsLoading] = useState(true)

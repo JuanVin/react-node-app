@@ -1,6 +1,6 @@
 import { useState } from "react"
-import apis from "./apiFunctions"
-import Message from "./Message"
+import apis from "../../apiCalls"
+import Message from "../../commons/Message"
 function DetailTable(params) {
 
     const [message, setMessage] = useState(null)

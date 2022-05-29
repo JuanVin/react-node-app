@@ -1,6 +1,7 @@
 
 import { useState } from "react"
 import DateSearcher from "./DateSearcher"
+import TechnicianSearcher from "./TechnicianSearcher"
 function Searcher() {
     const [value, setValue] = useState(null)
     const handleValueOption = (option) => setValue(option)
@@ -15,7 +16,7 @@ function Searcher() {
             case "2":
                 return <DateSearcher props={2}></DateSearcher>
             case "3":
-                return <h3>{value}</h3>
+                return <TechnicianSearcher></TechnicianSearcher>
             default:
                 return <h4>{value}</h4>
         }

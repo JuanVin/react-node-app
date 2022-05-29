@@ -1,6 +1,6 @@
 import { Accordion } from "react-bootstrap"
 import "./styles/accordionFile.css"
-import DeviceForm from "./DeviceForm"
+import DeviceForm from "./forms/DeviceForm"
 function AccordionExtraction(param) {
 
     let accordion = []
@@ -20,7 +20,6 @@ function AccordionExtraction(param) {
             </Accordion.Item >
         )
     }
-
     return (
         <>
             <Accordion className="w-75 mt-5" defaultActiveKey="0">

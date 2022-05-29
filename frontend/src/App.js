@@ -1,11 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import Home from "./components/Home"
-import UpdateForm from './components/UpdateForm';
-import Login from './components/Login';
+import UpdateForm from './components/forms/UpdateForm';
+import Login from './components/forms/Login';
 import Extraction from './components/Extraction';
-import NavBar from './components/NavBar';
-import Stadistics from './components/Stadistics';
+import NavBar from './components/commons/navbar/NavBar';
+import Stadistics from './components/stadistics/Stadistics';
 import Searcher from './components/searcher/Searcher';
 const App = () => (
     <>

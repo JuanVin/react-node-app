@@ -1,8 +1,7 @@
 import { useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
-import apis from "./apiFunctions"
-import NavBar from "./NavBar"
-import Loading from "./Loading"
+import apis from "./apiCalls"
+import Loading from "./commons/Loading"
 import AccordionExtraction from "./AccordionExtraction"
 const Extraction = () => {
     let { id } = useParams()
