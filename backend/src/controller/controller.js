@@ -343,13 +343,13 @@ module.exports = controller = {
             endDate = new Date(req.body.end),
             total = 0
 
-        console.log(startDate, "   ", endDate)
         try {
             const results = await sequelize.transaction(async (t) => {
                 let _conditions = await conditions.findAll({ transaction: t }),
                     _technicians = await technician.findAll({ transaction: t })
 
                 for (const key in _conditions) {
+
                     fileStadistic.push(
                         {
                             name: (_conditions[key].condition).replace(" ", "_"),
@@ -460,7 +460,7 @@ module.exports = controller = {
         let data = req.body,
             startDate = new Date(data.startDate),
             endDate = new Date(data.endDate)
-            
+
         try {
             const results = sequelize.transaction(async (t) => {
                 res.status(200).send(

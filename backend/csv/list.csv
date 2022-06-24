@@ -2586,7 +2586,7 @@ sumario 408/19,san rafael,no,12/9/2019,archivado,,3/10/2019,cn,retira juan pablo
 763931/19,correccional,si,8/11/2019,archivado,,19/12/2019,cn,entregado en mesa de entrada ufi correccional,p
 767912/19,automotores,si,8/11/2019,archivado,,12/11/2019,lo,retira aux. yanina marlene tramer de oficina fiscal n� 9,p
 717990/19,no,si,14/11/2019,archivado,,3/12/2019,cn,retira aux. ariel morcos de tercera circunscripci�n judicial,p
-763713/19,malargue,si,13/11/2019,archivado,,13/1/2020,juan vinzi,retira juan pablo mart�nez,p
+763713/19,malargue,si,13/11/2019,archivado,,13/1/2020,jv,retira juan pablo mart�nez,p
 767526/19,homicidios,no,8/11/2019,archivado,,15/11/2019,lo,retira aux. noelia dasmi,p
 766794/19,san rafael,si,26/11/2019,archivado,,13/1/2020,cn,retira juan pablo mart�nez,p
 767222/19,san rafael,si,26/11/2019,archivado,,12/12/2019,jv,retira juan pablo mart�nez,p
@@ -2683,7 +2683,7 @@ sumario 408/19,san rafael,no,12/9/2019,archivado,,3/10/2019,cn,retira juan pablo
 785556/19,"robos, hurtos y sustraccion automotores",si,2/1/2020,archivado,,10/1/2020,cn,recibe horacio funez de mesa de entradas,p
 784671/19,homicidios,si,30/12/2019,archivado,,2/1/2020,ev,retira aux. germ�n garc�a salazar,p
 785557/19,san rafael,si,6/1/2020,archivado,,20/1/2020,jp,retira chofer gral. alvear walter p�rez,p
-756318/19,alvear,si,6/1/2020,archivado,,13/1/2020,juan vinzi,retira juan pablo mart�nez,p
+756318/19,alvear,si,6/1/2020,archivado,,13/1/2020,jv,retira juan pablo mart�nez,p
 26931/19 segundo,homicidios,si,15/1/2020,archivado,,30/1/2020,ev,retira aux. amadei de ufi homicidios,p
 786419/19,integridad sexual,si,9/1/2020,archivado,,13/2/2020,jp,retira aux. federico simonovich,p
 se20,homicidios,si,9/1/2020,archivado,,5/2/2020,jv,retira aux. germ�n garc�a salazar,p
@@ -4119,15 +4119,15 @@ ago-21,"robos, hurtos y sustraccion automotores",si,14/5/2021,archivado,,27/5/20
 18372/22,homicidios,si,4/3/2022,archivado,7/8/2022,,,retira aux. alejandra fern�ndez de ufi homicidios,p
 34245/21,automotores,baja,,se cae turno,8/3/2022,,cn,ya se hab�a realizado la medida para fecha 21/2/22 en el acto,p
 116622/21,delitos economicos,si,8/3/2022,falta entregar,9/3/2022,,lo,,p
-108543/21 2da,no especializados,si,8/3/2022,falta entregar,8/3/2022,,juan v.,,p
+108543/21 2da,no especializados,si,8/3/2022,falta entregar,8/3/2022,,jv,,p
 74272/21,delitos economicos,si,8/3/2022,archivado,9/3/2022,,lo,retira auxiliar pablo martino de econ�micos,p
 17148/22 segundo turno,violencia genero,si,23/2/2022,archivado,9/3/2022,,lo,retira aux. emilia obredor,p
 43176/21 copia de material,delitos informaticos,no,,archivado,14/2/2022,23/2/2022,cn,entregado en mesa de entradas de ufi econ�micos,p
 12516/22 segunda,san rafael,si,23/2/2022,archivado,14/3/2022,15/3/2022,lo,falta notebook lenovo,p
-13118/22,integridad sexual,si,2/3/2022,archivado,3/3/2022,17/3/2022,juan v.,retira aux. pablo ca�ada,p
+13118/22,integridad sexual,si,2/3/2022,archivado,3/3/2022,17/3/2022,jv,retira aux. pablo ca�ada,p
 20404/22,delitos informaticos,si,25/2/2022,archivado,2/3/2022,16/3/2022,lo,retira dra. in�s mancini,p
 84092/21 4ta,homicidios,no,25/2/2022,archivado,en el acto,,cn,retira aux. florencia cutri,p
-18646/22,alvear,si,10/3/2022,archivado,15/3/2022,15/3/2022,juan v.,reprogramado para el d�a 15/3/22. retira juan pablo mart�nez,p
+18646/22,alvear,si,10/3/2022,archivado,15/3/2022,15/3/2022,jv,reprogramado para el d�a 15/3/22. retira juan pablo mart�nez,p
 19632/22,san martin,si,8/3/2022,archivado,14/3/2022,23/3/2022,sg,retira emanuel aciar,p
 81586/21,homicidios,si,4/3/2022,archivado,11/3/2022,17/3/2022,jv,retira aux. florencia cutri de esa ufi,p
 135569/21,homicidios,si,4/3/2022,archivado,11/3/2022,23/3/2022,lo,entregado en mesa de entradas. recibe aux. soledad l�mole,p
@@ -4329,57 +4329,159 @@ ago-21,"robos, hurtos y sustraccion automotores",si,14/5/2021,archivado,,27/5/20
 27311/22 3� turno ,homicidios,si,,archivado,12/5/2022,,,,p
 38593/22,homicidios,si,,turno otorgado,17/5/2022,,,,p
 4895/22,homicidios,si,,turno otorgado,17/5/2022,,sg,,p
-20906/22,delitos economicos,si,,falta entregar,17/5/2022,,,,p
-11680/22 2do turno 1� extracci�n,delitos informaticos,si,,turno otorgado,19/5/2022,,,,p
-46123/22,valle uco,si,,turno otorgado,19/5/2022,,cn,,p
-125172/21,violencia genero,si,,falta entregar,19/5/2022,,jv,,p
-45292/22,correccional,si,,falta entregar,19/5/2022,,jp,,p
-33923/22,homicidios,acto,9/5/2022,archivado,9/5/2022,,,,p
+20906/22,delitos economicos,si,16/5/2022,archivado,17/5/2022,9/6/2022,sg,retira auxiliar leandro gigena,p
+11680/22 2do turno 1� extracci�n,delitos informaticos,si,,se cae turno,19/5/2022,,,no lo trajeron,p
+46123/22,valle uco,si,,turno otorgado,19/5/2022,,,,p
+125172/21,violencia genero,si,13/5/2022,archivado,19/5/2022,26/5/2022,cn,retira aux. emilia obredor,p
+45292/22,correccional,si,17/5/2022,archivado,19/5/2022,30/5/2022,jv,retira aux. ivana rossi de esa ufi,p
+33923/22,homicidios,acto,9/5/2022,archivado,9/5/2022,10/5/2022,jp,retira aux. alejandra fern�ndez de ufi homicidios,p
 714035/21,san rafael,si,,turno otorgado,20/5/2022,,,,p
-47278/21,"robos, hurtos y sustraccion automotores",si,,se cae turno,20/5/2022,,,,p
-37690/22,delitos economicos,si,,falta comenzar,20/5/2022,,,,p
-46070/22,"robos, hurtos y sustraccion automotores",si,,falta comenzar,20/5/2022,,,,p
+47278/21,"robos, hurtos y sustraccion automotores",si,,se cae turno,20/5/2022,,,nuevo turno para el 23/05/2022,p
+37690/22,delitos economicos,si,19/5/2022,archivado,20/5/2022,14/6/2022,sg,entregado en mesa de entradas de ufi delitos econ�micos,p
+46070/22,"robos, hurtos y sustraccion automotores",si,19/5/2022,archivado,20/5/2022,8/6/2022,jv,entregado en mesa de entradas de ufi robos,p
 115098/21 tercera,no especializados,si,,turno otorgado,23/5/2022,,,,p
 47420/22,delitos informaticos,si,,turno otorgado,23/5/2022,,,,p
-29557/21,violencia genero,si,,falta comenzar,23/5/2022,,,,p
-38269/22,homicidios,si,,turno otorgado,26/5/2022,,,,p
-3709/22,homicidios,si,,turno otorgado,26/5/2022,,,,p
-4554/22,delitos economicos,si,,falta comenzar,24/5/2022,,,,p
-45015/22,rivadavia-junin,no,12/5/2022,falta comenzar,23/5/2022,,,,p
-3172/22,delitos economicos,si,,falta comenzar,24/5/2022,,,,p
-123284/21,"robos, hurtos y sustraccion automotores",si,,falta comenzar,24/5/2022,,sg,,p
-7170/22,no especializados,no,10/5/2022,archivado,10/5/2022,10/5/2022,,"retira abogada particular, dra. fiadino, copia de extracci�n en disco externo de su propiedad",p
-128085/21,no especializados,si,,turno otorgado,24/5/2022,,sg,,p
-47249/22,homicidios,si,12/5/2022,archivado,13/5/2022,,,,p
-64571/21,san rafael,si,13/5/2022,falta comenzar,27/5/2022,,,,p
-129698/21,violencia genero,si,13/5/2022,falta comenzar,27/5/2022,,jp,,p
-48546/22,oficina fiscal 13,si,16/5/2022,archivado,26/5/2022,,,,p
-48735/22,oficina fiscal 19,si,,turno otorgado,27/5/2022,,,,p
-136398/21,,si,,falta comenzar,30/5/2022,,,,p
+29557/21,violencia genero,si,19/5/2022,archivado,23/5/2022,9/6/2022,sg,"entregado en mesa de entradas de esa ufi, recibi� marcos saponara",p
+38269/22,homicidios,si,,se cae turno,26/5/2022,,,no lo trajeron,p
+3709/22,homicidios,si,,se cae turno,26/5/2022,,,no lo trajeron,p
+4554/22,delitos economicos,si,23/5/2022,archivado,24/5/2022,14/6/2022,jp,entregado en mesa de entradas de ufi delitos econ�micos,p
+45015/22,rivadavia-junin,no,12/5/2022,archivado,23/5/2022,31/5/2022,jv,retira ariel morcos,p
+3172/22,delitos economicos,si,23/5/2022,archivado,24/5/2022,14/6/2022,cn,entregado en mesa de entradas de ufi delitos econ�micos,p
+123284/21,"robos, hurtos y sustraccion automotores",si,20/5/2022,archivado,24/5/2022,13/6/2022,jp,"recibe paola pozzobon, jefa de mesa de entradas de robos y hurtos",p
+7170/22,no especializados,no,10/5/2022,archivado,10/5/2022,10/5/2022,sg,"retira abogada particular, dra. fiadino, copia de extracci�n en disco externo de su propiedad",p
+128085/21,no especializados,si,,turno otorgado,24/5/2022,,,,p
+47249/22,homicidios,si,12/5/2022,archivado,13/5/2022,17/5/2022,sg,retira secretario pablo quiroga de esa ufi,p
+64571/21,san rafael,si,13/5/2022,falta entregar,27/5/2022,,lo,,p
+129698/21,violencia genero,si,13/5/2022,archivado,27/5/2022,3/6/2022,cn,retira auxiliar de despeacho eduardo garc�a,p
+48546/22,oficina fiscal 13,si,16/5/2022,archivado,26/5/2022,,jp,entregado en mesa de entradas ufi robos,p
+48735/22,oficina fiscal 19,si,,sin efecto,27/5/2022,,,,p
+136398/21,,si,17/5/2022,archivado,30/5/2022,30/5/2022,sg,retira aux. ivana rossi de esa ufi,p
 40747/22 segundo,homicidios,si,,turno otorgado,26/5/2022,,,,p
-48107/22,oficina fiscal san carlos,si,,turno otorgado,30/5/2022,,,,p
-44383/22,oficina fiscal 10,si,,turno otorgado,30/5/2022,,,,p
-17734/22,"robos, hurtos y sustraccion automotores",si,,turno otorgado,30/5/2022,,,,p
-20462/22 segunda,no especializados,si,,turno otorgado,19/5/2022,,,,p
-135358/21,delitos economicos,si,,turno otorgado,31/5/2022,,,,p
-47294/22,oficina fiscal la paz,si,,turno otorgado,30/5/2022,,,,p
-48389/22,"robos, hurtos y sustraccion automotores",si,,falta comenzar,20/5/2022,,,,p
-85100/20 segunda,rivadavia-junin,no,17/5/2022,falta comenzar,19/5/2022,,,,p
-71074/21 segunda,no especializados,si,,turno otorgado,31/5/2022,,,,p
-44173/22,violencia genero,si,,turno otorgado,31/5/2022,,,,p
-20010/22,delitos economicos,si,,turno otorgado,31/5/2022,,,,p
-45786/22,no especializados,si,,turno otorgado,31/5/2022,,,,p
-49043/22,"robos, hurtos y sustraccion automotores",si,,turno otorgado,1/6/2022,,,,p
+48107/22,oficina fiscal san carlos,si,24/5/2022,archivado,30/5/2022,6/6/2022,cn,entregado a emmanuel gudi�o,p
+44383/22,oficina fiscal 10,si,27/5/2022,archivado,30/5/2022,13/6/2022,jv,"recibe paola pozzobon, jefa de mesa de entradas de robos y hurtos",p
+17734/22,"robos, hurtos y sustraccion automotores",si,,se cae turno,30/5/2022,,,no lo trajeron,p
+20462/22 segunda,no especializados,si,3/5/2022,archivado,19/5/2022,9/6/2022,lo,entregado en mesa de entrada de ufi delitos no especializados,p
+135358/21,delitos economicos,si,30/5/2022,archivado,31/5/2022,2/6/2022,cn,retira aux. leandro gigena,p
+47294/22,oficina fiscal la paz,si,26/5/2022,archivado,30/5/2022,,cn,retira ariel morcos,p
+48389/22,"robos, hurtos y sustraccion automotores",si,16/5/2022,archivado,20/5/2022,30/5/2022,cn,retira aux. mar�a villegas de esa ufi,p
+85100/20 segunda,rivadavia-junin,no,17/5/2022,archivado,19/5/2022,26/5/2022,jp,retira aux. emanuel aciar de despacho de zona este,p
+71074/21 segunda,no especializados,si,,se cae turno,31/5/2022,,,no lo trajeron,p
+44173/22,violencia genero,si,31/5/2022,archivado,31/5/2022,2/6/2022,lo,entregado a ariel morcos,p
+20010/22,delitos economicos,si,,se cae turno,31/5/2022,,,"no lo trajeron, se pidi� reprogramaci�n",p
+45786/22,no especializados,si,31/5/2022,falta entregar,31/5/2022,,jv,,p
+49043/22,"robos, hurtos y sustraccion automotores",si,30/5/2022,archivado,1/6/2022,13/6/2022,cn,"recibe paola pozzobon, jefa de mesa de entradas de robos y hurtos",p
 51117/22,no especializados,si,,turno otorgado,20/5/2022,,,,p
-3262/22,homicidios,si,23/5/2022,falta comenzar,1/6/2022,,,,p
-28223/22,oficina fiscal 17,si,,turno otorgado,2/6/2022,,,,p
-50961/22,no especializados,si,,turno otorgado,31/5/2022,,,,p
-50710/22,no especializados,si,,turno otorgado,2/6/2022,,,,p
-47278/22 segunda,"robos, hurtos y sustraccion automotores",si,20/5/2022,falta comenzar,23/5/2022,,,,p
+3262/22,homicidios,si,23/5/2022,archivado,1/6/2022,2/6/2022,cn,entregado en mesade entradas de ufi homicidios,p
+28223/22,oficina fiscal 17,si,1/6/2022,falta entregar,2/6/2022,,jv,,p
+50961/22,no especializados,si,30/5/2022,archivado,31/5/2022,3/6/2022,jv,retira aux. prezzioso de esa ufi,p
+50710/22,no especializados,si,,se cae turno,2/6/2022,,,no lo trajeron,p
+47278/22 segunda,"robos, hurtos y sustraccion automotores",si,20/5/2022,archivado,23/5/2022,13/6/2022,jv,"recibe paola pozzobon, jefa de mesa de entradas de robos y hurtos",p
 50386/21,"robos, hurtos y sustraccion automotores",si,23/5/2022,falta comenzar,26/5/2022,,,,p
-177/22,comisaria 15,si,,turno otorgado,2/6/2022,,,,p
-124199-21,comisaria 15,si,,turno otorgado,2/6/2022,,,,p
-51117/22 segundo,no especializados,en el acto,23/5/2022,falta comenzar,23/5/2022,,,,p
-49344/22,"robos, hurtos y sustraccion automotores",si,,turno otorgado,1/6/2022,,,,p
-30246/21,alvear,si,,turno otorgado,3/6/2022,,,,p
+177/22,comisaria 15,si,1/6/2022,archivado,2/6/2022,6/6/2022,jv,retira aux. emmanuel gudi�o de ufi valle de uco,p
+124199-21,comisaria 15,si,1/6/2022,archivado,2/6/2022,21/6/2022,sg,entregado a chofer jesus barroso,p
+51117/22 segundo,no especializados,en el acto,23/5/2022,archivado,23/5/2022,3/6/2022,cn,retira aux. prezioso de esa ufi,p
+49344/22,"robos, hurtos y sustraccion automotores",si,27/5/2022,archivado,1/6/2022,,sg,,p
+30246/21,alvear,si,26/5/2022,falta entregar,3/6/2022,,lo,,p
 27478/22 tercera,no especializados,si,,turno otorgado,3/6/2022,,,,p
+42874/22,no especializados,si,,se cae turno,3/6/2022,,,no lo trajeron,p
+134023/21,integridad sexual,si,24/5/2022,archivado,24/5/2022,24/5/2022,sg,retira secretario juan manuel vilapri�o de esa ufi el 24/05/2022 a las 15hs,p
+30737/21 tercera,"robos, hurtos y sustraccion de automotores",si,,turno otorgado,3/6/2022,,,,p
+38870/22,alvear,si,26/5/2022,falta entregar,3/6/2022,,lo,,p
+48299/22,no especializados,si,3/6/2022,falta entregar,3/6/2022,,sg,,p
+44545/22,san rafael,no,24/5/2022,falta entregar,6/6/2022,,jp,,p
+42343/22,san rafael,no,24/5/2022,falta entregar,6/6/2022,,jv,,p
+1896/22,delitos economicos,si,3/6/2022,archivado,6/6/2022,,lo,retira auxiliar leandro gigena,p
+45813/22,"robos, hurtos y sustraccion de automotores",si,,turno otorgado,6/6/2022,,,,p
+11680/22 3do turno 1� extracci�n,delitos informaticos,acto,26/5/2022,archivado,26/5/2022,30/5/2022,cn,retira aux. antonella michelutti de ufi informaticos,p
+52714/22,"robos, hurtos y sustraccion de automotores",si,,turno otorgado,1/6/2022,,,,p
+47882/22,no especializados,si,3/6/2022,falta entregar,6/6/2022,,jp,,p
+53191/22,ufi san martin la colonia 2,si,,turno otorgado,7/6/2022,,,,p
+53800/22,no especializados,acto,30/5/2022,archivado,,30/5/2022,lo,entregado en mesa de entradas de ufi delitos no especializados,p
+52714/22 1ra,"robos, hurtos y sustraccion de automotores",acto,30/5/2022,archivado,,30/5/2022,lo,entregado en mesa de entradas de ufi robos - solo medida de busqueda de videos - resultado negativo,p
+50863/22,homicidios,si,31/5/2022,archivado,1/6/2022,2/6/2022,sg,entregado a aux. fernando pe�aranda de esa ufi,p
+54176/22,oficina fiscal 8,si,,turno otorgado,7/6/2022,,,,p
+49427/22,homicidios,si,1/6/2022,falta entregar,7/6/2022,,lo,,p
+51446/22,no especializados,si,7/6/2022,archivado,7/6/2022,9/6/2022,jv,entregado en mesa de entradas de ufi delitos no especializados,p
+1884/22,delitos economicos,si,8/6/2022,archivado,9/6/2022,14/6/2022,lo,entregado en mesa de entradas de ufi delitos econ�micos,p
+54716/22,integridad sexual,si,6/6/2022,falta entregar,7/6/2022,,lo,,p
+20010/22 2do turno,delitos economicos,si,9/6/2022,falta comenzar,13/6/2022,,,,p
+38269/22 2do turno,homicidios,si,7/6/2022,falta comenzar,13/6/2022,,,,p
+51305/22,violencia de genero,si,13/6/2022,falta comenzar,14/6/2022,,,,p
+59505/21 2do turno,"robos, hurtos y sustraccion de automotores",si,,se cae turno,6/6/2022,,,no lo trajeron,p
+49723/22,valle de uco,si,1/6/2022,archivado,14/6/2022,21/6/2022,lo,entregado a chofer jesus barroso,p
+37036/22,"robos, hurtos y sustraccion de automotores",si,8/6/2022,falta comenzar,15/6/2022,,,,p
+3709/22 2do turno,homicidios,si,7/6/2022,falta comenzar,15/6/2022,,,,p
+48682/22,"robos, hurtos y sustraccion de automotores",si,15/6/2022,archivado,15/6/2022,22/6/2022,jv,entregado en mesa de entradas de ufi robos,p
+17734/22,"robos, hurtos y sustraccion de automotores",si,13/6/2022,falta comenzar,14/6/2022,,,,p
+49819/22,valle de uco,si,6/6/2022,archivado,10/6/2022,21/6/2022,lo,entregado a chofer jesus barroso,p
+55422/22,delitos economicos,si,8/6/2022,falta comenzar,9/6/2022,,,,p
+49058/22,no especializados,si,7/6/2022,falta comenzar,16/6/2022,,,,p
+42499/22,valle de uco,si,15/6/2022,falta comenzar,16/6/2022,,,,p
+71074/21 3er turno,no especializados,si,15/6/2022,falta comenzar,16/6/2022,,,,p
+42874/22 2do turno,no especializados,si,7/6/2022,falta entregar,8/6/2022,,cn,,p
+50710/22 2do turno,no especializados,si,10/6/2022,falta entregar,13/6/2022,,cn,,p
+38593/22 2do turno,homicidios,si,7/6/2022,archivado,9/6/2022,9/6/2022,lo,"entregado en mesa de entradas ufi homicidios, recibi� proc. stella maris valdivia",p
+133458/21 3ra,homicidios,si,7/6/2022,falta entregar,8/6/2022,,lo,,p
+54239/22,no especializados,si,13/6/2022,falta entregar,15/6/2022,,lo,,p
+56079/22,"robos, hurtos y sustraccion de automotores",si,9/6/2022,archivado,10/6/2022,13/6/2022,lo,"recibe paola pozzobon, jefa de mesa de entradas de robos y hurtos",p
+17235/22,"robos, hurtos y sustraccion de automotores",no,,archivado,2/6/2022,,sg,devoluci�n de 2 celulares entregados a la ufi en prestamo para realizar un reconocimiento de objetos (cargado solo efecto de dejar constancia y archivado en bibliorato),p
+50342/21,ufi correccional 1 2� circunscripci�n,si,,turno otorgado,22/6/2022,,,,p
+56218/22,no especializados,si,7/6/2022,archivado,7/6/2022,7/6/2022,lo,entregado en mesa de entrada de ufi delitos no especializados,p
+32053/22,san martin,si,7/6/2022,archivado,14/6/2022,21/6/2022,sg,retira ariel morcos,p
+43849/22,san martin,si,,turno otorgado,21/6/2022,,,,p
+55715/22,oficina fiscal 9,si,,turno otorgado,8/6/2022,,,,p
+35584/22,homicidios,si,10/6/2022,falta comenzar,13/6/2022,,,,p
+55546/22,oficina fiscal 1,si,,se cae turno,10/6/2022,,,no lo trajeron,p
+51491/22,integridad sexual,si,7/6/2022,falta comenzar,21/6/2022,,,,p
+6360/22 6ta,"robos, hurtos y sustraccion de automotores",si,8/6/2022,archivado,16/6/2022,22/6/2022,lo,entregado en mesade entradas de ufi robos,p
+56750/22,homicidios,si,22/6/2022,falta comenzar,23/6/2022,,,,p
+56071/22,"robos, hurtos y sustraccion de automotores",si,21/6/2022,falta comenzar,22/6/2022,,,,p
+57223/22,homicidios,acto,7/6/2022,archivado,,7/6/2022,lo,,p
+45987/22,oficina fiscal la paz,si,,turno otorgado,24/6/2022,,,,p
+55690/22,delitos informaticos,si,9/6/2022,archivado,10/6/2022,10/6/2022,lo,entregado en mesa de entrada de ufi delitos inform�ticos,p
+54154/22,"robos, hurtos y sustraccion de automotores",si,,se cae turno,14/6/2022,,,no lo trajeron,p
+35252/22,integridad sexual,si,,turno otorgado,29/6/2022,,,,p
+59505/21 2do turno,"robos, hurtos y sustraccion de automotores",si,,reprogramado,22/6/2022,,,,p
+mpf-sj-01930-2022,unidad delitos especiales - mpf san juan,si,14/6/2022,comenzar,15/6/2022,,,,mpf
+24776/22,"robos, hurtos y sustraccion de automotores",si,21/6/2022,archivado,21/6/2022,21/6/2022,lo,entregado en mesa de entrada de robos,p
+35849/22,delitos economicos,si,,turno otorgado,27/6/2022,,,,p
+28201/22,no especializados,si,,turno otorgado,27/6/2022,,,,p
+44545/22 2da,san rafael,no,24/5/2022,falta comenzar,27/6/2022,,,,p
+747160/19,san rafael,no,24/5/2022,falta comenzar,27/6/2022,,,,p
+13120/20,no especializados,si,,turno otorgado,30/6/2022,,,,p
+58629/22,no especializados,si,,turno otorgado,30/6/2022,,,,p
+52576/22,violencia de genero,si,21/6/2022,falta comenzar,29/6/2022,,,,p
+49427/22 2do,homicidios,si,,turno otorgado,24/6/2022,,,,p
+29499/22,homicidios,si,,turno otorgado,23/6/2022,,,,p
+43176/21 6ta,delitos informaticos,si,,turno otorgado,30/6/2022,,,,p
+12516/22 3ra,san rafael,si,,turno otorgado,23/6/2022,,,,p
+58536/22,oficina fiscal 3,si,,turno otorgado,23/6/2022,,,,p
+59516/22,oficina fiscal rivadavia,si,,turno otorgado,24/6/2022,,,,p
+59645/22,oficina fiscal jun,si,21/6/2022,falta comenzar,27/6/2022,,,,p
+38157/22,violencia de genero,si,,turno otorgado,28/6/2022,,,,p
+63991/21,ufi correccional,si,21/6/2022,falta comenzar,28/6/2022,,,,p
+105493/21,violencia de genero,si,,se cae turno,22/6/2022,,,se deja sin efecto por correo del 21/6/22 - 19.58 hrs.,p
+54154/22 2do turno 1ra extracci�n,"robos, hurtos y sustraccion de automotores",si,,turno otorgado,28/6/2022,,,,p
+70448/21 2da,"robos, hurtos y sustraccion de automotores",si,14/6/2022,archivado,14/6/2022,22/6/2022,sg,entregado en mesa de entrada de ufi robos,p
+47249/22 2da,homicidios,si,15/6/2022,falta comenzar,16/6/2022,,,,p
+59505/21 4to turno 1ra extracci�n,"robos, hurtos y sustraccion de automotores",si,16/6/2022,archivado,21/6/2022,,lo,entregado en mesa de entrada de ufi robos,p
+70448/21 3ra,"robos, hurtos y sustraccion de automotores",acto,15/6/2022,archivado,15/6/2022,,lo,entregado en mesa de entrada de ufi robos,p
+58802/22,homicidios,acto,16/6/2022,archivado,,,lo,"entregado en mesa de entrada de ufi homicidios - faltan dispositivos #14, #15 y #16",p
+78061/21,"robos, hurtos y sustraccion de automotores",si,24/6/2022,turno otorgado,24/6/2022,,,,p
+44383/22,"robos, hurtos y sustraccion de automotores",acto,22/6/2022,archivado,,,jp,copia de material de autos n� p-44383/22 en disco externo,p
+32930/22,delitos economicos,si,,turno otorgado,25/7/2022,,,,p
+17720/22,alvear,si,,turno otorgado,25/7/2022,,,,p
+57096/22,alvear,si,,turno otorgado,28/6/2022,,,,p
+40628/22,delitos economicos,si,,turno otorgado,28/6/2022,,,,p
+57379/22,homicidios,si,,turno otorgado,27/6/2022,,,,p
+10571/22 2do turno 1� extracci�n,ufi menores 1 1� circunscripci�n judicial,si,,turno otorgado,29/6/2022,,,,p
+36367/22,integridad sexual,si,,turno otorgado,30/6/2022,,,,p
+47855/22,san rafael,si,,turno otorgado,1/7/2022,,,,p
+42850/22,delitos economicos,si,,turno otorgado,1/7/2022,,,,p
+62687/22,"robos, hurtos y sustraccion de automotores",si,,turno otorgado,24/6/2022,,,,p
+78061/21,"robos, hurtos y sustraccion de automotores",si,,turno otorgado,28/7/2022,,,,p
+54584/22,"robos, hurtos y sustraccion de automotores",si,,turno otorgado,29/6/2022,,,,p
+51672/22,delitos informaticos,si,,turno otorgado,30/6/2022,,,,p
+59958/22,"robos, hurtos y sustraccion de automotores",si,,turno otorgado,4/7/2022,,,,p
+54199/22,no especializados,si,,turno otorgado,5/7/2022,,,,p
+59403/22,comisaria 24,si,,turno otorgado,6/7/2022,,,,p

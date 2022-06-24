@@ -80,6 +80,8 @@ const apis = {
         response = await fetch(url, options)
         response = await response.json()
         return response
+
+
     },
     updateDetail: async (fetchData) => {
 

@@ -7,21 +7,21 @@ function AccordionFile(componentData) {
         files = componentData.data.files,
         option = componentData.data.option
 
-        
+
     function formatDate(data, option) {
 
         let date
         if (data !== null) {
-            date = new Date(data)   
+            date = new Date(data)
             if (option === 1) {
                 return date.toLocaleDateString("es-AR") + " a las " + date.getHours() + ":" + date.getMinutes() + "hrs"
             }
-            date.setMinutes(date.getMinutes()+date.getTimezoneOffset())
+            date.setMinutes(date.getMinutes() + date.getTimezoneOffset())
             return date.toLocaleDateString("es-AR")
         }
         return "No registra"
     }
-
+    
     function formatOffice(office) {
         return office.name.toUpperCase()
     }
@@ -63,7 +63,7 @@ function AccordionFile(componentData) {
 
     files.forEach((rowData, index) => {
         accordion.push(
-            <Accordion.Item eventKey={index + option} flush>
+            <Accordion.Item eventKey={index + option} flush="true">
                 <Accordion.Header>
                     <b>{rowData.FileType.type.toUpperCase() + "- " + rowData.file_number.toUpperCase()} {(option === "a3") ? <span className="text-success">{" - Turno: " + formatDate(rowData.FileDate.shift_date, 0)}</span> : ""}</b>
                 </Accordion.Header>
@@ -140,11 +140,11 @@ function AccordionFile(componentData) {
     })
 
     return (
-        <>
-            <Accordion className="w-100" defaultActiveKey="0">
-                {accordion}
-            </Accordion>
-        </>
+
+        <Accordion key={option + (Math.random() * Math.random())} className="w-100" defaultActiveKey="0">
+            {accordion}
+        </Accordion>
+
     )
 }
 

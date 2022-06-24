@@ -14,18 +14,22 @@ const App = () => (
                 <Route path='/login' element={<Login />} />
             </Routes>
         </Router>
-        
+
         <NavBar></NavBar>
         <div className="container">
+
             <Router>
                 <Routes>
+
                     <Route path='/' element={<Home />} />
                     <Route path='/update_form/:id' element={<UpdateForm />} />
                     <Route path='/extraction/:id' element={<Extraction />} />
                     <Route path='/stadistics' element={<Stadistics />} />
                     <Route path='/finder' element={<Searcher />} />
+
                 </Routes>
             </Router>
+
         </div>
     </>
 

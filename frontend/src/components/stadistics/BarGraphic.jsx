@@ -3,7 +3,19 @@ import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar } from 'rec
 function BarGraphic(param) {
     let data = param.props.data
     data.splice(-1, 1)
+    function filterByAmount(amount){
+        if(amount > 0){
+            return true
+        }else {
+            return false
+        }
+    }
+    
+    if (param.props.opt === 1) {
+        data = data.filter(obj => filterByAmount(obj.amount + obj.amount2))
+    }
     if (param.props.opt === 0) {
+        data = data.filter(obj => filterByAmount(obj.amount))
         data.sort(function (a, b) {
             if (a.amount < b.amount) {
                 return 1;
@@ -11,7 +23,6 @@ function BarGraphic(param) {
             if (a.amount > b.amount) {
                 return -1;
             }
-            // a must be equal to b
             return 0;
         });
     }
