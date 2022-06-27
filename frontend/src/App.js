@@ -7,6 +7,7 @@ import Extraction from './components/Extraction';
 import NavBar from './components/commons/navbar/NavBar';
 import Stadistics from './components/stadistics/Stadistics';
 import Searcher from './components/searcher/Searcher';
+import DeviceForm from './components/forms/deviceForm/DeviceForm';
 const App = () => (
     <>
         <Router>
@@ -26,7 +27,8 @@ const App = () => (
                     <Route path='/extraction/:id' element={<Extraction />} />
                     <Route path='/stadistics' element={<Stadistics />} />
                     <Route path='/finder' element={<Searcher />} />
-
+                    <Route path='/device' element={<DeviceForm />} />
+                    
                 </Routes>
             </Router>
 

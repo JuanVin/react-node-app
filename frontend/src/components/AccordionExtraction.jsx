@@ -1,6 +1,6 @@
 import { Accordion } from "react-bootstrap"
 import "./styles/accordionFile.css"
-import DeviceForm from "./forms/DeviceForm"
+import DeviceForm from "./forms/deviceForm/DeviceForm"
 function AccordionExtraction(param) {
 
     let accordion = []
