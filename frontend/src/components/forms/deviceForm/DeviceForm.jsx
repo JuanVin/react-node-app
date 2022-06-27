@@ -40,7 +40,7 @@ function DeviceForm() {
                                 })
 
                             }
-                            <Pagination amount={amount.length} setCurrentPage={setCurrentPage}></Pagination>
+                            <Pagination amount={amount.length} currentPage={currentPage} setCurrentPage={setCurrentPage}></Pagination>
                             <input type="submit" className="btn btn-success" value="Generar actas"></input>
                         </form>
                     </>

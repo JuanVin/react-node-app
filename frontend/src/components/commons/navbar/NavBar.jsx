@@ -4,7 +4,7 @@ import FileSearch from "./FileSearch"
 
 const NavBar = () => {
     return (
-        <Navbar bg="dark" variant="dark" className="position-fixed w-100" style={{ zIndex: "1"}}>
+        <Navbar bg="dark" variant="dark" style={{ zIndex: "1"}}>
             <img src="/logo.png" style={{width: "75px", left: "50px", position: "absolute"}} alt="logo"></img>
             <Container>
                 <Navbar.Brand href="#home"><strong>U.D.A.P.I.F.</strong> <small className="text-muted d-block">Departamento de Informática Forense</small></Navbar.Brand>

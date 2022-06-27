@@ -1,4 +1,4 @@
-function Pagination({ amount, setCurrentPage }) {
+function Pagination({ amount, currentPage, setCurrentPage }) {
     let _pagination = []
     for (let index = 0; index < amount; index++) {
         _pagination.push(
@@ -6,13 +6,28 @@ function Pagination({ amount, setCurrentPage }) {
         )
     }
     
+    function handleNextPage(){
+        if((currentPage+1) === amount){
+            setCurrentPage(0)
+        }else{
+            setCurrentPage(currentPage+1)
+        }
+    }
+    function handlePreviousPage(){
+        console.log(currentPage)
+        if(currentPage === 0){
+            setCurrentPage(amount-1)
+        }else{
+            setCurrentPage(currentPage-1)
+        }
+    }
     return (
         <div style={{ display: "flex", justifyContent: "center" }}>
             <nav className="mt-1 text-center">
                 <ul className="pagination">
-                    <li className="page-item"><a className="page-link" href="#">Previous</a></li>
+                    <li className="page-item"><button className="page-link" onClick={handlePreviousPage}>Previous</button></li>
                     {_pagination}
-                    <li className="page-item"><a className="page-link" href="#">Next</a></li>
+                    <li className="page-item"><button className="page-link" onClick={handleNextPage}>Next</button></li>
                 </ul>
             </nav>
         </div>
