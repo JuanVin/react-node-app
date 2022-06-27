@@ -1,65 +1,65 @@
+import { useState } from "react";
+import CellForm from "./CellForm";
+function FormContent({ deviceNumber, currentPage, fileExtraction,setFileExtraction}) {
+  const [option, setOption] = useState("1");
+  const [currentOption, setCurrentOption] = useState("");
 
-import { useState, useEffect } from "react"
-import CellForm from "./CellForm"
-function FormContent({ deviceNumber, currentPage }) {
-    const [option, setOption] = useState("1")
-    const [currentOption, setCurrentOption] = useState("")
+  const handleOption = () => {
+    setCurrentOption(option);
+  };
 
-    const handleOption = () => {
-        setCurrentOption(option)
+  const optionSwitch = () => {
+    switch (currentOption) {
+      case "1":
+        return <CellForm deviceNumber={deviceNumber} fileExtraction={fileExtraction} setFileExtraction={setFileExtraction}></CellForm>;
+      case "2":
+        return "Formulario de PC";
+      case "3":
+        return "Formulario de algo mas";
+      default:
+        break;
     }
+  };
 
-    const optionSwitch = () => {
-        switch (currentOption) {
-            case "1":
-                return <CellForm deviceNumber={deviceNumber}></CellForm>
-            case "2":
-                return "Formulario de PC"
-            case "3":
-                return "Formulario de algo mas"
-            default:
-                break;
-        }
-    }
-    
-    const getFormBody = () => {
-        return (
-            <>
-                <h3 className="mt-3">Dispositivo N° {deviceNumber}</h3>
-                <div className="input-group w-25">
-                    <select className="form-select" value={option} onChange={(e) => setOption(e.target.value)} aria-label="Default select example">
-                        <option value={"1"}>Celular</option>
-                        <option value={"2"}>PC</option>
-                        <option value={"3"}>Comodin</option>
-                    </select>
-                    <button className="btn btn-success" onClick={handleOption}>Aceptar</button>
-                </div>
-                {
-                    (currentOption !== "")
-                        ?
-                        optionSwitch()
-                        :
-                        ""
-                }
-            </>
-        )
-    }
-
+  const getFormBody = () => {
     return (
-        <>
+      <>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <div className="w-50 border rounded">
+            <div className="bg-dark p-3">
+            <h2 className="m-3 text-center text-secondary">Dispositivo N° {deviceNumber}</h2>
+            <div className="input-group">
+              <select
+                className="form-select text-center"
+                value={option}
+                onChange={(e) => setOption(e.target.value)}
+                aria-label="Default select example"
+              >
+                <option value={"1"}>Celular</option>
+                <option value={"2"}>PC</option>
+                <option value={"3"}>Comodin</option>
+              </select>
+              <button className="btn btn-success btn-lg" onClick={handleOption}>
+                Aceptar
+              </button>
+                </div>
+            </div>
+            {currentOption !== "" ? optionSwitch() : ""}
+          </div>
+        </div>
+      </>
+    );
+  };
 
-            {(deviceNumber === currentPage)
-                ?
-                <div className="">
-                    {getFormBody()}
-                </div>
-                :
-                <div className="d-none">
-                    {getFormBody()}
-                </div>
-            }
-        </>
-    )
+  return (
+    <>
+      {deviceNumber === currentPage ? (
+        <div className="">{getFormBody()}</div>
+      ) : (
+        <div className="d-none">{getFormBody()}</div>
+      )}
+    </>
+  );
 }
 
-export default FormContent
+export default FormContent;
