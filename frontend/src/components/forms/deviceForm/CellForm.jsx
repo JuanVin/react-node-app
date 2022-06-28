@@ -19,14 +19,14 @@ function CellForm({ deviceNumber, fileExtraction, setFileExtraction }) {
 
     async function getDataFromLocalStorage() {
         
-
-        let data = await localStorage.getItem(deviceNumber);
+        let data = await localStorage.getItem(fileExtraction.file);
         data = await JSON.parse(data)
+
         if (data !== null) {
-            setSimcard(data.simcard)
-            setCompany(data.company)
-            setBrand(data.brand)
-            setModel(data.model)
+            setSimcard(data.extraction[deviceNumber].simcard)
+            setCompany(data.extraction[deviceNumber].company)
+            setBrand(data.extraction[deviceNumber].brand)
+            setModel(data.extraction[deviceNumber].model)
             setLoading(false)
         }
         else {
@@ -36,12 +36,14 @@ function CellForm({ deviceNumber, fileExtraction, setFileExtraction }) {
     }
 
     function handleLocalStorage() {
+        
         fileExtraction.extraction[deviceNumber] = {
             simcard: simcard,
             company: company,
             brand: brand,
             model: model
         }
+        localStorage.setItem(fileExtraction.file, JSON.stringify(fileExtraction))
         setFileExtraction(fileExtraction)
         
     }

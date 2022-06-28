@@ -9,6 +9,7 @@ function DeviceForm() {
     const [searchParams] = useSearchParams();
     const [fileExtraction, setFileExtraction] = useState({file: searchParams.get("file"), id: searchParams.get("id"), extraction: {}})
  
+    console.log(fileExtraction)
     const handleAmount = () => {
         let _amount = []
         for (let index = 0; index < number; index++) {
