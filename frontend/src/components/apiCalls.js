@@ -154,5 +154,19 @@ const apis = {
         response = await response.json()
         return response
     },
+    postNewExtraction: async (fetchData) => {
+        console.log("entre")
+        let options = {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(fetchData)
+        },
+            url = `http://localhost:3000/api/files/new_extraction`,
+            response
+
+        response = await fetch(url, options)
+        response = await response.json()
+        return response
+    },
 }
 export default apis

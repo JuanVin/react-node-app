@@ -18,6 +18,6 @@ router.delete('/api/files/details/delete/:id', controller.deleteDetail)
 router.post('/api/files/stadistics/all', controller.getStadisticsByDate)
 router.post('/api/files/technician', controller.getFileByTechnician)
 router.get('/api/technicians', controller.getTechnicians)
-
+router.post('/api/files/new_extraction', controller.newExtraction)
 
 module.exports = router

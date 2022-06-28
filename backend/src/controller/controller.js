@@ -489,5 +489,9 @@ module.exports = controller = {
         } catch (error) {
             console.log(error)
         }
-    }
+    },
+    newExtraction: async (req, res) => {
+       console.log(req.body)
+        res.send({status: "ok"})
+    },
 }
