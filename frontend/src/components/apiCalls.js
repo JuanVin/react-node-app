@@ -155,18 +155,20 @@ const apis = {
         return response
     },
     postNewExtraction: async (fetchData) => {
-        console.log("entre")
+        
         let options = {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(fetchData)
         },
             url = `http://localhost:3000/api/files/new_extraction`,
-            response
+            response,
+            status
 
         response = await fetch(url, options)
+        status = response.status
         response = await response.json()
-        return response
+        return {response, status}
     },
 }
 export default apis

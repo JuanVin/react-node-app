@@ -1,20 +1,28 @@
-function Pagination({ amount, currentPage, setCurrentPage }) {
+function Pagination({ amount, currentPage, setCurrentPage, loaded }) {
     let _pagination = []
 
+    
   
     for (let index = 0; index < amount; index++){
-        if(index === currentPage){
+        if(loaded.find(element => element === index+1)){
             _pagination.push(
-                <li className="page-item" key={index * Math.random()}><button type="button" onClick={() => setCurrentPage(index)} className="page-link bg-success text-white">{index + 1}</button></li>
+                <li className="page-item" key={index * Math.random()}><button type="button" onClick={() => setCurrentPage(index)} className="page-link bg-success text-white">{setCurrentPageStyle(index)}</button></li>
             )
         }else{
             _pagination.push(
-                <li className="page-item" key={index * Math.random()}><button type="button" onClick={() => setCurrentPage(index)} className="page-link text-secondary">{index + 1}</button></li>
+                <li className="page-item" key={index * Math.random()}><button type="button" onClick={() => setCurrentPage(index)} className="page-link text-secondary">{setCurrentPageStyle(index)}</button></li>
             )
         }
         
     }
    
+    function setCurrentPageStyle(index){
+        if(index === currentPage){
+            return <h5><b>{index+1}</b></h5>
+        }else{
+           return index+1
+        }
+    }
     function handleNextPage(){
         if((currentPage+1) === amount){
             setCurrentPage(0)

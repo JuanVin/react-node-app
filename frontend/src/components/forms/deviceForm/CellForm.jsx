@@ -1,9 +1,10 @@
 import { useState } from "react";
 import apis from "../../apiCalls";
-function CellForm({ deviceNumber, file, id}) {
+function CellForm({ deviceNumber, file, id, loaded, setLoaded }) {
   const [simcardNumber, setSimcardNumber] = useState("1");
   const [imeiNumber, setImeiNumber] = useState("1");
   const [batteryNumber, setBatteryNumber] = useState("1");
+  const [microsdNumber, setMicrosdNumber] = useState("1")
 
   const [simcard, setSimcard] = useState("");
   const [simcard1, setSimcard1] = useState("");
@@ -17,6 +18,8 @@ function CellForm({ deviceNumber, file, id}) {
   const [imei1, setImei1] = useState("");
   const [detail, setDetail] = useState("");
   const [extraction, setExtraction] = useState("");
+  const [microsd, setMicrosd] = useState("")
+  const [capacity, setCapacity] = useState("")
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -70,24 +73,40 @@ function CellForm({ deviceNumber, file, id}) {
           break;
       }
     };
+    const microsdOpt = () => {
+      switch (microsdNumber) {
+        case "1":
+          return { 1: { type: microsd, capacity: capacity } };
+        case "2":
+          return { 1: "No posee" }
+      }
+    }
 
     let fileExtraction = {
       id: id,
       file: file,
+      type: 1,
       device: deviceNumber,
       brand: brand,
       model: model,
       imeis: imeiOpt(),
       simcards: simcardOpt(),
       battery: batteryOpt(),
+      microsd: microsdOpt(),
       detail: detail,
       extraction: extraction,
     };
 
     let response = await apis.postNewExtraction(fileExtraction);
-
+    if (response.status === 200) {
+      let aux = [...loaded]
+      if (!aux.find(element => element === deviceNumber)) {
+        aux.push(deviceNumber)
+      }
+      setLoaded(aux)
+    }
   }
-  function setSimcards() {
+  function setSimcardForm() {
     if (simcardNumber !== null) {
       switch (simcardNumber) {
         case "1":
@@ -187,7 +206,7 @@ function CellForm({ deviceNumber, file, id}) {
       }
     }
   }
-  function setBattery() {
+  function setBatteryForm() {
     switch (batteryNumber) {
       case "1":
         return (
@@ -224,7 +243,7 @@ function CellForm({ deviceNumber, file, id}) {
         break;
     }
   }
-  function setImeis() {
+  function setImeiForm() {
     if (imeiNumber !== null) {
       switch (imeiNumber) {
         case "1":
@@ -283,7 +302,43 @@ function CellForm({ deviceNumber, file, id}) {
       }
     }
   }
-
+  function setMicrosdForm() {
+    if (microsdNumber === "1") {
+      return (
+        <>
+          <div className="row mt-3">
+            <div className="col">
+              <div className="form-group">
+                <label htmlFor="micro-type">Tipo</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={microsd}
+                  onChange={(e) => setMicrosd(e.target.value)}
+                  id="micro-type"
+                  required
+                ></input>
+              </div>
+            </div>
+            <div className="col">
+              <div className="form-group">
+                <label htmlFor="micro-capacity">Capacidad</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  minLength={15}
+                  value={capacity}
+                  onChange={(e) => setCapacity(e.target.value)}
+                  id="micro-capacity"
+                  required
+                ></input>
+              </div>
+            </div>
+          </div>
+        </>
+      )
+    }
+  }
   return (
     <>
       <form onSubmit={(e) => handleSubmit(e)}>
@@ -311,7 +366,7 @@ function CellForm({ deviceNumber, file, id}) {
               <option value="3">No posee</option>
             </select>
           </div>
-          {setSimcards()}
+          {setSimcardForm()}
           <hr />
           <div className="form-group">
             <label htmlFor="batterySelect">Batería?</label>
@@ -321,7 +376,7 @@ function CellForm({ deviceNumber, file, id}) {
               <option value="3">Integrada</option>
             </select>
           </div>
-          {setBattery()}
+          {setBatteryForm()}
           <hr />
           <div className="form-group">
             <label htmlFor="imeiSelected">IMEI?</label>
@@ -331,7 +386,16 @@ function CellForm({ deviceNumber, file, id}) {
               <option value="3">No visible/No legible</option>
             </select>
           </div>
-          {setImeis()}
+          {setImeiForm()}
+          <hr />
+          <div className="form-group">
+            <label htmlFor="microsd">MicroSD?</label>
+            <select className="form-control" value={microsdNumber} onChange={(e) => { setMicrosdNumber(e.target.value) }} id="microsd">
+              <option value="1">Posee</option>
+              <option value="2">No posee</option>
+            </select>
+          </div>
+          {setMicrosdForm()}
           <hr />
           <div className="form-group">
             <label htmlFor="detalle">Detalle</label>

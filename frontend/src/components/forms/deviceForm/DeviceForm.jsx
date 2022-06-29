@@ -8,7 +8,7 @@ function DeviceForm() {
     const [number, setNumber] = useState(0)
     const [currentPage, setCurrentPage] = useState(0)
     const [searchParams] = useSearchParams();
-
+    const [loaded, setLoaded] = useState([])
 
     const handleAmount = () => {
         let _amount = []
@@ -21,6 +21,7 @@ function DeviceForm() {
 
     function handleReturn() {
         setAmount([])
+        setLoaded([])
     }
 
     return (
@@ -31,17 +32,17 @@ function DeviceForm() {
                     ?
                     <>
 
-                        <Pagination amount={amount.length} currentPage={currentPage} setCurrentPage={setCurrentPage}></Pagination>
+                        <Pagination amount={amount.length} loaded={loaded} currentPage={currentPage} setCurrentPage={setCurrentPage}></Pagination>
                         {
                             amount.map((item, index) => {
                                 return (
-                                    <FormContent deviceNumber={item + 1} currentPage={currentPage + 1} key={index}></FormContent>
+                                    <FormContent deviceNumber={item + 1} loaded={loaded} setLoaded={setLoaded} currentPage={currentPage + 1} key={index}></FormContent>
                                 )
                             })
 
                         }
 
-                        <Pagination amount={amount.length}  currentPage={currentPage} setCurrentPage={setCurrentPage}></Pagination>
+                        <Pagination amount={amount.length} loaded={loaded} currentPage={currentPage} setCurrentPage={setCurrentPage}></Pagination>
                         <div className="mb-3" style={{ display: "flex", justifyContent: "center" }}>
                             <button className="btn btn-dark" onClick={handleReturn}>Volver</button>
                         </div>

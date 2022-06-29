@@ -492,6 +492,6 @@ module.exports = controller = {
     },
     newExtraction: async (req, res) => {
        console.log(req.body)
-        res.send({status: "ok"})
+        res.status(200).send({message: "ok"})
     },
 }
