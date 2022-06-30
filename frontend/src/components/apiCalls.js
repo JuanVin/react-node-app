@@ -170,5 +170,33 @@ const apis = {
         response = await response.json()
         return {response, status}
     },
+    postExtractionNumber: async (fetchData) => {
+        let options = {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(fetchData)
+        },
+            url = `http://localhost:3000/api/files/set_extraction_number`,
+            response,
+            status
+
+        response = await fetch(url, options)
+        status = response.status
+        response = await response.json()
+        return {response, status}
+    },
+    getExtractionNumber: async (id) => {
+        let response = await fetch(`http://localhost:3000/api/files/get_extraction/${id}`)
+        let status = response.status
+        response = await response.json()
+        return {response, status}
+    },
+    getExtractionsById: async (id) => {
+        let response = await fetch(`http://localhost:3000/api/files/get_extractions_by_id/${id}`)
+        let status = response.status
+        response = await response.json()
+        console.log(response)
+        return {response, status}
+    }
 }
 export default apis

@@ -8,7 +8,9 @@ const details = require('../models/Detail')
 const conditions = require('../models/Condition')
 const districts = require("../models/District")
 const type = require("../models/FileType")
+const extraction = require("../models/Extraction")
 const { Op } = require("sequelize");
+const CellPhone = require('../models/CellPhone')
 
 module.exports = controller = {
     getFileById: async (req, res) => {
@@ -349,7 +351,6 @@ module.exports = controller = {
                     _technicians = await technician.findAll({ transaction: t })
 
                 for (const key in _conditions) {
-
                     fileStadistic.push(
                         {
                             name: (_conditions[key].condition).replace(" ", "_"),
@@ -491,7 +492,89 @@ module.exports = controller = {
         }
     },
     newExtraction: async (req, res) => {
-       console.log(req.body)
-        res.status(200).send({message: "ok"})
+
+        let body = req.body
+
+        try {
+            const result = await sequelize.transaction(async (t) => {
+                await CellPhone.create({
+                    deviceNumber: body.device,
+                    cellBrand: body.brand,
+                    cellModel: body.model,
+                    simcard: body.simcards['1'].simcard,
+                    imei: body.imeis['1'].imei,
+                    batteryBrand: body.battery.brand,
+                    batteryModel: body.battery.model,
+                    microsdType: body.microsd.type,
+                    microsdCapacity: body.microsd.capacity,
+                    detail: body.detail,
+                    extraction: body.extraction,
+                    ExtractionId: (await extraction.findOne({
+                        where: {
+                            FileId: body.id
+                        }
+                    })).id
+                }, { transaction: t })
+                res.status(200).send({ message: "ok" })
+            })
+        } catch (e) {
+            res.status(400).sent({ message: "error" })
+        }
+
     },
+    setExtractionNumber: async (req, res) => {
+        let number = req.body.numberOfDevices,
+            id = req.body.fileId,
+            newExtraction = null
+        try {
+            const result = await sequelize.transaction(async (t) => {
+                newExtraction = await extraction.create(
+                    {
+                        numberOfDevices: number,
+                        FileId: id
+                    }, { transaction: t })
+                res.status(200).send({ message: "ok" })
+            })
+        } catch (error) {
+            console.log(error)
+            res.status(400).send({ message: "Algo salió mal" })
+        }
+    },
+    getExtractionNumber: async (req, res) => {
+        const id = req.params.id
+
+        try {
+            const result = await sequelize.transaction(async (t) => {
+                res.status(200).send(
+                    await extraction.findOne(
+                        {
+                            where: {
+                                FileId: id
+                            }
+                        }
+                    )
+                ), { transaction: t }
+            })
+        } catch (e) {
+            res.status(404).send({ message: "error" })
+        }
+    },
+    getExtractionsById: async (req,res) => {
+        const id = req.params.id
+        try {
+            const result = await sequelize.transaction(async (t) => {
+                res.status(200).send(
+                    await CellPhone.findAll(
+                        {
+                            where: {
+                                ExtractionId: id
+                            }
+                        }
+                    )
+                ), { transaction: t }
+            })
+        } catch (e) {
+            res.status(404).send({ message: "error" })
+        }
+    }
 }

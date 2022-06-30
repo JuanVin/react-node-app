@@ -1,7 +1,8 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes, ExclusionConstraintError } = require('sequelize');
 let sequelize = require('../database/db'),
     Detail = require('./Detail'),
-    Dates = require('./FileDate')
+    Dates = require('./FileDate'),
+    Extraction = require('./Extraction')
 
 const Files = sequelize.define('File', {
 
@@ -22,8 +23,10 @@ const Files = sequelize.define('File', {
 
 Files.belongsTo(Dates)
 Dates.hasOne(Files)
-
 Files.hasMany(Detail)
+
+Files.hasOne(Extraction)
+Extraction.belongsTo(Files)
 
 
 module.exports = Files

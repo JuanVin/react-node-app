@@ -266,7 +266,7 @@ const unit = [{
     ]
 
 const tech =
-    sequelize.sync({ force: true })
+    sequelize.sync({ force: false })
         .then(() => {
             dist.forEach(item => district.create(item))
             unit.forEach(item => fiscalUnit.create(item))

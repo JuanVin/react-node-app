@@ -19,5 +19,8 @@ router.post('/api/files/stadistics/all', controller.getStadisticsByDate)
 router.post('/api/files/technician', controller.getFileByTechnician)
 router.get('/api/technicians', controller.getTechnicians)
 router.post('/api/files/new_extraction', controller.newExtraction)
+router.post('/api/files/set_extraction_number', controller.setExtractionNumber)
+router.get('/api/files/get_extraction/:id', controller.getExtractionNumber)
+router.get('/api/files/get_extractions_by_id/:id', controller.getExtractionsById)
 
 module.exports = router

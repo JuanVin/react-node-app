@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CellForm from "./CellForm";
 import { useSearchParams } from "react-router-dom"
-function FormContent({ deviceNumber, currentPage, loaded, setLoaded }) {
+
+function FormContent({ deviceNumber, currentPage, extractions, loaded, setLoaded }) {
   const [option, setOption] = useState("1");
   const [currentOption, setCurrentOption] = useState("1");
   const [searchParams] = useSearchParams();
-
+  console.log(extractions)
   const handleOption = () => {
     setCurrentOption(option);
   };
@@ -26,7 +27,6 @@ function FormContent({ deviceNumber, currentPage, loaded, setLoaded }) {
   const getFormBody = () => {
     return (
       <>
-
         <div style={{ display: "flex", justifyContent: "center" }}>
           <div className="w-50 border rounded">
             <div className="bg-dark p-3">

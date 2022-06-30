@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import apis from "../../apiCalls";
 function CellForm({ deviceNumber, file, id, loaded, setLoaded }) {
   const [simcardNumber, setSimcardNumber] = useState("1");
@@ -60,7 +60,7 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded }) {
     const batteryOpt = () => {
       switch (batteryNumber) {
         case "1":
-          return { 1: { brand: batteryBrand, model: batteryModel } };
+          return { brand: batteryBrand, model: batteryModel };
         case "2":
           return {
             1: "No posee",
@@ -76,7 +76,7 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded }) {
     const microsdOpt = () => {
       switch (microsdNumber) {
         case "1":
-          return { 1: { type: microsd, capacity: capacity } };
+          return { type: microsd, capacity: capacity };
         case "2":
           return { 1: "No posee" }
       }
