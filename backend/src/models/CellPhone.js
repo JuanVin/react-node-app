@@ -7,6 +7,10 @@ const CellPhone = sequelize.define('CellPhone', {
         autoIncrement: true,
         primaryKey: true
     },
+    type: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
     deviceNumber:{
         type: DataTypes.INTEGER,
         allowNull: true

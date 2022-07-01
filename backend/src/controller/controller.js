@@ -291,7 +291,7 @@ module.exports = controller = {
     updateDetail: async (req, res) => {
 
         let params = req.body
-        console.log(params)
+
         try {
             const result = await sequelize.transaction(async (t) => {
                 let detail = await details.findByPk(params.detail_id, { transaction: t })
@@ -492,7 +492,7 @@ module.exports = controller = {
         }
     },
     newExtraction: async (req, res) => {
-
+        console.log(req.body)
         let body = req.body
 
         try {
@@ -501,6 +501,7 @@ module.exports = controller = {
                     deviceNumber: body.device,
                     cellBrand: body.brand,
                     cellModel: body.model,
+                    type: body.type,
                     simcard: body.simcards['1'].simcard,
                     imei: body.imeis['1'].imei,
                     batteryBrand: body.battery.brand,
@@ -517,7 +518,7 @@ module.exports = controller = {
                 }, { transaction: t })
                 res.status(200).send({ message: "ok" })
             })
-        } catch (e) {
+        } catch(e) {
             res.status(400).sent({ message: "error" })
         }
 
@@ -541,40 +542,70 @@ module.exports = controller = {
         }
     },
     getExtractionNumber: async (req, res) => {
+
         const id = req.params.id
 
         try {
             const result = await sequelize.transaction(async (t) => {
-                res.status(200).send(
-                    await extraction.findOne(
-                        {
-                            where: {
-                                FileId: id
-                            }
+
+                let response = await extraction.findOne(
+                    {
+                        where: {
+                            FileId: id
                         }
-                    )
-                ), { transaction: t }
+                    }, { transaction: t }
+                )
+                if (response === null) {
+                    res.status(404).send({ message: "no hallado" })
+                } else {
+                    res.status(200).send(response)
+                }
+
+            })
+        } catch (e) {
+            res.status(400).send({ message: "error" })
+        }
+    },
+    getExtractionsById: async (req, res) => {
+        const id = req.params.id
+        
+        try {
+            const result = await sequelize.transaction(async (t) => {
+                let response = await CellPhone.findAll(
+                    {
+                        where: {
+                            ExtractionId: id
+                        }
+                    }, { transaction: t }
+                )
+                if(response.length < 1){
+                    
+                    res.status(404).send({message: "no hallado"})
+                }else{
+                    res.status(200).send(response)
+                }
             })
         } catch (e) {
             res.status(404).send({ message: "error" })
         }
     },
-    getExtractionsById: async (req,res) => {
-        const id = req.params.id
+    updateExtraction: async (req, res) => {
+        console.log(req.body)
+        let body = req.body
+
         try {
             const result = await sequelize.transaction(async (t) => {
-                res.status(200).send(
-                    await CellPhone.findAll(
-                        {
-                            where: {
-                                ExtractionId: id
-                            }
-                        }
-                    )
-                ), { transaction: t }
+                let extraction = await CellPhone.findByPk(body.extractionId, { transaction: t })
+                console.log(extraction)
+                extraction.cellBrand = body.brand
+                extraction.cellModel = body.model
+                extraction.detail = body.detail
+                extraction.extraction = body.extraction
+                extraction = await extraction.save({ transaction: t })
+                res.status(200).send({message: "ok"})
             })
-        } catch (e) {
-            res.status(404).send({ message: "error" })
+        } catch (error) {
+            res.status(400).send({ message: "Ocurrió un error", detail: null, status: 400 })
         }
     }
 }

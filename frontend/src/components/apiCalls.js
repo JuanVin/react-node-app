@@ -195,8 +195,23 @@ const apis = {
         let response = await fetch(`http://localhost:3000/api/files/get_extractions_by_id/${id}`)
         let status = response.status
         response = await response.json()
-        console.log(response)
         return {response, status}
-    }
+    },
+    updateExtraction: async (fetchData) => {
+        
+        let options = {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(fetchData)
+        },
+            url = `http://localhost:3000/api/files/update_extraction`,
+            response,
+            status
+
+        response = await fetch(url, options)
+        status = response.status
+        response = await response.json()
+        return {response, status}
+    },
 }
 export default apis

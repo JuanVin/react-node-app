@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import apis from "../../apiCalls";
-function CellForm({ deviceNumber, file, id, loaded, setLoaded }) {
+
+function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
+  const [loading, setLoading] = useState(true)
   const [simcardNumber, setSimcardNumber] = useState("1");
   const [imeiNumber, setImeiNumber] = useState("1");
   const [batteryNumber, setBatteryNumber] = useState("1");
@@ -20,6 +22,32 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded }) {
   const [extraction, setExtraction] = useState("");
   const [microsd, setMicrosd] = useState("")
   const [capacity, setCapacity] = useState("")
+  const [values, setValues] = useState(null)
+ 
+  useEffect(() => {
+    if (info) {
+      setValues(info)
+      setInputValues()
+    } else {
+      setLoading(false)
+    }
+  }, [info, loading])
+
+  function setInputValues() {
+
+    setBrand(info.cellBrand)
+    setModel(info.cellModel)
+    setDetail(info.detail)
+    setExtraction(info.extraction)
+    setImei(info.imei)
+    setCompany(info.company)
+    setBatteryBrand(info.batteryBrand)
+    setBatteryModel(info.batteryModel)
+    setMicrosd(info.microsdType)
+    setCapacity(info.microsdCapacity)
+    setSimcard(info.simcard)
+    setLoading(false)
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -97,13 +125,19 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded }) {
       extraction: extraction,
     };
 
-    let response = await apis.postNewExtraction(fileExtraction);
-    if (response.status === 200) {
-      let aux = [...loaded]
-      if (!aux.find(element => element === deviceNumber)) {
-        aux.push(deviceNumber)
+    if (info) {
+      fileExtraction.extractionId = info.id
+      let query = await apis.updateExtraction(fileExtraction)
+
+    } else {
+      let query = await apis.postNewExtraction(fileExtraction);
+      if (query.status === 200) {
+        let aux = [...loaded]
+        if (!aux.find(element => element === deviceNumber)) {
+          aux.push(deviceNumber)
+        }
+        setLoaded(aux)
       }
-      setLoaded(aux)
     }
   }
   function setSimcardForm() {
@@ -115,26 +149,14 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded }) {
               <div className="col">
                 <div className="form-group">
                   <label htmlFor="simcard">Simcard</label>
-                  <input
-                    type="number"
-                    value={simcard}
-                    onChange={(e) => setSimcard(e.target.value)}
-                    className="form-control"
-                    id="simcard"
-                    required
+                  <input type="number" value={simcard} onChange={(e) => setSimcard(e.target.value)} className="form-control" id="simcard" required
                   ></input>
                 </div>
               </div>
               <div className="col">
                 <div className="form-group">
                   <label htmlFor="company">Empresa</label>
-                  <input
-                    type="text"
-                    value={company}
-                    onChange={(e) => setCompany(e.target.value)}
-                    className="form-control"
-                    id="company"
-                    required
+                  <input type="text" value={company} onChange={(e) => setCompany(e.target.value)} className="form-control" id="company" required
                   ></input>
                 </div>
               </div>
@@ -147,26 +169,14 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded }) {
                 <div className="col">
                   <div className="form-group">
                     <label htmlFor="simcard1">Simcard 1</label>
-                    <input
-                      type="number"
-                      value={simcard}
-                      onChange={(e) => setSimcard(e.target.value)}
-                      className="form-control"
-                      id="simcard1"
-                      required
+                    <input type="number" value={simcard} onChange={(e) => setSimcard(e.target.value)} className="form-control" id="simcard1" required
                     ></input>
                   </div>
                 </div>
                 <div className="col">
                   <div className="form-group">
                     <label htmlFor="company1">Empresa 2</label>
-                    <input
-                      type="text"
-                      value={company}
-                      onChange={(e) => setCompany(e.target.value)}
-                      className="form-control"
-                      id="company1"
-                      required
+                    <input type="text" value={company} onChange={(e) => setCompany(e.target.value)} className="form-control" id="company1" required
                     ></input>
                   </div>
                 </div>
@@ -175,26 +185,14 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded }) {
                 <div className="col">
                   <div className="form-group">
                     <label htmlFor="simcard2">Simcard 2</label>
-                    <input
-                      type="number"
-                      value={simcard1}
-                      onChange={(e) => setSimcard1(e.target.value)}
-                      className="form-control"
-                      id="simcard2"
-                      required
+                    <input type="number" value={simcard1} onChange={(e) => setSimcard1(e.target.value)} className="form-control" id="simcard2" required
                     ></input>
                   </div>
                 </div>
                 <div className="col">
                   <div className="form-group">
                     <label htmlFor="company2">Empresa 2</label>
-                    <input
-                      type="text"
-                      value={company1}
-                      onChange={(e) => setCompany1(e.target.value)}
-                      className="form-control"
-                      id="company2"
-                      required
+                    <input type="text" value={company1} onChange={(e) => setCompany1(e.target.value)} className="form-control" id="company2" required
                     ></input>
                   </div>
                 </div>
@@ -214,26 +212,14 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded }) {
             <div className="col">
               <div className="form-group">
                 <label htmlFor="simcard">Marca</label>
-                <input
-                  type="text"
-                  value={batteryBrand}
-                  onChange={(e) => setBatteryBrand(e.target.value)}
-                  className="form-control"
-                  id="simcard"
-                  required
+                <input type="text" value={batteryBrand} onChange={(e) => setBatteryBrand(e.target.value)} className="form-control" id="simcard" required
                 ></input>
               </div>
             </div>
             <div className="col">
               <div className="form-group">
                 <label htmlFor="company">Modelo</label>
-                <input
-                  type="text"
-                  value={batteryModel}
-                  onChange={(e) => setBatteryModel(e.target.value)}
-                  className="form-control"
-                  id="company"
-                  required
+                <input type="text" value={batteryModel} onChange={(e) => setBatteryModel(e.target.value)} className="form-control" id="company" required
                 ></input>
               </div>
             </div>
@@ -338,6 +324,11 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded }) {
         </>
       )
     }
+  }
+  if (loading) {
+    return (
+      <h1>Cargando</h1>
+    )
   }
   return (
     <>

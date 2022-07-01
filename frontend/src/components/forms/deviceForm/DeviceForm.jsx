@@ -12,7 +12,7 @@ function DeviceForm() {
     const [loaded, setLoaded] = useState([])
     const [loading, setLoading] = useState(true)
     const [extractionId, setExtractionId] = useState(0)
-    const [extractions, setExtractions] = useState([])
+    const [info, setInfo] = useState(null)
 
     useEffect(() => {
         handleNumber()
@@ -34,32 +34,46 @@ function DeviceForm() {
     }
 
     const handleNumber = async () => {
-        let response = await apis.getExtractionNumber(searchParams.get("id"))
-        console.log(response)
-        if (response.status === 200) {
+        let query = await apis.getExtractionNumber(searchParams.get("id"))
+        if (query.status === 200) {
+
             let _amount = []
-            for (let index = 0; index < response.response.numberOfDevices; index++) {
+            for (let index = 0; index < query.response.numberOfDevices; index++) {
                 _amount.push(index)
             }
             setAmount(_amount)
-            setExtractionId(response.response.id)
-            await handleExtractions()
+            setExtractionId(query.response.id)
+            await handleInfo()
             setLoading(false)
         } else {
             setLoading(false)
         }
     }
 
-    const handleExtractions = async () => {
-        let response = await apis.getExtractionsById(extractionId)
-        if(response.response.length > 0){
-            setExtractions(response.response)
+    const handleInfo = async () => {
+        let query = await apis.getExtractionsById(extractionId)
+        let aux = [...loaded]
+        if (query.response.length > 0) {
+            query.response.forEach((element, index) => {
+                if (!aux.find(item => item === element.deviceNumber)) {
+                    aux.push(element.deviceNumber)
+                }
+            })
+            setLoaded(aux)
+            setInfo(query.response)
         }
     }
 
     const handleSubmit = async () => {
         let response = await apis.postExtractionNumber({ numberOfDevices: number, fileId: searchParams.get("id") })
         return response.status
+    }
+
+    function filterInfo(index) {
+        if (info) {
+            return (info.filter(element => element.deviceNumber === index))[0]
+        }
+        return null
     }
 
     function handleReturn() {
@@ -82,9 +96,8 @@ function DeviceForm() {
                         <Pagination amount={amount.length} loaded={loaded} currentPage={currentPage} setCurrentPage={setCurrentPage}></Pagination>
                         {
                             amount.map((item, index) => {
-
                                 return (
-                                    <FormContent deviceNumber={item + 1} extractions={extractions.filter(element => element.deviceNumber === item+1)} loaded={loaded} setLoaded={setLoaded} currentPage={currentPage + 1} key={index}></FormContent>
+                                    <FormContent deviceNumber={item + 1} info={filterInfo(index + 1)} loaded={loaded} setLoaded={setLoaded} currentPage={currentPage + 1} key={index}></FormContent>
                                 )
                             })
 

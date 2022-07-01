@@ -22,5 +22,6 @@ router.post('/api/files/new_extraction', controller.newExtraction)
 router.post('/api/files/set_extraction_number', controller.setExtractionNumber)
 router.get('/api/files/get_extraction/:id', controller.getExtractionNumber)
 router.get('/api/files/get_extractions_by_id/:id', controller.getExtractionsById)
+router.post('/api/files/update_extraction', controller.updateExtraction)
 
 module.exports = router
