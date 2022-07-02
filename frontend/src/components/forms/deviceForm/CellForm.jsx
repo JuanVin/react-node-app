@@ -23,7 +23,8 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
   const [microsd, setMicrosd] = useState("")
   const [capacity, setCapacity] = useState("")
   const [values, setValues] = useState(null)
- 
+  const [body, setBody] = useState("")
+
   useEffect(() => {
     if (info) {
       setValues(info)
@@ -34,7 +35,6 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
   }, [info, loading])
 
   function setInputValues() {
-
     setBrand(info.cellBrand)
     setModel(info.cellModel)
     setDetail(info.detail)
