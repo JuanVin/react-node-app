@@ -15,35 +15,35 @@ const CellPhone = sequelize.define('CellPhone', {
         type: DataTypes.INTEGER,
         allowNull: true
     },
-    cellBrand: {
+    phoneBrand: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    cellModel: {
+    phoneModel: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    simcard:{
+    simcardNumber1:{
         type: DataTypes.STRING,
         allowNull: true
     },
-    simcard1:{
+    simcardNumber2:{
         type: DataTypes.STRING,
         allowNull: true
     },
-    company:{
+    simcardCompany1:{
         type: DataTypes.STRING,
         allowNull: true
     },
-    company1:{
+    simcardCompany2:{
         type: DataTypes.STRING,
         allowNull: true
     },
-    imei:{
+    imeiNumber1:{
         type: DataTypes.STRING,
         allowNull: true
     },
-    imei1:{
+    imeiNumber2:{
         type: DataTypes.STRING,
         allowNull: true
     },

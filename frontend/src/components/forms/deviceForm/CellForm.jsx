@@ -1,33 +1,35 @@
 import { useState, useEffect } from "react";
 import apis from "../../apiCalls";
-
+import Loading from "../../commons/Loading";
+import Message from "../../commons/Message";
 function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
   const [loading, setLoading] = useState(true)
-  const [simcardNumber, setSimcardNumber] = useState("1");
-  const [imeiNumber, setImeiNumber] = useState("1");
-  const [batteryNumber, setBatteryNumber] = useState("1");
-  const [microsdNumber, setMicrosdNumber] = useState("1")
+  const [simcardOption, setSimcardOption] = useState("1");
+  const [imeiOption, setImeiOption] = useState("1");
+  const [batteryOption, setBatteryOption] = useState("1");
+  const [microsdOption, setMicrosdOption] = useState("1")
 
-  const [simcard, setSimcard] = useState("");
-  const [simcard1, setSimcard1] = useState("");
-  const [company, setCompany] = useState("");
-  const [company1, setCompany1] = useState("");
-  const [brand, setBrand] = useState("");
-  const [model, setModel] = useState("");
+  const [phoneBrand, setPhoneBrand] = useState("")
+  const [phoneModel, setPhoneModel] = useState("")
+  const [simcardNumber1, setSimcardNumber1] = useState("");
+  const [simcardNumber2, setSimcardNumber2] = useState("");
+  const [simcardCompany1, setSimcardCompany1] = useState("");
+  const [simcardCompany2, setSimcardCompany2] = useState("");
   const [batteryBrand, setBatteryBrand] = useState("");
   const [batteryModel, setBatteryModel] = useState("");
-  const [imei, setImei] = useState("");
-  const [imei1, setImei1] = useState("");
+  const [imeiNumber1, setImeiNumber1] = useState("");
+  const [imeiNumber2, setImeiNumber2] = useState("");
   const [detail, setDetail] = useState("");
   const [extraction, setExtraction] = useState("");
-  const [microsd, setMicrosd] = useState("")
-  const [capacity, setCapacity] = useState("")
-  const [values, setValues] = useState(null)
-  const [body, setBody] = useState("")
+  const [microsdType, setMicrosdType] = useState("")
+  const [microsdCapacity, setMicrosdCapacity] = useState("")
 
+  const [phoneId, setPhoneId] = useState(null)
+  const [message, setMessage] = useState(null)
+
+  console.log(message)
   useEffect(() => {
     if (info) {
-      setValues(info)
       setInputValues()
     } else {
       setLoading(false)
@@ -35,100 +37,75 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
   }, [info, loading])
 
   function setInputValues() {
-    setBrand(info.cellBrand)
-    setModel(info.cellModel)
+
+    setPhoneBrand(info.phoneBrand)
+    setPhoneModel(info.phoneModel)
+
+    setSimcardNumber1(info.simcardNumber1)
+    setSimcardNumber2(info.simcardNumber2)
+
+    setSimcardCompany1(info.simcardCompany1)
+    setSimcardCompany2(info.simcardCompany2)
+
+    setImeiNumber1(info.imeiNumber1)
+    setImeiNumber2(info.imeiNumber2)
+
     setDetail(info.detail)
     setExtraction(info.extraction)
-    setImei(info.imei)
-    setCompany(info.company)
+
     setBatteryBrand(info.batteryBrand)
     setBatteryModel(info.batteryModel)
-    setMicrosd(info.microsdType)
-    setCapacity(info.microsdCapacity)
-    setSimcard(info.simcard)
+
+    setMicrosdType(info.microsdType)
+    setMicrosdCapacity(info.microsdCapacity)
+
     setLoading(false)
+
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const simcardOpt = () => {
-      switch (simcardNumber) {
-        case "1":
-          return { 1: { simcard: simcard, company: company } };
-        case "2":
-          return {
-            1: { simcard: simcard, company: company },
-            2: { simcard1: simcard1, company1: company1 },
-          };
-        case "3":
-          return {
-            1: { simcard: "no posee" },
-          };
-        default:
-          break;
-      }
-    };
-    const imeiOpt = () => {
-      switch (imeiNumber) {
-        case "1":
-          return { 1: { imei: imei } };
-        case "2":
-          return {
-            1: { imei: imei },
-            2: { imei1: imei1 },
-          };
-        case "3":
-          return {
-            1: { imei: "no visible/no posee" },
-          };
-        default:
-          break;
-      }
-    };
-    const batteryOpt = () => {
-      switch (batteryNumber) {
-        case "1":
-          return { brand: batteryBrand, model: batteryModel };
-        case "2":
-          return {
-            1: "No posee",
-          };
-        case "3":
-          return {
-            1: "interna integrada",
-          };
-        default:
-          break;
-      }
-    };
-    const microsdOpt = () => {
-      switch (microsdNumber) {
-        case "1":
-          return { type: microsd, capacity: capacity };
-        case "2":
-          return { 1: "No posee" }
-      }
-    }
-
     let fileExtraction = {
       id: id,
       file: file,
       type: 1,
       device: deviceNumber,
-      brand: brand,
-      model: model,
-      imeis: imeiOpt(),
-      simcards: simcardOpt(),
-      battery: batteryOpt(),
-      microsd: microsdOpt(),
+      phoneBrand: phoneBrand,
+      phoneModel: phoneModel,
+      imei: {
+        imeiNumber1: imeiNumber1,
+        imeiNumber2: imeiNumber2
+      },
+      simcard: {
+        simcard1: {
+          number: simcardNumber1,
+          company: simcardCompany1
+        },
+        simcard2: {
+          number: simcardNumber2,
+          company: simcardCompany2
+        }
+      },
+      battery: {
+        brand: batteryBrand,
+        model: batteryModel
+      },
+      microsd: {
+        type: microsdType,
+        capacity: microsdCapacity
+      },
       detail: detail,
       extraction: extraction,
     };
 
-    if (info) {
-      fileExtraction.extractionId = info.id
+    if (info || phoneId) {
+      if (phoneId) {
+        fileExtraction.phoneId = phoneId
+      } else {
+        fileExtraction.phoneId = info.id
+      }
       let query = await apis.updateExtraction(fileExtraction)
-
+      setMessage({ message: query.response.message, status: query.status })
     } else {
       let query = await apis.postNewExtraction(fileExtraction);
       if (query.status === 200) {
@@ -136,76 +113,77 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
         if (!aux.find(element => element === deviceNumber)) {
           aux.push(deviceNumber)
         }
+        setPhoneId(query.response.info)
+        setMessage({ message: query.response.message, status: query.status })
         setLoaded(aux)
       }
     }
   }
   function setSimcardForm() {
-    if (simcardNumber !== null) {
-      switch (simcardNumber) {
-        case "1":
-          return (
+
+    switch (simcardOption) {
+      case "1":
+        return (
+          <div className="row mt-3">
+            <div className="col">
+              <div className="form-group">
+                <label htmlFor="simcard">Simcard</label>
+                <input type="number" value={simcardNumber1} onChange={(e) => setSimcardNumber1(e.target.value)} className="form-control" id="simcard" required
+                ></input>
+              </div>
+            </div>
+            <div className="col">
+              <div className="form-group">
+                <label htmlFor="company">Empresa</label>
+                <input type="text" value={simcardCompany1} onChange={(e) => setSimcardCompany1(e.target.value)} className="form-control" id="company" required
+                ></input>
+              </div>
+            </div>
+          </div>
+        );
+      case "2":
+        return (
+          <>
             <div className="row mt-3">
               <div className="col">
                 <div className="form-group">
-                  <label htmlFor="simcard">Simcard</label>
-                  <input type="number" value={simcard} onChange={(e) => setSimcard(e.target.value)} className="form-control" id="simcard" required
+                  <label htmlFor="simcard1">Simcard 1</label>
+                  <input type="number" value={simcardNumber1} onChange={(e) => setSimcardNumber1(e.target.value)} className="form-control" id="simcard1" required
                   ></input>
                 </div>
               </div>
               <div className="col">
                 <div className="form-group">
-                  <label htmlFor="company">Empresa</label>
-                  <input type="text" value={company} onChange={(e) => setCompany(e.target.value)} className="form-control" id="company" required
+                  <label htmlFor="company1">Empresa 1</label>
+                  <input type="text" value={simcardCompany1} onChange={(e) => setSimcardCompany1(e.target.value)} className="form-control" id="company1" required
                   ></input>
                 </div>
               </div>
             </div>
-          );
-        case "2":
-          return (
-            <>
-              <div className="row mt-3">
-                <div className="col">
-                  <div className="form-group">
-                    <label htmlFor="simcard1">Simcard 1</label>
-                    <input type="number" value={simcard} onChange={(e) => setSimcard(e.target.value)} className="form-control" id="simcard1" required
-                    ></input>
-                  </div>
-                </div>
-                <div className="col">
-                  <div className="form-group">
-                    <label htmlFor="company1">Empresa 2</label>
-                    <input type="text" value={company} onChange={(e) => setCompany(e.target.value)} className="form-control" id="company1" required
-                    ></input>
-                  </div>
+            <div className="row mt-3">
+              <div className="col">
+                <div className="form-group">
+                  <label htmlFor="simcard2">Simcard 2</label>
+                  <input type="number" value={simcardNumber2} onChange={(e) => setSimcardNumber2(e.target.value)} className="form-control" id="simcard2" required
+                  ></input>
                 </div>
               </div>
-              <div className="row mt-3">
-                <div className="col">
-                  <div className="form-group">
-                    <label htmlFor="simcard2">Simcard 2</label>
-                    <input type="number" value={simcard1} onChange={(e) => setSimcard1(e.target.value)} className="form-control" id="simcard2" required
-                    ></input>
-                  </div>
-                </div>
-                <div className="col">
-                  <div className="form-group">
-                    <label htmlFor="company2">Empresa 2</label>
-                    <input type="text" value={company1} onChange={(e) => setCompany1(e.target.value)} className="form-control" id="company2" required
-                    ></input>
-                  </div>
+              <div className="col">
+                <div className="form-group">
+                  <label htmlFor="company2">Empresa 2</label>
+                  <input type="text" value={simcardCompany2} onChange={(e) => setSimcardCompany2(e.target.value)} className="form-control" id="company2" required
+                  ></input>
                 </div>
               </div>
-            </>
-          );
-        default:
-          break;
-      }
+            </div>
+          </>
+        );
+      default:
+        break;
     }
   }
   function setBatteryForm() {
-    switch (batteryNumber) {
+    switch (batteryOption) {
       case "1":
         return (
           <div className="row mt-3">
@@ -230,66 +208,66 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
     }
   }
   function setImeiForm() {
-    if (imeiNumber !== null) {
-      switch (imeiNumber) {
-        case "1":
-          return (
-            <div className="form-group">
-              <label htmlFor="imei">IMEI</label>
-              <input
-                type="number"
-                className="form-control"
-                id="imei"
-                value={imei}
-                onChange={(e) => setImei(e.target.value)}
-                minLength={15}
-                required
-              ></input>
-            </div>
-          );
 
-        case "2":
-          return (
-            <>
-              <div className="row mt-3">
-                <div className="col">
-                  <div className="form-group">
-                    <label htmlFor="imei1">IMEI 1</label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      minLength={15}
-                      value={imei}
-                      onChange={(e) => setImei(e.target.value)}
-                      id="imei1"
-                      required
-                    ></input>
-                  </div>
-                </div>
-                <div className="col">
-                  <div className="form-group">
-                    <label htmlFor="imei2">IMEI 2</label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      minLength={15}
-                      value={imei1}
-                      onChange={(e) => setImei1(e.target.value)}
-                      id="imei2"
-                      required
-                    ></input>
-                  </div>
+    switch (imeiOption) {
+      case "1":
+        return (
+          <div className="form-group">
+            <label htmlFor="imei">IMEI</label>
+            <input
+              type="number"
+              className="form-control"
+              id="imei"
+              value={imeiNumber1}
+              onChange={(e) => setImeiNumber1(e.target.value)}
+              minLength={15}
+              required
+            ></input>
+          </div>
+        );
+
+      case "2":
+        return (
+          <>
+            <div className="row mt-3">
+              <div className="col">
+                <div className="form-group">
+                  <label htmlFor="imei1">IMEI 1</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    minLength={15}
+                    value={imeiNumber1}
+                    onChange={(e) => setImeiNumber1(e.target.value)}
+                    id="imei1"
+                    required
+                  ></input>
                 </div>
               </div>
-            </>
-          );
-        default:
-          break;
-      }
+              <div className="col">
+                <div className="form-group">
+                  <label htmlFor="imei2">IMEI 2</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    minLength={15}
+                    value={imeiNumber2}
+                    onChange={(e) => setImeiNumber2(e.target.value)}
+                    id="imei2"
+                    required
+                  ></input>
+                </div>
+              </div>
+            </div>
+          </>
+        );
+      default:
+        break;
     }
+
   }
   function setMicrosdForm() {
-    if (microsdNumber === "1") {
+    if (microsdOption === "1") {
       return (
         <>
           <div className="row mt-3">
@@ -299,8 +277,8 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
                 <input
                   type="text"
                   className="form-control"
-                  value={microsd}
-                  onChange={(e) => setMicrosd(e.target.value)}
+                  value={microsdType}
+                  onChange={(e) => setMicrosdType(e.target.value)}
                   id="micro-type"
                   required
                 ></input>
@@ -313,8 +291,8 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
                   type="number"
                   className="form-control"
                   minLength={15}
-                  value={capacity}
-                  onChange={(e) => setCapacity(e.target.value)}
+                  value={microsdCapacity}
+                  onChange={(e) => setMicrosdCapacity(e.target.value)}
                   id="micro-capacity"
                   required
                 ></input>
@@ -325,33 +303,35 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
       )
     }
   }
+
   if (loading) {
     return (
-      <h1>Cargando</h1>
+      <Loading></Loading>
     )
   }
   return (
     <>
+
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="p-3 bg-light shadow-sm rounded">
           <div className="row">
             <div className="col">
               <div className="form-group">
                 <label htmlFor="brand">Marca</label>
-                <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} className="form-control" id="brand" required></input>
+                <input type="text" value={phoneBrand} name="brand" onChange={(e) => setPhoneBrand(e.target.value)} className="form-control" id="brand" required></input>
               </div>
             </div>
             <div className="col">
               <div className="form-group">
                 <label htmlFor="model">Modelo</label>
-                <input type="text" value={model} onChange={(e) => setModel(e.target.value)} className="form-control" id="model" required ></input>
+                <input type="text" value={phoneModel} name="model" onChange={(e) => setPhoneModel(e.target.value)} className="form-control" id="model" required ></input>
               </div>
             </div>
           </div>
           <hr />
           <div className="form-group">
             <label htmlFor="simcardSelect">Simcard?</label>
-            <select className="form-control" value={simcardNumber} onChange={(e) => { setSimcardNumber(e.target.value) }} id="simcardSelect">
+            <select className="form-control" value={simcardOption} onChange={(e) => { setSimcardOption(e.target.value) }} id="simcardSelect">
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">No posee</option>
@@ -361,7 +341,7 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
           <hr />
           <div className="form-group">
             <label htmlFor="batterySelect">Batería?</label>
-            <select className="form-control" value={batteryNumber} onChange={(e) => { setBatteryNumber(e.target.value) }} id="batterySelect">
+            <select className="form-control" value={setBatteryOption} onChange={(e) => { setBatteryOption(e.target.value) }} id="batterySelect">
               <option value="1">Posee</option>
               <option value="2">No posee</option>
               <option value="3">Integrada</option>
@@ -371,7 +351,7 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
           <hr />
           <div className="form-group">
             <label htmlFor="imeiSelected">IMEI?</label>
-            <select className="form-control" value={imeiNumber} onChange={(e) => { setImeiNumber(e.target.value) }} id="imeiSelected">
+            <select className="form-control" value={imeiOption} onChange={(e) => { setImeiOption(e.target.value) }} id="imeiSelected">
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">No visible/No legible</option>
@@ -381,7 +361,7 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
           <hr />
           <div className="form-group">
             <label htmlFor="microsd">MicroSD?</label>
-            <select className="form-control" value={microsdNumber} onChange={(e) => { setMicrosdNumber(e.target.value) }} id="microsd">
+            <select className="form-control" value={microsdOption} onChange={(e) => { setMicrosdOption(e.target.value) }} id="microsd">
               <option value="1">Posee</option>
               <option value="2">No posee</option>
             </select>
@@ -401,7 +381,9 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
             <button className="btn btn-success text-center mt-1">Cargar</button>
           </div>
         </div>
+
       </form>
+      <Message props={message}></Message>
     </>
   );
 }

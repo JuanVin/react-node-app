@@ -185,7 +185,7 @@ const apis = {
         response = await response.json()
         return {response, status}
     },
-    getExtractionNumber: async (id) => {
+    getExtractionInfo: async (id) => {
         let response = await fetch(`http://localhost:3000/api/files/get_extraction/${id}`)
         let status = response.status
         response = await response.json()

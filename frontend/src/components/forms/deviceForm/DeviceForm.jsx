@@ -34,33 +34,23 @@ function DeviceForm() {
     }
 
     const handleNumber = async () => {
-        let query = await apis.getExtractionNumber(searchParams.get("id"))
+        let query = await apis.getExtractionInfo(searchParams.get("id"))
+        console.log(query.response.CellPhones)
         if (query.status === 200) {
-
-            let _amount = []
+            let _amount = [], _loaded = [...loaded]
             for (let index = 0; index < query.response.numberOfDevices; index++) {
                 _amount.push(index)
             }
+            query.response.CellPhones.forEach(phone => {
+                _loaded.push(phone.deviceNumber)
+            })
+            setLoaded(_loaded)
             setAmount(_amount)
             setExtractionId(query.response.id)
-            await handleInfo()
+            setInfo(query.response.CellPhones)
             setLoading(false)
         } else {
             setLoading(false)
-        }
-    }
-
-    const handleInfo = async () => {
-        let query = await apis.getExtractionsById(extractionId)
-        let aux = [...loaded]
-        if (query.response.length > 0) {
-            query.response.forEach((element, index) => {
-                if (!aux.find(item => item === element.deviceNumber)) {
-                    aux.push(element.deviceNumber)
-                }
-            })
-            setLoaded(aux)
-            setInfo(query.response)
         }
     }
 

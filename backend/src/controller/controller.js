@@ -497,13 +497,17 @@ module.exports = controller = {
 
         try {
             const result = await sequelize.transaction(async (t) => {
-                await CellPhone.create({
+                let newExtraction = await CellPhone.create({
                     deviceNumber: body.device,
-                    cellBrand: body.brand,
-                    cellModel: body.model,
+                    phoneBrand: body.phoneBrand,
+                    phoneModel: body.phoneModel,
                     type: body.type,
-                    simcard: body.simcards['1'].simcard,
-                    imei: body.imeis['1'].imei,
+                    simcardNumber1: body.simcard.simcard1.number,
+                    simcardNumber2: body.simcard.simcard2.number,
+                    simcardCompany1: body.simcard.simcard1.company,
+                    simcardCompany2: body.simcard.simcard2.company,
+                    imeiNumber1: body.imei.imeiNumber1,
+                    imeiNumber2: body.imei.imeiNumber2,
                     batteryBrand: body.battery.brand,
                     batteryModel: body.battery.model,
                     microsdType: body.microsd.type,
@@ -516,9 +520,10 @@ module.exports = controller = {
                         }
                     })).id
                 }, { transaction: t })
-                res.status(200).send({ message: "ok" })
+
+                res.status(200).send({ message: "Extracción cargada con éxito", info: newExtraction.id})
             })
-        } catch(e) {
+        } catch (e) {
             res.status(400).sent({ message: "error" })
         }
 
@@ -541,10 +546,9 @@ module.exports = controller = {
             res.status(400).send({ message: "Algo salió mal" })
         }
     },
-    getExtractionNumber: async (req, res) => {
+    getExtractionInfo: async (req, res) => {
 
         const id = req.params.id
-
         try {
             const result = await sequelize.transaction(async (t) => {
 
@@ -552,7 +556,8 @@ module.exports = controller = {
                     {
                         where: {
                             FileId: id
-                        }
+                        },
+                        include: [CellPhone]
                     }, { transaction: t }
                 )
                 if (response === null) {
@@ -568,7 +573,6 @@ module.exports = controller = {
     },
     getExtractionsById: async (req, res) => {
         const id = req.params.id
-        
         try {
             const result = await sequelize.transaction(async (t) => {
                 let response = await CellPhone.findAll(
@@ -578,10 +582,10 @@ module.exports = controller = {
                         }
                     }, { transaction: t }
                 )
-                if(response.length < 1){
-                    
-                    res.status(404).send({message: "no hallado"})
-                }else{
+                if (response.length < 1) {
+
+                    res.status(404).send({ message: "no hallado" })
+                } else {
                     res.status(200).send(response)
                 }
             })
@@ -590,19 +594,26 @@ module.exports = controller = {
         }
     },
     updateExtraction: async (req, res) => {
-        console.log(req.body)
         let body = req.body
-
         try {
             const result = await sequelize.transaction(async (t) => {
-                let extraction = await CellPhone.findByPk(body.extractionId, { transaction: t })
-                console.log(extraction)
-                extraction.cellBrand = body.brand
-                extraction.cellModel = body.model
+                let extraction = await CellPhone.findByPk(body.phoneId, { transaction: t })
+                extraction.phoneBrand = body.phoneBrand
+                extraction.phoneModel = body.phoneModel
+                extraction.simcardNumber1 = body.simcard.simcard1.number
+                extraction.simcardNumber2 = body.simcard.simcard2.number
+                extraction.simcardCompany1 = body.simcard.simcard1.company
+                extraction.simcardCompany2 = body.simcard.simcard2.company
+                extraction.imeiNumber1 = body.imei.imeiNumber1
+                extraction.imeiNumber2 = body.imei.imeiNumber2
+                extraction.batteryBrand = body.battery.brand
+                extraction.batteryModel = body.battery.model
+                extraction.microsdType = body.microsd.type
+                extraction.microsdCapacity = body.microsd.capacity
                 extraction.detail = body.detail
                 extraction.extraction = body.extraction
                 extraction = await extraction.save({ transaction: t })
-                res.status(200).send({message: "ok"})
+                res.status(200).send({ message: "Extracción actualizada con éxito" })
             })
         } catch (error) {
             res.status(400).send({ message: "Ocurrió un error", detail: null, status: 400 })
