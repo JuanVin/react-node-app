@@ -27,7 +27,6 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
   const [phoneId, setPhoneId] = useState(null)
   const [message, setMessage] = useState(null)
 
-  console.log(message)
   useEffect(() => {
     if (info) {
       setInputValues()
