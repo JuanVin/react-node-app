@@ -2,19 +2,20 @@ import { useState } from "react";
 import CellForm from "./CellForm";
 import { useSearchParams } from "react-router-dom"
 
-function FormContent({ deviceNumber, info, currentPage, loaded, setLoaded }) {
+function FormContent({ deviceNumber, info, amount, setAmount, currentPage, loaded, setLoaded }) {
   const [option, setOption] = useState("1");
   const [currentOption, setCurrentOption] = useState("1");
   const [searchParams] = useSearchParams();
 
+  console.log(deviceNumber)
   const handleOption = () => {
     setCurrentOption(option);
   };
-  
+
   const optionSwitch = () => {
     switch (currentOption) {
       case "1":
-        return <CellForm deviceNumber={deviceNumber} info={info} loaded={loaded} setLoaded={setLoaded} file={searchParams.get("file")} id={searchParams.get("id")}></CellForm>;
+        return <CellForm deviceNumber={deviceNumber} amount={amount} setAmount={setAmount} info={info} loaded={loaded} setLoaded={setLoaded} file={searchParams.get("file")} id={searchParams.get("id")}></CellForm>;
       case "2":
         return "Formulario de PC";
       case "3":
@@ -45,6 +46,7 @@ function FormContent({ deviceNumber, info, currentPage, loaded, setLoaded }) {
             {currentOption !== "" ? optionSwitch() : ""}
           </div>
         </div>
+
       </>
     );
   };

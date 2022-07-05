@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import apis from "../../apiCalls";
 import Loading from "../../commons/Loading";
 import Message from "../../commons/Message";
-function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
+function CellForm({ deviceNumber, file, id, loaded, setLoaded, info, amount, setAmount }) {
   const [loading, setLoading] = useState(true)
   const [simcardOption, setSimcardOption] = useState("1");
   const [imeiOption, setImeiOption] = useState("1");
@@ -30,6 +30,7 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
   useEffect(() => {
     if (info) {
       setInputValues()
+      setPhoneId(info.id)
     } else {
       setLoading(false)
     }
@@ -61,7 +62,6 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
     setLoading(false)
 
   }
-
   async function handleSubmit(e) {
     e.preventDefault();
     let fileExtraction = {
@@ -93,18 +93,22 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
         type: microsdType,
         capacity: microsdCapacity
       },
+      options: {
+        simcard: simcardOption,
+        imei: imeiOption,
+        microsd: microsdOption,
+        battery: batteryOption
+      },
       detail: detail,
       extraction: extraction,
     };
 
-    if (info || phoneId) {
-      if (phoneId) {
-        fileExtraction.phoneId = phoneId
-      } else {
-        fileExtraction.phoneId = info.id
-      }
+    if (phoneId) {
+
+      fileExtraction.phoneId = phoneId
       let query = await apis.updateExtraction(fileExtraction)
       setMessage({ message: query.response.message, status: query.status })
+
     } else {
       let query = await apis.postNewExtraction(fileExtraction);
       if (query.status === 200) {
@@ -302,6 +306,17 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
       )
     }
   }
+  const deleteForm = async () => {
+    let aux = [...amount]
+    if(phoneId){
+      console.log("algo")
+    }else{
+      console.log(aux)
+      aux.splice(deviceNumber-1, 1)
+      console.log(aux)
+      setAmount(aux)
+    }
+  }
 
   if (loading) {
     return (
@@ -376,11 +391,11 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info }) {
             <label htmlFor="extraction">Extracción</label>
             <textarea className="form-control" id="extraction" rows="3" value={extraction} onChange={(e) => setExtraction(e.target.value)} ></textarea>
           </div>
-          <div className="text-center">
-            <button className="btn btn-success text-center mt-1">Cargar</button>
+          <div className="text-center mt-1">
+            <button className="btn btn-success text-center">Cargar</button>
+            <button type="button" className="btn btn-warning" onClick={deleteForm} style={{ marginLeft: "10px" }}>Borrar</button>
           </div>
         </div>
-
       </form>
       <Message props={message}></Message>
     </>

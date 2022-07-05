@@ -50,7 +50,7 @@ function Pagination({ amount, currentPage, setCurrentPage, loaded }) {
                         <span aria-hidden="true">&raquo;</span>
                         <span class="sr-only"></span>
                     </button></li>
-                </ul>
+                </ul>     
             </nav>
         </div>
     )

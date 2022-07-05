@@ -128,7 +128,6 @@ const apis = {
     },
     getStadisticsByDate: async (fetchData) => {
 
-        console.log(fetchData)
         let options = {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
@@ -155,7 +154,7 @@ const apis = {
         return response
     },
     postNewExtraction: async (fetchData) => {
-        
+
         let options = {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
@@ -213,5 +212,21 @@ const apis = {
         response = await response.json()
         return {response, status}
     },
+    newExtractionForm: async (fetchData) => {
+        
+        let options = {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(fetchData)
+        },
+            url = `http://localhost:3000/api/files/new_extraction_form`,
+            response,
+            status
+
+        response = await fetch(url, options)
+        status = response.status
+        response = await response.json()
+        return {response, status}
+    }
 }
 export default apis

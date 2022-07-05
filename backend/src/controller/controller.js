@@ -11,6 +11,7 @@ const type = require("../models/FileType")
 const extraction = require("../models/Extraction")
 const { Op } = require("sequelize");
 const CellPhone = require('../models/CellPhone')
+const { transaction } = require('../database/db')
 
 module.exports = controller = {
     getFileById: async (req, res) => {
@@ -524,7 +525,8 @@ module.exports = controller = {
                 res.status(200).send({ message: "Extracción cargada con éxito", info: newExtraction.id})
             })
         } catch (e) {
-            res.status(400).sent({ message: "error" })
+            console.log(e)
+            res.status(400).send({ message: "error" })
         }
 
     },
@@ -618,5 +620,35 @@ module.exports = controller = {
         } catch (error) {
             res.status(400).send({ message: "Ocurrió un error", detail: null, status: 400 })
         }
+    },
+    newExtractionForm: async (req, res) => {
+        try{
+            const result = sequelize.transaction(async (t) => {
+                const response = await extraction.findOne({
+                    where: {
+                        FileId: req.body.id
+                    }
+                }, {transaction: t})
+                response.numberOfDevices = req.body.number
+                await response.save({transaction: t})
+                res.status(200).send({message: "ok"})
+            })
+        }catch (e){
+            console.log(e)
+            res.status(400).send({message: "Ocurrió un error"})
+        }
+    },
+    deleteExtractionForm: async (req,res) => {
+            let id = req.params.id
+            try {
+                const resuls = await sequelize.transaction(async (t) => {
+                    let detail = await details.findByPk(id, { transaction: t })
+                    await detail.destroy({ transaction: t })
+                    res.send({ message: "Detalle borrado correctamente", status: 200 })
+                })
+            } catch (error) {
+                res.send({ message: "Ocurrió un error", status: 400 })
+            }
+        
     }
 }

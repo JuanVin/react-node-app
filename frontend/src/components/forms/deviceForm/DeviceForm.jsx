@@ -35,7 +35,6 @@ function DeviceForm() {
 
     const handleNumber = async () => {
         let query = await apis.getExtractionInfo(searchParams.get("id"))
-        console.log(query.response.CellPhones)
         if (query.status === 200) {
             let _amount = [], _loaded = [...loaded]
             for (let index = 0; index < query.response.numberOfDevices; index++) {
@@ -66,6 +65,20 @@ function DeviceForm() {
         return null
     }
 
+    const addNewForm = async (e) => {
+        e.preventDefault()
+        let body = {
+            id: searchParams.get("id"),
+            number: amount.length + 1
+        }
+        let query = await apis.newExtractionForm(body)
+        if (query.status === 200) {
+            let _amount = [...amount]
+            _amount.push(_amount.length)
+            setAmount(_amount)
+        }
+    }
+
     function handleReturn() {
         setAmount([])
         setLoaded([])
@@ -87,14 +100,16 @@ function DeviceForm() {
                         {
                             amount.map((item, index) => {
                                 return (
-                                    <FormContent deviceNumber={item + 1} info={filterInfo(index + 1)} loaded={loaded} setLoaded={setLoaded} currentPage={currentPage + 1} key={index}></FormContent>
+                                    <FormContent deviceNumber={index + 1} amount={amount} setAmount={setAmount} info={filterInfo(index + 1)} loaded={loaded} setLoaded={setLoaded} currentPage={currentPage + 1} key={index}></FormContent>
                                 )
                             })
-
                         }
                         <Pagination amount={amount.length} loaded={loaded} currentPage={currentPage} setCurrentPage={setCurrentPage}></Pagination>
                         <div className="mb-3" style={{ display: "flex", justifyContent: "center" }}>
                             <button className="btn btn-dark" onClick={handleReturn}>Volver</button>
+                            <form onSubmit={(e) => addNewForm(e)}>
+                                <button type="submit" className="btn btn-success" style={{ marginLeft: "10px" }}>Agregar</button>
+                            </form>
                         </div>
                     </>
                     :
