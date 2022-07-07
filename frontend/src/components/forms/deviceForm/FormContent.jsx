@@ -1,13 +1,10 @@
 import { useState } from "react";
 import CellForm from "./CellForm";
-import { useSearchParams } from "react-router-dom"
 
-function FormContent({ deviceNumber, info, amount, setAmount, currentPage, loaded, setLoaded }) {
+function FormContent({ elementNumber, device, amount, setAmount, currentPage, loaded, setLoaded }) {
   const [option, setOption] = useState("1");
   const [currentOption, setCurrentOption] = useState("1");
-  const [searchParams] = useSearchParams();
 
-  console.log(deviceNumber)
   const handleOption = () => {
     setCurrentOption(option);
   };
@@ -15,7 +12,7 @@ function FormContent({ deviceNumber, info, amount, setAmount, currentPage, loade
   const optionSwitch = () => {
     switch (currentOption) {
       case "1":
-        return <CellForm deviceNumber={deviceNumber} amount={amount} setAmount={setAmount} info={info} loaded={loaded} setLoaded={setLoaded} file={searchParams.get("file")} id={searchParams.get("id")}></CellForm>;
+        return <CellForm elementNumber={elementNumber} amount={amount} setAmount={setAmount} device={device} loaded={loaded} setLoaded={setLoaded}></CellForm>;
       case "2":
         return "Formulario de PC";
       case "3":
@@ -31,7 +28,7 @@ function FormContent({ deviceNumber, info, amount, setAmount, currentPage, loade
         <div style={{ display: "flex", justifyContent: "center" }}>
           <div className="w-50 border rounded">
             <div className="bg-dark p-3">
-              <h2 className="m-3 text-center text-light">Dispositivo N° {deviceNumber}</h2>
+              <h2 className="m-3 text-center text-light">Dispositivo N° {elementNumber}</h2>
               <div className="input-group">
                 <select className="form-select text-center" value={option} onChange={(e) => setOption(e.target.value)}>
                   <option value={"1"}>Celular</option>
@@ -53,11 +50,17 @@ function FormContent({ deviceNumber, info, amount, setAmount, currentPage, loade
 
   return (
     <>
-      {deviceNumber === currentPage ? (
-        <div className="">{getFormBody()}</div>
-      ) : (
-        <div className="d-none">{getFormBody()}</div>
-      )}
+      {
+        elementNumber === currentPage
+          ?
+          (
+            <div className="">{getFormBody()}</div>
+          )
+          :
+          (
+            <div className="d-none">{getFormBody()}</div>
+          )
+      }
     </>
   );
 }

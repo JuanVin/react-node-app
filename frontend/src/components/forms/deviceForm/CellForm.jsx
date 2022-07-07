@@ -1,14 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import apis from "../../apiCalls";
 import Loading from "../../commons/Loading";
 import Message from "../../commons/Message";
-function CellForm({ deviceNumber, file, id, loaded, setLoaded, info, amount, setAmount }) {
+import { useSearchParams } from "react-router-dom"
+
+function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount }) {
+
+  const [searchParams] = useSearchParams();
+
   const [loading, setLoading] = useState(true)
   const [simcardOption, setSimcardOption] = useState("1");
   const [imeiOption, setImeiOption] = useState("1");
   const [batteryOption, setBatteryOption] = useState("1");
   const [microsdOption, setMicrosdOption] = useState("1")
 
+  const [deviceNumber, setDeviceNumber] = useState(elementNumber)
   const [phoneBrand, setPhoneBrand] = useState("")
   const [phoneModel, setPhoneModel] = useState("")
   const [simcardNumber1, setSimcardNumber1] = useState("");
@@ -28,36 +34,35 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info, amount, set
   const [message, setMessage] = useState(null)
 
   useEffect(() => {
-    if (info) {
+    if (device) {
       setInputValues()
-      setPhoneId(info.id)
+      setPhoneId(device.id)
     } else {
       setLoading(false)
     }
-  }, [info, loading])
-
+  }, [device, loading])
   function setInputValues() {
 
-    setPhoneBrand(info.phoneBrand)
-    setPhoneModel(info.phoneModel)
+    setPhoneBrand(device.phoneBrand)
+    setPhoneModel(device.phoneModel)
 
-    setSimcardNumber1(info.simcardNumber1)
-    setSimcardNumber2(info.simcardNumber2)
+    setSimcardNumber1(device.simcardNumber1)
+    setSimcardNumber2(device.simcardNumber2)
 
-    setSimcardCompany1(info.simcardCompany1)
-    setSimcardCompany2(info.simcardCompany2)
+    setSimcardCompany1(device.simcardCompany1)
+    setSimcardCompany2(device.simcardCompany2)
 
-    setImeiNumber1(info.imeiNumber1)
-    setImeiNumber2(info.imeiNumber2)
+    setImeiNumber1(device.imeiNumber1)
+    setImeiNumber2(device.imeiNumber2)
 
-    setDetail(info.detail)
-    setExtraction(info.extraction)
+    setDetail(device.detail)
+    setExtraction(device.extraction)
 
-    setBatteryBrand(info.batteryBrand)
-    setBatteryModel(info.batteryModel)
+    setBatteryBrand(device.batteryBrand)
+    setBatteryModel(device.batteryModel)
 
-    setMicrosdType(info.microsdType)
-    setMicrosdCapacity(info.microsdCapacity)
+    setMicrosdType(device.microsdType)
+    setMicrosdCapacity(device.microsdCapacity)
 
     setLoading(false)
 
@@ -65,8 +70,8 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info, amount, set
   async function handleSubmit(e) {
     e.preventDefault();
     let fileExtraction = {
-      id: id,
-      file: file,
+      id: searchParams.get("id"),
+      file: searchParams.get("file"),
       type: 1,
       device: deviceNumber,
       phoneBrand: phoneBrand,
@@ -104,21 +109,25 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info, amount, set
     };
 
     if (phoneId) {
-
       fileExtraction.phoneId = phoneId
       let query = await apis.updateExtraction(fileExtraction)
-      setMessage({ message: query.response.message, status: query.status })
-
+      if (query.status === 200) {
+        setMessage({ message: query.response.message, status: query.status })
+        let _loaded = [...loaded]
+        _loaded = _loaded.filter(element => element !== elementNumber)
+        if (!_loaded.find(element => element === deviceNumber)) {
+          _loaded.push(deviceNumber)
+        }
+        setLoaded(deviceNumber)
+      }
     } else {
       let query = await apis.postNewExtraction(fileExtraction);
       if (query.status === 200) {
-        let aux = [...loaded]
-        if (!aux.find(element => element === deviceNumber)) {
-          aux.push(deviceNumber)
-        }
+        let _loaded = [...loaded]
+        _loaded.push(deviceNumber)
         setPhoneId(query.response.info)
         setMessage({ message: query.response.message, status: query.status })
-        setLoaded(aux)
+        setLoaded(_loaded)
       }
     }
   }
@@ -307,17 +316,29 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info, amount, set
     }
   }
   const deleteForm = async () => {
-    let aux = [...amount]
-    if(phoneId){
-      console.log("algo")
-    }else{
-      console.log(aux)
-      aux.splice(deviceNumber-1, 1)
-      console.log(aux)
-      setAmount(aux)
+    if (phoneId) {
+      let query = await apis.deleteForm({ id: phoneId })
+      if (query.status === 200) {
+        updateFormsNumber()
+      }
+    } else {
+      updateFormsNumber()
     }
   }
-
+  const updateFormsNumber = async () => {
+    let body = {
+      id: searchParams.get("id"),
+      number: amount.length - 1
+    }
+    let query = await apis.updateFormsNumber(body)
+    if (query.status === 200) {
+      let _amount = [...amount]
+      let _loaded = loaded.filter((element) => { return element !== deviceNumber })
+      _amount.splice(deviceNumber - 1, 1)
+      setLoaded(_loaded)
+      setAmount(_amount)
+    }
+  }
   if (loading) {
     return (
       <Loading></Loading>
@@ -329,6 +350,18 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info, amount, set
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="p-3 bg-light shadow-sm rounded">
           <div className="row">
+            <div className="col">
+              <div className="form-group">
+                <label htmlFor="model">Dispositivo N°: </label>
+                <select className="form-control" value={deviceNumber} onChange={(e) => setDeviceNumber(e.target.value)} id="simcardSelect">
+                  {amount.map(device => {
+                    return (
+                      <option value={device + 1}>{device + 1}</option>
+                    )
+                  })}
+                </select>
+              </div>
+            </div>
             <div className="col">
               <div className="form-group">
                 <label htmlFor="brand">Marca</label>
@@ -392,8 +425,24 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info, amount, set
             <textarea className="form-control" id="extraction" rows="3" value={extraction} onChange={(e) => setExtraction(e.target.value)} ></textarea>
           </div>
           <div className="text-center mt-1">
-            <button className="btn btn-success text-center">Cargar</button>
-            <button type="button" className="btn btn-warning" onClick={deleteForm} style={{ marginLeft: "10px" }}>Borrar</button>
+            <button className="btn btn-success text-center">
+              {
+                phoneId
+                  ?
+                  "Actualizar"
+                  :
+                  "Cargar"
+              }
+            </button>
+            <button type="button" className="btn btn-warning" onClick={deleteForm} style={{ marginLeft: "10px" }}>
+              {
+                phoneId
+                  ?
+                  "Borrar en DB"
+                  :
+                  "Borrar"
+              }
+            </button>
           </div>
         </div>
       </form>
@@ -401,4 +450,4 @@ function CellForm({ deviceNumber, file, id, loaded, setLoaded, info, amount, set
     </>
   );
 }
-export default CellForm;
+export default memo(CellForm);

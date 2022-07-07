@@ -11,7 +11,6 @@ const type = require("../models/FileType")
 const extraction = require("../models/Extraction")
 const { Op } = require("sequelize");
 const CellPhone = require('../models/CellPhone')
-const { transaction } = require('../database/db')
 
 module.exports = controller = {
     getFileById: async (req, res) => {
@@ -522,7 +521,7 @@ module.exports = controller = {
                     })).id
                 }, { transaction: t })
 
-                res.status(200).send({ message: "Extracción cargada con éxito", info: newExtraction.id})
+                res.status(200).send({ message: "Extracción cargada con éxito", info: newExtraction.id })
             })
         } catch (e) {
             console.log(e)
@@ -597,9 +596,11 @@ module.exports = controller = {
     },
     updateExtraction: async (req, res) => {
         let body = req.body
+        console.log()
         try {
             const result = await sequelize.transaction(async (t) => {
                 let extraction = await CellPhone.findByPk(body.phoneId, { transaction: t })
+                extraction.deviceNumber = body.device
                 extraction.phoneBrand = body.phoneBrand
                 extraction.phoneModel = body.phoneModel
                 extraction.simcardNumber1 = body.simcard.simcard1.number
@@ -621,34 +622,34 @@ module.exports = controller = {
             res.status(400).send({ message: "Ocurrió un error", detail: null, status: 400 })
         }
     },
-    newExtractionForm: async (req, res) => {
-        try{
+    updateExtractionNumber: async (req, res) => {
+        try {
             const result = sequelize.transaction(async (t) => {
                 const response = await extraction.findOne({
                     where: {
                         FileId: req.body.id
                     }
-                }, {transaction: t})
+                }, { transaction: t })
                 response.numberOfDevices = req.body.number
-                await response.save({transaction: t})
-                res.status(200).send({message: "ok"})
+                await response.save({ transaction: t })
+                res.status(200).send({ message: "ok" })
             })
-        }catch (e){
+        } catch (e) {
             console.log(e)
-            res.status(400).send({message: "Ocurrió un error"})
+            res.status(400).send({ message: "Ocurrió un error" })
         }
     },
-    deleteExtractionForm: async (req,res) => {
-            let id = req.params.id
-            try {
-                const resuls = await sequelize.transaction(async (t) => {
-                    let detail = await details.findByPk(id, { transaction: t })
-                    await detail.destroy({ transaction: t })
-                    res.send({ message: "Detalle borrado correctamente", status: 200 })
-                })
-            } catch (error) {
-                res.send({ message: "Ocurrió un error", status: 400 })
-            }
-        
+    deleteExtraction: async (req, res) => {
+        let id = req.body.id
+        try {
+            const result = await sequelize.transaction(async (t) => {
+                const response = await CellPhone.findByPk(id, { transaction: t })
+                await response.destroy({ transaction: t })
+                res.status(200).send({ message: "Borrado correctamente" })
+            })
+        } catch (e) {
+            console.log(e)
+            res.status(400).send({ message: "error" })
+        }
     }
 }

@@ -167,7 +167,7 @@ const apis = {
         response = await fetch(url, options)
         status = response.status
         response = await response.json()
-        return {response, status}
+        return { response, status }
     },
     postExtractionNumber: async (fetchData) => {
         let options = {
@@ -182,22 +182,22 @@ const apis = {
         response = await fetch(url, options)
         status = response.status
         response = await response.json()
-        return {response, status}
+        return { response, status }
     },
     getExtractionInfo: async (id) => {
         let response = await fetch(`http://localhost:3000/api/files/get_extraction/${id}`)
         let status = response.status
         response = await response.json()
-        return {response, status}
+        return { response, status }
     },
     getExtractionsById: async (id) => {
         let response = await fetch(`http://localhost:3000/api/files/get_extractions_by_id/${id}`)
         let status = response.status
         response = await response.json()
-        return {response, status}
+        return { response, status }
     },
     updateExtraction: async (fetchData) => {
-        
+
         let options = {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
@@ -210,23 +210,38 @@ const apis = {
         response = await fetch(url, options)
         status = response.status
         response = await response.json()
-        return {response, status}
+        return { response, status }
     },
-    newExtractionForm: async (fetchData) => {
-        
+    updateFormsNumber: async (fetchData) => {
         let options = {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(fetchData)
         },
-            url = `http://localhost:3000/api/files/new_extraction_form`,
+            url = `http://localhost:3000/api/files/update_extraction_number`,
             response,
             status
 
         response = await fetch(url, options)
         status = response.status
         response = await response.json()
-        return {response, status}
+        return { response, status }
+    },
+    deleteForm: async (fetchData) => {
+
+        let options = {
+            method: 'delete',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(fetchData)
+        },
+            url = `http://localhost:3000/api/files/delete_extraction_form`,
+            response,
+            status
+
+        response = await fetch(url, options)
+        status = response.status
+        response = await response.json()
+        return { response, status }
     }
 }
 export default apis

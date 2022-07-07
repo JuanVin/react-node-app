@@ -4,7 +4,9 @@ import Pagination from "./Pagination";
 import { useSearchParams } from "react-router-dom"
 import apis from "../../apiCalls";
 import Loading from "../../commons/Loading"
+
 function DeviceForm() {
+
     const [amount, setAmount] = useState([])
     const [number, setNumber] = useState(0)
     const [currentPage, setCurrentPage] = useState(0)
@@ -12,7 +14,8 @@ function DeviceForm() {
     const [loaded, setLoaded] = useState([])
     const [loading, setLoading] = useState(true)
     const [extractionId, setExtractionId] = useState(0)
-    const [info, setInfo] = useState(null)
+    const [devices, setDevices] = useState(null)
+
 
     useEffect(() => {
         handleNumber()
@@ -22,6 +25,7 @@ function DeviceForm() {
         e.preventDefault()
         let _amount = []
         let status = await handleSubmit(number)
+
         if (status === 200) {
             for (let index = 0; index < number; index++) {
                 _amount.push(index)
@@ -35,18 +39,21 @@ function DeviceForm() {
 
     const handleNumber = async () => {
         let query = await apis.getExtractionInfo(searchParams.get("id"))
+
         if (query.status === 200) {
             let _amount = [], _loaded = [...loaded]
             for (let index = 0; index < query.response.numberOfDevices; index++) {
                 _amount.push(index)
             }
             query.response.CellPhones.forEach(phone => {
-                _loaded.push(phone.deviceNumber)
+                if (!_loaded.find(element => element === phone.deviceNumber)) {
+                    _loaded.push(phone.deviceNumber)
+                }
             })
             setLoaded(_loaded)
             setAmount(_amount)
             setExtractionId(query.response.id)
-            setInfo(query.response.CellPhones)
+            setDevices(query.response.CellPhones)
             setLoading(false)
         } else {
             setLoading(false)
@@ -58,20 +65,20 @@ function DeviceForm() {
         return response.status
     }
 
-    function filterInfo(index) {
-        if (info) {
-            return (info.filter(element => element.deviceNumber === index))[0]
+    function filterDevice(index) {
+        if (devices) {
+            return (devices.filter(device => device.deviceNumber === index))[0]
         }
         return null
     }
 
-    const addNewForm = async (e) => {
+    const updateFormsNumber = async (e) => {
         e.preventDefault()
         let body = {
             id: searchParams.get("id"),
             number: amount.length + 1
         }
-        let query = await apis.newExtractionForm(body)
+        let query = await apis.updateFormsNumber(body)
         if (query.status === 200) {
             let _amount = [...amount]
             _amount.push(_amount.length)
@@ -100,14 +107,14 @@ function DeviceForm() {
                         {
                             amount.map((item, index) => {
                                 return (
-                                    <FormContent deviceNumber={index + 1} amount={amount} setAmount={setAmount} info={filterInfo(index + 1)} loaded={loaded} setLoaded={setLoaded} currentPage={currentPage + 1} key={index}></FormContent>
+                                    <FormContent elementNumber={index + 1} amount={amount} setAmount={setAmount} device={filterDevice(index + 1)} loaded={loaded} setLoaded={setLoaded} currentPage={currentPage + 1} key={item}></FormContent>
                                 )
                             })
                         }
                         <Pagination amount={amount.length} loaded={loaded} currentPage={currentPage} setCurrentPage={setCurrentPage}></Pagination>
                         <div className="mb-3" style={{ display: "flex", justifyContent: "center" }}>
                             <button className="btn btn-dark" onClick={handleReturn}>Volver</button>
-                            <form onSubmit={(e) => addNewForm(e)}>
+                            <form onSubmit={(e) => updateFormsNumber(e)}>
                                 <button type="submit" className="btn btn-success" style={{ marginLeft: "10px" }}>Agregar</button>
                             </form>
                         </div>
