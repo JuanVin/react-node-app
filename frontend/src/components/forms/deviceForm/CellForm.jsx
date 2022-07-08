@@ -74,6 +74,7 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
     let fileExtraction = {
       id: searchParams.get("id"),
       file: searchParams.get("file"),
+      extractionId: id,
       type: 1,
       device: deviceNumber,
       phoneBrand: phoneBrand,

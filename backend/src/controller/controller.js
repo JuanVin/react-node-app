@@ -317,10 +317,10 @@ module.exports = controller = {
                         transaction: t
                     }
                 )
-                res.status(200).send({ message: "Detalle cargado correctamente", detail: detail})
+                res.status(200).send({ message: "Detalle cargado correctamente", detail: detail })
             })
         } catch (error) {
-            res.status(400).send({ message: "Ocurrió un error", detail: null})
+            res.status(400).send({ message: "Ocurrió un error", detail: null })
         }
     },
     deleteDetail: async (req, res) => {
@@ -596,10 +596,21 @@ module.exports = controller = {
     },
     updateExtraction: async (req, res) => {
         let body = req.body
-        console.log()
         try {
             const result = await sequelize.transaction(async (t) => {
                 let extraction = await CellPhone.findByPk(body.phoneId, { transaction: t })
+                if (extraction.deviceNumber !== body.device) {
+                    let extraction2 = await CellPhone.findOne({
+                        where: {
+                            deviceNumber: body.device,
+                            ExtractionId: body.extractionId
+                        }
+                    }, { transaction: t })
+                    if (extraction2) {
+                        extraction2.deviceNumber = extraction.deviceNumber
+                        extraction2 = await extraction2.save({ transaction: t })
+                    }
+                }
                 extraction.deviceNumber = body.device
                 extraction.phoneBrand = body.phoneBrand
                 extraction.phoneModel = body.phoneModel
@@ -619,7 +630,7 @@ module.exports = controller = {
                 res.status(200).send({ message: "Extracción actualizada con éxito", device: extraction })
             })
         } catch (error) {
-            res.status(400).send({ message: "Ocurrió un error", detail: null, status: 400 })
+            res.status(400).send({ message: "Ocurrió un error", detail: null })
         }
     },
     updateExtractionNumber: async (req, res) => {

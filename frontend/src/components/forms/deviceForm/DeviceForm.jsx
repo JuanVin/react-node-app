@@ -22,13 +22,15 @@ function DeviceForm() {
 
     const handleAmount = async (e) => {
         e.preventDefault()
-        let _amount = []
-        let status = await handleSubmit(number)
 
-        if (status === 200) {
+        let _amount = []
+        let query = await handleSubmit(number)
+
+        if (query.status === 200) {
             for (let index = 0; index < number; index++) {
                 _amount.push(index)
             }
+            setExtractionId(query.response.info)
             setAmount(_amount)
         }
         else {
@@ -60,8 +62,8 @@ function DeviceForm() {
     }
 
     const handleSubmit = async () => {
-        let response = await apis.postExtractionNumber({ numberOfDevices: number, fileId: searchParams.get("id") })
-        return response.status
+        let query = await apis.postExtractionNumber({ numberOfDevices: number, fileId: searchParams.get("id") })
+        return query
     }
 
     function filterDevice(index) {
