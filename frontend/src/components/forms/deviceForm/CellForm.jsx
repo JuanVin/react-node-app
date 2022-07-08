@@ -3,7 +3,7 @@ import apis from "../../apiCalls";
 import Loading from "../../commons/Loading";
 import Message from "../../commons/Message";
 import { useSearchParams } from "react-router-dom"
-
+import useExtraction from "../../../hooks/useExtraction";
 function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount }) {
 
   const [searchParams] = useSearchParams();
@@ -32,6 +32,8 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
 
   const [message, setMessage] = useState(null)
   const [deviceInfo, setDeviceInfo] = useState(device)
+
+  const { id } = useExtraction()
 
   useEffect(() => {
     if (device) {
@@ -117,40 +119,75 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
           setTimeout(() => {
             window.location.reload(false);
           }, 1000);
+        } else {
+          setDeviceInfo(...query.response.device, ...deviceInfo)
+          setInputValues()
+          let _loaded = [...loaded]
+          _loaded = _loaded.filter(element => element !== elementNumber)
+          if (!_loaded.find(element => element === query.response.device.deviceNumber)) {
+            _loaded.push(parseInt(query.response.device.deviceNumber))
+          }
+          setLoaded(_loaded)
         }
-
-        setDeviceInfo(...query.response.device, ...deviceInfo)
-        setInputValues()
-
-        let _loaded = [...loaded]
-        _loaded = _loaded.filter(element => element !== elementNumber)
-
-        if (!_loaded.find(element => element === query.response.device.deviceNumber)) {
-          _loaded.push(parseInt(query.response.device.deviceNumber))
-        }
-        setLoaded(_loaded)
       }
     } else {
       let query = await apis.postNewExtraction(fileExtraction);
       if (query.status === 200) {
         setMessage({ message: query.response.message, status: query.status })
-
         if (query.response.device.deviceNumber !== elementNumber) {
           setTimeout(() => {
             window.location.reload(false);
           }, 1000);
+        } else {
+          let _loaded = [...loaded]
+          if (!_loaded.find(element => element === deviceNumber)) {
+            _loaded.push(deviceNumber)
+          }
+          setDeviceInfo(query.response.device)
+          setLoaded(_loaded)
         }
-
-        let _loaded = [...loaded]
-        if (!_loaded.find(element => element === deviceNumber)) {
-          _loaded.push(deviceNumber)
-        }
-
-        setDeviceInfo(query.response.device)
-        setLoaded(_loaded)
       }
     }
   }
+
+
+  const deleteForm = async () => {
+    if (deviceInfo) {
+      let query = await apis.deleteForm({ id: deviceInfo.id })
+      if (query.status === 200) {
+        updateFormsNumber(0)
+      }
+    } else {
+      if (loaded.find(element => { return element > elementNumber })) {
+        let query = await apis.updateDeviceNumbers({ id: id, number: elementNumber })
+        if (query.status === 200) {
+          updateFormsNumber(0)
+        }
+      } else {
+        updateFormsNumber(1)
+      }
+    }
+  }
+
+  const updateFormsNumber = async (opt) => {
+    let body = {
+      id: searchParams.get("id"),
+      number: amount.length - 1
+    }
+    let query = await apis.updateFormsNumber(body)
+    if (query.status === 200) {
+      if (opt === 0) {
+        window.location.reload(false);
+      } else {
+        let _amount = [...amount]
+        let _loaded = loaded.filter((element) => { return element !== deviceNumber })
+        _amount.splice(deviceNumber - 1, 1)
+        setLoaded(_loaded)
+        setAmount(_amount)
+      }
+    }
+  }
+
   function setSimcardForm() {
 
     switch (simcardOption) {
@@ -335,31 +372,7 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
       )
     }
   }
-  const deleteForm = async () => {
-    if (deviceInfo) {
-      let query = await apis.deleteForm({ id: deviceInfo.id })
-      if (query.status === 200) {
-        updateFormsNumber()
-      }
-    } else {
-      updateFormsNumber()
-    }
-  }
-  const updateFormsNumber = async () => {
-    let body = {
-      id: searchParams.get("id"),
-      number: amount.length - 1
-    }
-    let query = await apis.updateFormsNumber(body)
-    if (query.status === 200) {
-      window.location.reload(false);
-      let _amount = [...amount]
-      let _loaded = loaded.filter((element) => { return element !== deviceNumber })
-      _amount.splice(deviceNumber - 1, 1)
-      setLoaded(_loaded)
-      setAmount(_amount)
-    }
-  }
+
   if (loading) {
     return (
       <Loading></Loading>
@@ -367,7 +380,7 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
   }
   return (
     <>
-
+      <Message props={message}></Message>
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="text-center mt-1">
           <button className="btn btn-success text-center">
@@ -487,7 +500,6 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
           </div>
         </div>
       </form>
-
       <Message props={message}></Message>
     </>
   );

@@ -4,7 +4,7 @@ import Pagination from "./Pagination";
 import { useSearchParams } from "react-router-dom"
 import apis from "../../apiCalls";
 import Loading from "../../commons/Loading"
-
+import ExtractionContext from "../../../context/ExtractionContext";
 function DeviceForm() {
 
     const [amount, setAmount] = useState([])
@@ -13,8 +13,8 @@ function DeviceForm() {
     const [searchParams] = useSearchParams();
     const [loaded, setLoaded] = useState([])
     const [loading, setLoading] = useState(true)
-    const [extractionId, setExtractionId] = useState(0)
     const [devices, setDevices] = useState(null)
+    const [extractionId, setExtractionId] = useState(null)
 
     useEffect(() => {
         handleNumber()
@@ -40,7 +40,7 @@ function DeviceForm() {
         let query = await apis.getExtractionInfo(searchParams.get("id"))
 
         if (query.status === 200) {
-            let _amount = [], _loaded = [...loaded], _elementPosition =[]
+            let _amount = [], _loaded = [...loaded]
             for (let index = 0; index < query.response.numberOfDevices; index++) {
                 _amount.push(index)
             }
@@ -89,7 +89,7 @@ function DeviceForm() {
         setAmount([])
         setLoaded([])
     }
-   
+
     if (loading) {
         return (
             <Loading></Loading>
@@ -102,30 +102,32 @@ function DeviceForm() {
                 (amount.length > 0)
                     ?
                     <>
-                        <Pagination amount={amount.length} loaded={loaded} currentPage={currentPage} setCurrentPage={setCurrentPage}></Pagination>
-                        {
-                            amount.map((item, index) => {
-                                return (
-                                    <FormContent
-                                        elementNumber={index + 1}
-                                        amount={amount}
-                                        setAmount={setAmount}
-                                        device={filterDevice(index + 1)}
-                                        loaded={loaded}
-                                        setLoaded={setLoaded}
-                                        currentPage={currentPage + 1}
-                                        key={item}>
-                                    </FormContent>
-                                )
-                            })
-                        }
-                        <Pagination amount={amount.length} loaded={loaded} currentPage={currentPage} setCurrentPage={setCurrentPage}></Pagination>
-                        <div className="mb-3" style={{ display: "flex", justifyContent: "center" }}>
-                            <button className="btn btn-dark" onClick={handleReturn}>Volver</button>
-                            <form onSubmit={(e) => updateFormsNumber(e)}>
-                                <button type="submit" className="btn btn-success" style={{ marginLeft: "10px" }}>Agregar</button>
-                            </form>
-                        </div>
+                        <ExtractionContext.Provider value={{ id: extractionId }}>
+                            <Pagination amount={amount.length} loaded={loaded} currentPage={currentPage} setCurrentPage={setCurrentPage}></Pagination>
+                            {
+                                amount.map((item, index) => {
+                                    return (
+                                        <FormContent
+                                            elementNumber={index + 1}
+                                            amount={amount}
+                                            setAmount={setAmount}
+                                            device={filterDevice(index + 1)}
+                                            loaded={loaded}
+                                            setLoaded={setLoaded}
+                                            currentPage={currentPage + 1}
+                                            key={item}>
+                                        </FormContent>
+                                    )
+                                })
+                            }
+                            <Pagination amount={amount.length} loaded={loaded} currentPage={currentPage} setCurrentPage={setCurrentPage}></Pagination>
+                            <div className="mb-3" style={{ display: "flex", justifyContent: "center" }}>
+                                <button className="btn btn-dark" onClick={handleReturn}>Volver</button>
+                                <form onSubmit={(e) => updateFormsNumber(e)}>
+                                    <button type="submit" className="btn btn-success" style={{ marginLeft: "10px" }}>Agregar</button>
+                                </form>
+                            </div>
+                        </ExtractionContext.Provider>
                     </>
                     :
                     <>

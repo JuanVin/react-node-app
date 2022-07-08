@@ -55,7 +55,6 @@ function Form(params) {
   if (isLoading) {
     return <Loading></Loading>;
   }
-
   async function handleUpdate() {
     let body = {
       FiscalOfficeId: fiscalOfficeId,
@@ -72,7 +71,6 @@ function Form(params) {
     }
     setPostData(await apis.postUpdateData(body));
   }
-
   function loadTechnician() {
     let techData = [];
     techData.push(<option value={0}>No asignado</option>);

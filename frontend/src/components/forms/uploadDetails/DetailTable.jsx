@@ -11,6 +11,7 @@ function DetailTable(params) {
     const handleShowWarning = (index, opt) => setShowOptiones({ index: index, opt: opt })
 
 
+
     let trParam = []
 
     async function postUpdDetail(id, index) {
@@ -34,17 +35,18 @@ function DetailTable(params) {
         
     }
     async function postDeleteDetail(id, index) {
-        let response
+        let query = null
         try {
-            response = await apis.deteleDetail(id)
-            if (response.status === 200) {
+            let query = await apis.deteleDetail(id)
+            if (query.status === 200) {
                 details.splice(index, 1)
                 setDetails(details)
             }
+            console.log(query)
         } catch (error) {
             console.log(error)
         }
-        setMessage({ message: response.message, status: response.status })
+        setMessage({ message: query.response.message, status: query.status })
         handleCloseTextArea()
        
     }

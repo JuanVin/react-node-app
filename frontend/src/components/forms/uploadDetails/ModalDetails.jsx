@@ -18,16 +18,16 @@ function ModalDetails(params) {
 
     
     async function postNewDetail(params) {
-        let newDetail = document.getElementById("textarea_detail").value.trim(),
-        response = null
+        let newDetail = document.getElementById("textarea_detail").value.trim()
+      
         if (newDetail !== null && newDetail !== "") {
-            response = await apis.newDetail({ detail: newDetail, file_id: params.details.file_id })
-            if(response.status === 200){
-                tableDetails.push(response.detail)
+            let query = await apis.newDetail({ detail: newDetail, file_id: params.details.file_id })
+            if(query.status === 200){
+                tableDetails.push(query.response.detail)
                 setTableDetails(tableDetails)
                 handleCloseNewDetail()
             }
-            setMessage({ message: response.message, status: response.status })
+            setMessage({ message: query.response.message, status: query.status })
         } else (
             console.log("detalle nulo")
         )

@@ -106,11 +106,13 @@ const apis = {
             body: JSON.stringify(fetchData)
         },
             url = `http://localhost:3000/api/files/details/new_detail`,
-            response
+            response,
+            status
 
         response = await fetch(url, options)
+        status = response.status
         response = await response.json()
-        return response
+        return {response: response, status: status}
 
     },
     deteleDetail: async (id) => {
@@ -119,11 +121,13 @@ const apis = {
             method: 'delete',
         },
             url = `http://localhost:3000/api/files/details/delete/${id}`,
-            response
+            response,
+            status
 
         response = await fetch(url, options)
+        status = response.status
         response = await response.json()
-        return response
+        return {response: response, status: status}
 
     },
     getStadisticsByDate: async (fetchData) => {
@@ -242,6 +246,21 @@ const apis = {
         status = response.status
         response = await response.json()
         return { response, status }
-    }
+    },
+    updateDeviceNumbers: async (fetchData) => {
+        let options = {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(fetchData)
+        },
+            url = `http://localhost:3000/api/files/update_device_numbers`,
+            response,
+            status
+
+        response = await fetch(url, options)
+        status = response.status
+        response = await response.json()
+        return { response, status }
+    },
 }
 export default apis

@@ -24,6 +24,7 @@ router.post('/api/files/set_extraction_number', controller.setExtractionNumber)
 router.post('/api/files/form/new_file', controller.newFile)
 router.post('/api/files/update_extraction', controller.updateExtraction)
 router.post('/api/files/update_extraction_number', controller.updateExtractionNumber)
+router.post('/api/files/update_device_numbers', controller.updateDeviceNumbers)
 
 router.delete('/api/files/delete_extraction_form', controller.deleteExtraction)
 router.delete('/api/files/details/delete/:id', controller.deleteDetail)
