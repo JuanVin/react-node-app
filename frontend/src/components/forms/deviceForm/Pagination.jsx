@@ -1,8 +1,6 @@
 function Pagination({ amount, currentPage, setCurrentPage, loaded }) {
     let _pagination = []
 
-    
-  
     for (let index = 0; index < amount; index++){
         if(loaded.find(element => element === index+1)){
             _pagination.push(
@@ -13,7 +11,6 @@ function Pagination({ amount, currentPage, setCurrentPage, loaded }) {
                 <li className="page-item" key={index * Math.random()}><button type="button" onClick={() => setCurrentPage(index)} className="page-link text-secondary">{setCurrentPageStyle(index)}</button></li>
             )
         }
-        
     }
    
     function setCurrentPageStyle(index){

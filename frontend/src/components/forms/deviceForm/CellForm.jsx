@@ -30,39 +30,39 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
   const [microsdType, setMicrosdType] = useState("")
   const [microsdCapacity, setMicrosdCapacity] = useState("")
 
-  const [phoneId, setPhoneId] = useState(null)
   const [message, setMessage] = useState(null)
+  const [deviceInfo, setDeviceInfo] = useState(device)
 
   useEffect(() => {
     if (device) {
       setInputValues()
-      setPhoneId(device.id)
     } else {
       setLoading(false)
     }
   }, [device, loading])
+
   function setInputValues() {
 
-    setPhoneBrand(device.phoneBrand)
-    setPhoneModel(device.phoneModel)
+    setPhoneBrand(deviceInfo.phoneBrand)
+    setPhoneModel(deviceInfo.phoneModel)
 
-    setSimcardNumber1(device.simcardNumber1)
-    setSimcardNumber2(device.simcardNumber2)
+    setSimcardNumber1(deviceInfo.simcardNumber1)
+    setSimcardNumber2(deviceInfo.simcardNumber2)
 
-    setSimcardCompany1(device.simcardCompany1)
-    setSimcardCompany2(device.simcardCompany2)
+    setSimcardCompany1(deviceInfo.simcardCompany1)
+    setSimcardCompany2(deviceInfo.simcardCompany2)
 
-    setImeiNumber1(device.imeiNumber1)
-    setImeiNumber2(device.imeiNumber2)
+    setImeiNumber1(deviceInfo.imeiNumber1)
+    setImeiNumber2(deviceInfo.imeiNumber2)
 
-    setDetail(device.detail)
-    setExtraction(device.extraction)
+    setDetail(deviceInfo.detail)
+    setExtraction(deviceInfo.extraction)
 
-    setBatteryBrand(device.batteryBrand)
-    setBatteryModel(device.batteryModel)
+    setBatteryBrand(deviceInfo.batteryBrand)
+    setBatteryModel(deviceInfo.batteryModel)
 
-    setMicrosdType(device.microsdType)
-    setMicrosdCapacity(device.microsdCapacity)
+    setMicrosdType(deviceInfo.microsdType)
+    setMicrosdCapacity(deviceInfo.microsdCapacity)
 
     setLoading(false)
 
@@ -108,25 +108,45 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
       extraction: extraction,
     };
 
-    if (phoneId) {
-      fileExtraction.phoneId = phoneId
+    if (deviceInfo) {
+      fileExtraction.phoneId = deviceInfo.id
       let query = await apis.updateExtraction(fileExtraction)
       if (query.status === 200) {
         setMessage({ message: query.response.message, status: query.status })
+        if (query.response.device.deviceNumber !== elementNumber) {
+          setTimeout(() => {
+            window.location.reload(false);
+          }, 1000);
+        }
+
+        setDeviceInfo(...query.response.device, ...deviceInfo)
+        setInputValues()
+
         let _loaded = [...loaded]
         _loaded = _loaded.filter(element => element !== elementNumber)
-        if (!_loaded.find(element => element === deviceNumber)) {
-          _loaded.push(deviceNumber)
+
+        if (!_loaded.find(element => element === query.response.device.deviceNumber)) {
+          _loaded.push(parseInt(query.response.device.deviceNumber))
         }
-        setLoaded(deviceNumber)
+        setLoaded(_loaded)
       }
     } else {
       let query = await apis.postNewExtraction(fileExtraction);
       if (query.status === 200) {
-        let _loaded = [...loaded]
-        _loaded.push(deviceNumber)
-        setPhoneId(query.response.info)
         setMessage({ message: query.response.message, status: query.status })
+
+        if (query.response.device.deviceNumber !== elementNumber) {
+          setTimeout(() => {
+            window.location.reload(false);
+          }, 1000);
+        }
+
+        let _loaded = [...loaded]
+        if (!_loaded.find(element => element === deviceNumber)) {
+          _loaded.push(deviceNumber)
+        }
+
+        setDeviceInfo(query.response.device)
         setLoaded(_loaded)
       }
     }
@@ -316,8 +336,8 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
     }
   }
   const deleteForm = async () => {
-    if (phoneId) {
-      let query = await apis.deleteForm({ id: phoneId })
+    if (deviceInfo) {
+      let query = await apis.deleteForm({ id: deviceInfo.id })
       if (query.status === 200) {
         updateFormsNumber()
       }
@@ -332,6 +352,7 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
     }
     let query = await apis.updateFormsNumber(body)
     if (query.status === 200) {
+      window.location.reload(false);
       let _amount = [...amount]
       let _loaded = loaded.filter((element) => { return element !== deviceNumber })
       _amount.splice(deviceNumber - 1, 1)
@@ -348,6 +369,26 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
     <>
 
       <form onSubmit={(e) => handleSubmit(e)}>
+        <div className="text-center mt-1">
+          <button className="btn btn-success text-center">
+            {
+              deviceInfo
+                ?
+                "Actualizar"
+                :
+                "Cargar"
+            }
+          </button>
+          <button type="button" className="btn btn-outline-warning" onClick={deleteForm} style={{ marginLeft: "10px" }}>
+            {
+              deviceInfo
+                ?
+                "Borrar en DB"
+                :
+                "Borrar"
+            }
+          </button>
+        </div>
         <div className="p-3 bg-light shadow-sm rounded">
           <div className="row">
             <div className="col">
@@ -427,16 +468,16 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
           <div className="text-center mt-1">
             <button className="btn btn-success text-center">
               {
-                phoneId
+                deviceInfo
                   ?
                   "Actualizar"
                   :
                   "Cargar"
               }
             </button>
-            <button type="button" className="btn btn-warning" onClick={deleteForm} style={{ marginLeft: "10px" }}>
+            <button type="button" className="btn btn-outline-warning" onClick={deleteForm} style={{ marginLeft: "10px" }}>
               {
-                phoneId
+                deviceInfo
                   ?
                   "Borrar en DB"
                   :
@@ -446,6 +487,7 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
           </div>
         </div>
       </form>
+
       <Message props={message}></Message>
     </>
   );

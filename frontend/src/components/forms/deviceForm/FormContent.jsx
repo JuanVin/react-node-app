@@ -12,7 +12,14 @@ function FormContent({ elementNumber, device, amount, setAmount, currentPage, lo
   const optionSwitch = () => {
     switch (currentOption) {
       case "1":
-        return <CellForm elementNumber={elementNumber} amount={amount} setAmount={setAmount} device={device} loaded={loaded} setLoaded={setLoaded}></CellForm>;
+        return <CellForm
+          elementNumber={elementNumber}
+          amount={amount}
+          setAmount={setAmount}
+          device={device}
+          loaded={loaded}
+          setLoaded={setLoaded}>
+        </CellForm>;
       case "2":
         return "Formulario de PC";
       case "3":

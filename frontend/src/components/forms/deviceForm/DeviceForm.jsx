@@ -16,7 +16,6 @@ function DeviceForm() {
     const [extractionId, setExtractionId] = useState(0)
     const [devices, setDevices] = useState(null)
 
-
     useEffect(() => {
         handleNumber()
     }, [loading])
@@ -41,7 +40,7 @@ function DeviceForm() {
         let query = await apis.getExtractionInfo(searchParams.get("id"))
 
         if (query.status === 200) {
-            let _amount = [], _loaded = [...loaded]
+            let _amount = [], _loaded = [...loaded], _elementPosition =[]
             for (let index = 0; index < query.response.numberOfDevices; index++) {
                 _amount.push(index)
             }
@@ -90,7 +89,7 @@ function DeviceForm() {
         setAmount([])
         setLoaded([])
     }
-
+   
     if (loading) {
         return (
             <Loading></Loading>
@@ -107,7 +106,16 @@ function DeviceForm() {
                         {
                             amount.map((item, index) => {
                                 return (
-                                    <FormContent elementNumber={index + 1} amount={amount} setAmount={setAmount} device={filterDevice(index + 1)} loaded={loaded} setLoaded={setLoaded} currentPage={currentPage + 1} key={item}></FormContent>
+                                    <FormContent
+                                        elementNumber={index + 1}
+                                        amount={amount}
+                                        setAmount={setAmount}
+                                        device={filterDevice(index + 1)}
+                                        loaded={loaded}
+                                        setLoaded={setLoaded}
+                                        currentPage={currentPage + 1}
+                                        key={item}>
+                                    </FormContent>
                                 )
                             })
                         }

@@ -521,7 +521,7 @@ module.exports = controller = {
                     })).id
                 }, { transaction: t })
 
-                res.status(200).send({ message: "Extracción cargada con éxito", info: newExtraction.id })
+                res.status(200).send({ message: "Extracción cargada con éxito", device: newExtraction})
             })
         } catch (e) {
             console.log(e)
@@ -616,7 +616,7 @@ module.exports = controller = {
                 extraction.detail = body.detail
                 extraction.extraction = body.extraction
                 extraction = await extraction.save({ transaction: t })
-                res.status(200).send({ message: "Extracción actualizada con éxito" })
+                res.status(200).send({ message: "Extracción actualizada con éxito", device: extraction})
             })
         } catch (error) {
             res.status(400).send({ message: "Ocurrió un error", detail: null, status: 400 })
