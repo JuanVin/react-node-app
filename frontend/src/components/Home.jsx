@@ -3,6 +3,7 @@ import apis from "./apiCalls"
 import UploadForm from "./forms/UploadForm"
 import "./styles/home.css"
 import AccordionFile from "./commons/AccordionFile"
+import Loading from "./commons/Loading"
 
 function Home() {
     let [isLoading, setIsLoading] = useState(true)
@@ -14,18 +15,17 @@ function Home() {
 
     useEffect(() => {
         getFetchData()
-    }, [fetchCurrentData !== null])
+    }, [isLoading])
 
     let getFetchData = async () => {
         setFetchCurrentData(await apis.getCurrentDayFiles())
         await setIsLoading(false)
-
     }
 
     if (isLoading) {
         return (
             <>
-                <h1>Cargando...</h1>
+                <Loading></Loading>
             </>
         )
     }
@@ -35,7 +35,7 @@ function Home() {
     }
 
     if (fetchCurrentData !== null) {
-        fetchCurrentData.map(data => {
+        fetchCurrentData.forEach(data => {
             if (new Date(data.FileDate.shift_date).getHours() <= 11) {
                 morning_shift.push(data)
             } else {
@@ -56,7 +56,7 @@ function Home() {
                                 <div className="p-3">
                                     <h3>Turno mañana</h3>
                                     {(morning_shift.length >= 1) ?
-                                        <AccordionFile data={{ files: morning_shift, option: "a1" }}></AccordionFile>
+                                        <AccordionFile files={morning_shift} option={"a2"}></AccordionFile>
                                         :
                                         <h3 style={{ color: "grey" }} className="text-center mt-5">Sin turnos</h3>
                                     }
@@ -64,7 +64,7 @@ function Home() {
                                 <div className="p-3">
                                     <h3>Turno tarde</h3>
                                     {(late_shift.length >= 1) ?
-                                        <AccordionFile data={{ files: late_shift, option: "a2" }}></AccordionFile>
+                                        <AccordionFile files={late_shift} option={"a2"}></AccordionFile>
                                         :
                                         <h3 style={{ color: "grey" }} className="text-center mt-5">Sin turnos</h3>
                                     }

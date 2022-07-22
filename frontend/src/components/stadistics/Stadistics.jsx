@@ -5,29 +5,32 @@ import PendingFilesTable from "./PendingFilesTable";
 
 import FilesPercentage from "./FilesPercentage";
 function Stadistics() {
+
   const [fileStadistic, setFileStadistic] = useState(null);
   const [technicianStadistic, setTechnicianStadistic] = useState(null);
   const [pendingFiles, setPendingFiles] = useState(null);
   const [archivedFile, setArchivedFile] = useState(null);
   const [deliverFile, setDeliverFile] = useState(null);
   const [total, setTotal] = useState(null);
+  const [startDate, setStartDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
 
   async function postFetchData() {
-    let startDate = new Date(document.getElementById("start").value),
-      endDate = new Date(document.getElementById("end").value),
-      response = await apis.getStadisticsByDate({
-        start: startDate,
-        end: endDate,
-      });
-    setFileStadistic(response.fileStadistic);
-    setTechnicianStadistic(response.technicianStadistic);
-    setPendingFiles(response.pendingFiles);
-    setTotal(response.fileStadistic[response.fileStadistic.length - 1].total);
+
+    let query = await apis.getStadisticsByDate({
+      start: startDate,
+      end: endDate,
+    });
+
+    setFileStadistic(query.fileStadistic);
+    setTechnicianStadistic(query.technicianStadistic);
+    setPendingFiles(query.pendingFiles);
+    setTotal(query.fileStadistic[query.fileStadistic.length - 1].total);
     setArchivedFile(
-      response.fileStadistic.find((element) => element.name === "archivado")
+      query.fileStadistic.find((element) => element.name === "archivado")
     );
     setDeliverFile(
-      response.fileStadistic.find(
+      query.fileStadistic.find(
         (element) => element.name === "falta_entregar"
       )
     );
@@ -42,7 +45,8 @@ function Stadistics() {
           </label>
           <input
             type="date"
-            id="start"
+            value={startDate}
+            onChange={e => setStartDate(e.target.value)}
             style={{ display: "inline-block" }}
             className="form-control w-25"
           ></input>
@@ -51,7 +55,8 @@ function Stadistics() {
           </label>
           <input
             type="date"
-            id="end"
+            value={endDate}
+            onChange={e => setEndDate(e.target.value)}
             style={{ display: "inline-block" }}
             className="form-control w-25"
           ></input>
@@ -68,11 +73,11 @@ function Stadistics() {
               <h3 className="text-center p-3">
                 Registros entre:{" "}
                 <span style={{ color: "orange" }}>
-                  {document.getElementById("start").value}
+                  {startDate}
                 </span>{" "}
                 y{" "}
                 <span style={{ color: "orange" }}>
-                  {document.getElementById("end").value}
+                  {endDate}
                 </span>
               </h3>
               <div className="col">

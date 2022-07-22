@@ -122,7 +122,7 @@ function TechnicianSearcher(param) {
           {data !== null ? (
             <div className="w-50 mt-3">
               <AccordionFile
-                data={{ files: data, option: "a5" }}
+                files={data} option={"a5"}
               ></AccordionFile>
             </div>
           ) : (

@@ -1,15 +1,11 @@
 import { Accordion } from "react-bootstrap"
 import "../styles/accordionFile.css"
 
-function AccordionFile(componentData) {
-    console.log(componentData)
-    let accordion = [],
-        files = componentData.data.files,
-        option = componentData.data.option
+function AccordionFile({ files, option }) {
 
-
+    let accordion = []
+    console.log(files)
     function formatDate(data, option) {
-
         let date
         if (data !== null) {
             date = new Date(data)
@@ -21,7 +17,7 @@ function AccordionFile(componentData) {
         }
         return "No registra"
     }
-    
+
     function formatOffice(office) {
         return office.name.toUpperCase()
     }
@@ -136,7 +132,12 @@ function AccordionFile(componentData) {
     return (
 
         <Accordion key={option + (Math.random() * Math.random())} className="w-100" defaultActiveKey="0">
-            {accordion}
+            {accordion.length > 0
+                ?
+                accordion
+                :
+                <h3 className="text-center">Sin resultados</h3>
+            }
         </Accordion>
 
     )

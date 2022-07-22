@@ -148,28 +148,28 @@ module.exports = controller = {
         fileNumber = fileNumber.replace('-', '/')
         try {
             const result = sequelize.transaction(async (t) => {
-                res.status(200).send(await files.findAll({
-                    where: {
-                        file_number: {
-                            [Op.like]: `%${fileNumber}%`
+                res.status(200).send(
+                    await files.findAll({
+                        where: {
+                            file_number: {
+                                [Op.like]: `%${fileNumber}%`
+                            }
+                        },
+                        include: [
+                            { model: dates, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: details, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: fiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: fiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: conditions, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: type, attributes: { exclude: ["createdAt", "updatedAt"] } }
+                        ],
+                        attributes: {
+                            exclude: ["ConditionId", "FileDateId", "FileTypeId", "FiscalOfficeId", "createdAt", "updatedAt"]
                         }
-                    },
-                    include: [
-                        { model: dates, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                        { model: details, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                        { model: fiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                        { model: fiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                        { model: technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                        { model: conditions, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                        { model: type, attributes: { exclude: ["createdAt", "updatedAt"] } }
-                    ],
-                    attributes: {
-                        exclude: ["ConditionId", "FileDateId", "FileTypeId", "FiscalOfficeId", "createdAt", "updatedAt"]
-                    }
-                }, { transaction: t }))
+                    }, { transaction: t }))
             })
         } catch (error) {
-            console.log(error)
             res.status(400).send({ message: "Algo ocurrió mal" })
         }
     },
@@ -213,39 +213,37 @@ module.exports = controller = {
     },
     updateFiles: async (req, res) => {
 
-        let newFile = req.body,
-            oldDate,
-            oldFile
+        let newFile = req.body
 
-        console.log(newFile)
         for (const key in newFile) {
             if (newFile[key] === 0 || newFile[key] === "0" || newFile[key] === '') {
                 newFile[key] = null
             }
         }
 
-        oldFile = await files.findByPk(newFile.file_id)
-        oldDate = await dates.findByPk(newFile.date_id)
-
-        oldDate.egress_date = newFile.egress_date
-        oldDate.admission_date = newFile.admission_date
-        oldDate.shift_date = newFile.shift_date
-
-        oldFile.ConditionId = newFile.ConditionId
-        oldFile.FiscalOfficeId = newFile.FiscalOfficeId
-        oldFile.FiscalUnitId = newFile.FiscalUnitId
-        oldFile.TechnicalId = newFile.TechnicalId
-        oldFile.file_number = newFile.file_number.slice(0, -2) + "/" + newFile.file_number.slice(-2)
-        oldFile.FileTypeId = newFile.file_type
-
         try {
             const results = sequelize.transaction(async (t) => {
+
+                let oldFile = await files.findByPk(newFile.file_id)
+                let oldDate = await dates.findByPk(newFile.date_id)
+
+                oldDate.egress_date = newFile.egress_date
+                oldDate.admission_date = newFile.admission_date
+                oldDate.shift_date = newFile.shift_date
+
+                oldFile.ConditionId = newFile.ConditionId
+                oldFile.FiscalOfficeId = newFile.FiscalOfficeId
+                oldFile.FiscalUnitId = newFile.FiscalUnitId
+                oldFile.TechnicalId = newFile.TechnicalId
+                oldFile.file_number = newFile.file_number.slice(0, -2) + "/" + newFile.file_number.slice(-2)
+                oldFile.FileTypeId = newFile.file_type
+
                 oldDate = await oldDate.save({ transaction: t })
                 oldFile = await oldFile.save({ transaction: t })
-                res.status(200).send({ message: "Expediente " + newFile.file_number + " actualizado correctamente", status: 200 })
+                res.status(200).send({ message: "Expediente " + newFile.file_number + " actualizado correctamente" })
             })
         } catch (error) {
-            res.status(400).send({ message: "Algo ocurrió mal", status: 400 })
+            res.status(400).send({ message: "Algo ocurrió mal" })
         }
     },
     newFile: async (req, res) => {
@@ -282,9 +280,9 @@ module.exports = controller = {
                     FileId: newFile.id
                 }, { transaction: t })
             })
-            res.status(200).send({ message: "Expediente cargado correctamente", status: 200 })
+            res.status(200).send({ message: "Expediente cargado correctamente" })
         } catch (error) {
-            res.status(400).send({ message: "Ocurrió un error", status: 400 })
+            res.status(400).send({ message: "Ocurrió un error" })
         }
 
     },

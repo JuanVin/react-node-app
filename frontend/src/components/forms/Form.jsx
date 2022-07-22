@@ -1,6 +1,6 @@
 import apis from "../apiCalls";
 import { useState, useEffect } from "react";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom"
 import ModalDetails from "./uploadDetails/ModalDetails";
 import Message from "../commons/Message";
 import Loading from "../commons/Loading";
@@ -9,7 +9,6 @@ function Form(params) {
 
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState(null);
-  const [postData, setPostData] = useState(null);
   const [message, setMessage] = useState(null);
   const [fiscalOfficeId, setFiscalOfficeId] = useState(fileData.FiscalOfficeId);
   const [fiscalUnitId, setFiscalUnitId] = useState(fileData.FiscalUnitId);
@@ -33,12 +32,6 @@ function Form(params) {
       getFetchData();
     }
   }, [isLoading]);
-
-  useEffect(() => {
-    if (postData !== null) {
-      setMessage({ message: postData.message, status: postData.status });
-    }
-  }, [postData !== null]);
 
   const getDataFromLocalStorage = async () => {
     setData(JSON.parse(localStorage.getItem("data")));
@@ -69,7 +62,10 @@ function Form(params) {
       file_id: fileId,
       date_id: dateId,
     }
-    setPostData(await apis.postUpdateData(body));
+
+    let query = await apis.postUpdateData(body);
+    setMessage({ message: query.response.message, status: query.status })
+
   }
   function loadTechnician() {
     let techData = [];
@@ -352,7 +348,12 @@ function Form(params) {
             Actualizar expediente
           </button>
         </div>
-        <Link to={`/device?file=${fileData.file_number}&id=${fileData.id}`}>Cargar extracción</Link>
+        <Link className="link-info"
+          to={{
+            pathname: "/device",
+            search: `?file=${fileData.file_number}&id=${fileData.id}`,
+          }}
+        >Cargar extracción</Link>
       </div>
     </>
   );

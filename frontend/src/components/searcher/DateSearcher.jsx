@@ -9,7 +9,7 @@ function DateSearcher(param) {
 
     async function postData(event) {
         event.preventDefault();
-        if(event.target.checkValidity()){
+        if (event.target.checkValidity()) {
             switch (param.props) {
                 case 0:
                     setData(await apis.getFileByAdmissionDate(date))
@@ -21,14 +21,14 @@ function DateSearcher(param) {
                     setData(await apis.getFileByShiftDate(date))
                     break;
                 default:
-                  
+
                     break;
             }
-        } 
+        }
     }
     return (
         <>
-            
+
             <div className="p-3">
 
                 <h2>Filtro: {dateTypes[param.props]}</h2>
@@ -42,10 +42,12 @@ function DateSearcher(param) {
 
                 <hr></hr>
                 <div style={{ display: "flex", justifyContent: "center" }}>
+
                     {
+
                         (data !== null) ?
                             <div className="w-50 mt-3">
-                                <AccordionFile data={{ files: data, option: "a5" }}></AccordionFile>
+                                <AccordionFile files={data} option={"a5"}></AccordionFile>
                             </div>
                             :
                             ""

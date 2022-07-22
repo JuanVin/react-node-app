@@ -42,7 +42,6 @@ function DetailTable(params) {
                 details.splice(index, 1)
                 setDetails(details)
             }
-            console.log(query)
         } catch (error) {
             console.log(error)
         }
@@ -50,7 +49,7 @@ function DetailTable(params) {
         handleCloseTextArea()
        
     }
-    details.map((param, index) => {
+    details.forEach((param, index) => {
         trParam.push(
             <tr key={param.id}>
                 <th>{index + 1}</th>

@@ -1,5 +1,5 @@
 import { Button, Modal } from "react-bootstrap";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import apis from "../../apiCalls";
 import AccordionFile from "../AccordionFile";
 import "../../styles/modal.css";
@@ -14,8 +14,11 @@ function FileSearch() {
   async function handleSubmit(event) {
     event.preventDefault();
     if (event.target.checkValidity()) {
-      setData(await apis.getFileByFileNumber(input.trim().replace("/", "-")));
-      handleShow();
+      let query = await apis.getFileByFileNumber(input.trim().replace("/", "-"))
+      if (query.status === 200) {
+        setData(query.data);
+        handleShow();
+      }
     }
   }
 
@@ -35,7 +38,8 @@ function FileSearch() {
         </div>
       </form>
 
-      {data !== null ? (
+      {data !== null
+        ?
         <Modal
           dialogClassName="modal-90w"
           show={show}
@@ -48,7 +52,7 @@ function FileSearch() {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body className="bg-white">
-            <AccordionFile data={{ files: data, option: "a3" }}></AccordionFile>
+            <AccordionFile files={data} option={"a3"}></AccordionFile>
           </Modal.Body>
           <Modal.Footer className="bg-light">
             <Button variant="success" onClick={handleClose}>
@@ -56,7 +60,8 @@ function FileSearch() {
             </Button>
           </Modal.Footer>
         </Modal>
-      ) : null}
+        :
+        ""}
     </div>
   );
 }

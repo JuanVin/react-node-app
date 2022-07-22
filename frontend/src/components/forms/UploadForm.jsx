@@ -3,9 +3,9 @@ import apis from "../apiCalls";
 import Message from "../commons/Message";
 import Loading from "../commons/Loading";
 function UploadForm(params) {
+
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState(null);
-  const [postData, setPostData] = useState(null);
   const [message, setMessage] = useState(null);
 
   const [fiscalOfficeId, setFiscalOfficeId] = useState(0);
@@ -27,14 +27,8 @@ function UploadForm(params) {
     }
   }, [isLoading]);
 
-  useEffect(() => {
-    if (postData !== null)
-      setMessage({ message: postData.message, status: postData.status });
-  }, [postData !== null]);
-
   const getDataFromLocalStorage = async () => {
     setData(JSON.parse(localStorage.getItem("data")));
-    console.log(JSON.parse(localStorage.getItem("data")));
     setIsLoading(false);
   };
   const getFetchData = async () => {
@@ -49,20 +43,22 @@ function UploadForm(params) {
   }
   async function handleUpload() {
     let body = {
-        FiscalOfficeId: fiscalOfficeId,
-        FiscalUnitId: fiscalUnitId,
-        ConditionId: conditionId,
-        admission_date: admissionDate,
-        egress_date: egressDate,
-        shift_date: shiftDate,
-        detail: detail,
-        TechnicalId: technicalId,
-        file_number: fileNumber.replace("/", ""),
-        file_type: fileType
+      FiscalOfficeId: fiscalOfficeId,
+      FiscalUnitId: fiscalUnitId,
+      ConditionId: conditionId,
+      admission_date: admissionDate,
+      egress_date: egressDate,
+      shift_date: shiftDate,
+      detail: detail,
+      TechnicalId: technicalId,
+      file_number: fileNumber.replace("/", ""),
+      file_type: fileType
     }
-
-    setPostData(await apis.postFormData(body));
-    params.setRefreshData(1);
+    let query = await apis.postFormData(body)
+    if (query.status === 200) {
+      setMessage({ message: query.response.message, status: query.status })
+      params.setRefreshData(1);
+    }
   }
 
   function loadTechnician() {
@@ -73,9 +69,9 @@ function UploadForm(params) {
         <option value={technician.id}>{technician.name.toUpperCase()}</option>
       );
     });
-
     return techData;
   }
+
   function loadFiscalOffices() {
     let fiscalData = [];
     fiscalData.push(<option value={0}>{"Sin asignar"}</option>);

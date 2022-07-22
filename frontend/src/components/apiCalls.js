@@ -5,9 +5,11 @@ const apis = {
         return data
     },
     getFileByFileNumber: async (file_number) => {
-        let data = await fetch(`http://localhost:3000/api/files/${file_number}`)
+        let data = await fetch(`http://localhost:3000/api/files/${file_number}`),
+            status = data.status
+
         data = await data.json()
-        return data
+        return { data, status }
     },
     getFileByAdmissionDate: async (date) => {
         let data = await fetch(`http://localhost:3000/api/files/date/admission/${date}`)
@@ -56,11 +58,13 @@ const apis = {
             body: JSON.stringify(fetchData)
         },
             url = `http://localhost:3000/api/files/form/new_file`,
-            response
+            response,
+            status
 
         response = await fetch(url, options)
+        status = response.status
         response = await response.json()
-        return response
+        return { response, status }
     },
     getFileById: async (file_id) => {
         let data = await fetch(`http://localhost:3000/api/files/get/${file_id}`)
@@ -75,11 +79,13 @@ const apis = {
             body: JSON.stringify(fetchData)
         },
             url = `http://localhost:3000/api/files/form/update`,
-            response
+            response,
+            status
 
         response = await fetch(url, options)
+        status = response.status
         response = await response.json()
-        return response
+        return { response, status }
 
 
     },
@@ -112,7 +118,7 @@ const apis = {
         response = await fetch(url, options)
         status = response.status
         response = await response.json()
-        return {response: response, status: status}
+        return { response: response, status: status }
 
     },
     deteleDetail: async (id) => {
@@ -127,7 +133,7 @@ const apis = {
         response = await fetch(url, options)
         status = response.status
         response = await response.json()
-        return {response: response, status: status}
+        return { response: response, status: status }
 
     },
     getStadisticsByDate: async (fetchData) => {
