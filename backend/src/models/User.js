@@ -1,20 +1,22 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../database/db'),
-    File = require('./File')
+const sequelize = require('../database/db')
 
-const Technical = sequelize.define('Technical', {
+const User = sequelize.define('User', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
     },
-    name: {
+    username: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    password: {
         type: DataTypes.STRING,
         allowNull: false
     }
 })
 
-Technical.hasMany(File)
-File.belongsTo(Technical)
 
-module.exports = Technical
+
+module.exports = User

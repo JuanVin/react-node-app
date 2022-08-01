@@ -6,6 +6,7 @@ const fiscalOffice = require('../models/FiscalOffice')
 const technician = require('../models/Technical')
 const district = require('../models/District')
 const type = require('../models/FileType')
+const Role = require("../models/Role")
 const dist = [{
     name: "1ra circunscripcion"
 },
@@ -274,4 +275,13 @@ const tech =
             office.forEach(item => fiscalOffice.create(item))
             technicians.forEach(item => technician.create(item))
             types.forEach(item => type.create(item))
+
+            Role.create({
+                id: 1,
+                name: "user"
+            });
+            Role.create({
+                id: 2,
+                name: "admin"
+            });
         })
