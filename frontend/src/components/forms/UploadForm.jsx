@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import apis from "../apiCalls";
+import apis from "../../services/apiCalls";
 import Message from "../commons/Message";
 import Loading from "../commons/Loading";
 function UploadForm(params) {

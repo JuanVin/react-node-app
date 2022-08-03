@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react"
-import apis from "./apiCalls"
+import { useNavigate } from "react-router-dom"
+import apis from "../services/apiCalls"
 import UploadForm from "./forms/UploadForm"
 import "./styles/home.css"
 import AccordionFile from "./commons/AccordionFile"
 import Loading from "./commons/Loading"
-
-function Home() {
+import UserService from "../services/user.service"
+function Home({setShowNav}) {
     let [isLoading, setIsLoading] = useState(true)
     let [fetchCurrentData, setFetchCurrentData] = useState(null)
     let [refreshData, setRefreshData] = useState(0)
-
+    let [content, setContent] = useState("")
+    const Navigate = useNavigate()
+    setShowNav(true)
     let morning_shift = [],
         late_shift = []
 
@@ -18,8 +21,9 @@ function Home() {
     }, [isLoading])
 
     let getFetchData = async () => {
+        setContent(await UserService.getUserBoard())
         setFetchCurrentData(await apis.getCurrentDayFiles())
-        await setIsLoading(false)
+        setIsLoading(false)
     }
 
     if (isLoading) {
@@ -28,6 +32,12 @@ function Home() {
                 <Loading></Loading>
             </>
         )
+    }
+    if (content.status !== "") {
+        if (content.status !== 200) {
+            Navigate("/login")
+            window.location.reload();
+        }
     }
     if (refreshData !== 0) {
         setRefreshData(0)

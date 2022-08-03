@@ -3,8 +3,8 @@ import "../styles/accordionFile.css"
 
 function AccordionFile({ files, option }) {
 
-    let accordion = []
     console.log(files)
+    let accordion = []
     function formatDate(data, option) {
         let date
         if (data !== null) {
@@ -37,9 +37,9 @@ function AccordionFile({ files, option }) {
         return "Sin detalles"
     }
 
-    function formatTechnician(technician) {
-        if (technician !== null) {
-            return technician.name.toUpperCase()
+    function formatTechnician(Technician) {
+        if (Technician !== null) {
+            return Technician.name.toUpperCase()
         }
         return "No asignado"
     }
@@ -108,7 +108,7 @@ function AccordionFile({ files, option }) {
                             </tr>
                             <tr>
                                 <th scope="row">Técnico</th>
-                                <td>{formatTechnician(rowData.Technical)}</td>
+                                <td>{formatTechnician(rowData.Technician)}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Detalle</th>

@@ -1,5 +1,5 @@
 import { useState, useEffect, memo } from "react";
-import apis from "../../apiCalls";
+import apis from "../../../services/apiCalls"
 import Loading from "../../commons/Loading";
 import Message from "../../commons/Message";
 import { useSearchParams } from "react-router-dom"

@@ -1,7 +1,7 @@
 const sequelize = require('../database/db')
 const fiscalUnit = require('../models/FiscalUnit')
 const fiscalOffice = require('../models/FiscalOffice')
-const technician = require('../models/Technical')
+const technician = require('../models/Technician')
 const files = require('../models/File')
 const dates = require('../models/FileDate')
 const details = require('../models/Detail')
@@ -214,7 +214,7 @@ module.exports = controller = {
     updateFiles: async (req, res) => {
 
         let newFile = req.body
-
+        
         for (const key in newFile) {
             if (newFile[key] === 0 || newFile[key] === "0" || newFile[key] === '') {
                 newFile[key] = null
@@ -234,7 +234,7 @@ module.exports = controller = {
                 oldFile.ConditionId = newFile.ConditionId
                 oldFile.FiscalOfficeId = newFile.FiscalOfficeId
                 oldFile.FiscalUnitId = newFile.FiscalUnitId
-                oldFile.TechnicalId = newFile.TechnicalId
+                oldFile.TechnicianId = newFile.TechnicianId
                 oldFile.file_number = newFile.file_number.slice(0, -2) + "/" + newFile.file_number.slice(-2)
                 oldFile.FileTypeId = newFile.file_type
 
@@ -249,7 +249,7 @@ module.exports = controller = {
     newFile: async (req, res) => {
 
         let request = req.body
-
+        console.log(req.body)
         for (const key in request) {
             if (request[key] === '' || request[key] === '0' || request[key] === 0) {
                 request[key] = null
@@ -382,7 +382,7 @@ module.exports = controller = {
                                     },
                                     include: {
                                         model: files, where: {
-                                            TechnicalId: _technicians[key].id,
+                                            TechnicianId: _technicians[key].id,
                                             ConditionId: (await conditions.findOne({
                                                 where: {
                                                     condition: "archivado"
@@ -402,7 +402,7 @@ module.exports = controller = {
                                     },
                                     include: {
                                         model: files, where: {
-                                            TechnicalId: _technicians[key].id,
+                                            TechnicianId: _technicians[key].id,
                                             ConditionId: (await conditions.findOne({
                                                 where: {
                                                     condition: "falta entregar"
@@ -465,7 +465,7 @@ module.exports = controller = {
                 res.status(200).send(
                     await files.findAll({
                         where: {
-                            TechnicalId: data.technician
+                            TechnicianId: data.technician
                         },
                         include: [
                             {

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import apis from "../../apiCalls"
+import apis from "../../../services/apiCalls"
 import Message from "../../commons/Message"
 function DetailTable(params) {
 

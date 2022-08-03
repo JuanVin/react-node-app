@@ -14,11 +14,14 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(cors())
 
+//routes
 app.use(routes);
+require('./routes/auth.routes')(app);
+require('./routes/user.routes')(app);
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
-    const syncTables = async() => {
+    const syncTables = async () => {
         try {
             await sequelize.sync({ force: false })
             await console.log("All models were synchronized successfully.");

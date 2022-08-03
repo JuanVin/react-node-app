@@ -1,4 +1,4 @@
-import apis from "../apiCalls";
+import apis from "../../services/apiCalls"
 import { useState, useEffect } from "react";
 import AccordionFile from "../commons/AccordionFile";
 import Loading from "../commons/Loading";

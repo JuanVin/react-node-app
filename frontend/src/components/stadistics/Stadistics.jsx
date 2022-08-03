@@ -1,9 +1,9 @@
-import { useState } from "react";
-import apis from "../apiCalls";
+import { useState, useEffect } from "react";
+import apis from "./../../services/apiCalls"
 import BarGraphic from "./BarGraphic";
 import PendingFilesTable from "./PendingFilesTable";
-
 import FilesPercentage from "./FilesPercentage";
+import UserService from "../../services/user.service";
 function Stadistics() {
 
   const [fileStadistic, setFileStadistic] = useState(null);
@@ -14,6 +14,20 @@ function Stadistics() {
   const [total, setTotal] = useState(null);
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [content, setContent] = useState(null)
+  useEffect(() => {
+    checkRole()
+  }, [])
+
+  async function checkRole() {
+    let query = await UserService.getAdminBoard()
+    setContent(query)
+    if (query.status === 200) {
+      setIsAdmin(true)
+    }
+  }
+
 
   async function postFetchData() {
 
@@ -34,6 +48,13 @@ function Stadistics() {
         (element) => element.name === "falta_entregar"
       )
     );
+  }
+  if (isAdmin === false) {
+    if (content !== null) {
+      return (
+        <h1>{content.response.message}</h1>
+      )
+    }
   }
   return (
     <>

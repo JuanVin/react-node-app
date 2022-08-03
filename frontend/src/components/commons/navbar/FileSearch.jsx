@@ -1,6 +1,6 @@
 import { Button, Modal } from "react-bootstrap";
 import { useState } from "react";
-import apis from "../../apiCalls";
+import apis from "../../../services/apiCalls";
 import AccordionFile from "../AccordionFile";
 import "../../styles/modal.css";
 

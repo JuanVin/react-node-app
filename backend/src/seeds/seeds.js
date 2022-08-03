@@ -3,7 +3,7 @@ const sequelize = require('../database/db')
 const fiscalUnit = require('../models/FiscalUnit')
 const condition = require('../models/Condition')
 const fiscalOffice = require('../models/FiscalOffice')
-const technician = require('../models/Technical')
+const technician = require('../models/Technician')
 const district = require('../models/District')
 const type = require('../models/FileType')
 const Role = require("../models/Role")
@@ -284,4 +284,5 @@ const tech =
                 id: 2,
                 name: "admin"
             });
+            
         })

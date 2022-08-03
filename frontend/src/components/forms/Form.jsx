@@ -1,9 +1,10 @@
-import apis from "../apiCalls";
+import apis from "../../services/apiCalls";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom"
 import ModalDetails from "./uploadDetails/ModalDetails";
 import Message from "../commons/Message";
 import Loading from "../commons/Loading";
+
 function Form(params) {
   let fileData = params.data;
 
@@ -13,7 +14,7 @@ function Form(params) {
   const [fiscalOfficeId, setFiscalOfficeId] = useState(fileData.FiscalOfficeId);
   const [fiscalUnitId, setFiscalUnitId] = useState(fileData.FiscalUnitId);
   const [conditionId, setConditionId] = useState(fileData.ConditionId);
-  const [technicalId, setTechnicalId] = useState(fileData.TechnicalId);
+  const [technicianId, setTechnicianId] = useState(fileData.TechnicianId);
   const [admissionDate, setAdmissionDate] = useState(
     fileData.FileDate.admission_date
   );
@@ -56,7 +57,7 @@ function Form(params) {
       admission_date: admissionDate,
       egress_date: egressDate,
       shift_date: shiftDate,
-      TechnicalId: technicalId,
+      TechnicianId: technicianId,
       file_number: fileNumber.replace("/", "").trim(),
       file_type: fileType,
       file_id: fileId,
@@ -323,8 +324,8 @@ function Form(params) {
             </label>
             <select
               className="form-control"
-              value={technicalId}
-              onChange={(e) => setTechnicalId(e.target.value)}
+              value={technicianId}
+              onChange={(e) => setTechnicianId(e.target.value)}
               id="tecnico_act"
               required
             >

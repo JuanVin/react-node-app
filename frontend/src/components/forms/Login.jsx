@@ -1,4 +1,23 @@
-function Login() {
+import { useState } from "react"
+import { useNavigate } from "react-router-dom";
+import AuthService from "./../../services/auth.service"
+function Login({setShowNav}) {
+    const [userName, setUserName] = useState("")
+    const [password, setPassword] = useState("")
+    const [message, setMessage] = useState("")
+    let navigate = useNavigate();
+    setShowNav(false)
+    async function handleLogin(e) {
+        e.preventDefault();
+        const response = await AuthService.login(userName, password)
+        if (response.accessToken) {
+            navigate('/');
+            window.location.reload();
+        }else{
+            setMessage(response.message)
+        }
+    }
+
     return (
 
         <section className="vh-100" style={{ marginTop: "100px" }}>
@@ -12,24 +31,22 @@ function Login() {
                             className="img-fluid" alt="Sample image"></img>
                     </div>
                     <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-                        <form>
-
+                        <form onSubmit={(e) => handleLogin(e)}>
                             <h2 className="mb-4">
                                 Acceso
                             </h2>
                             <div className="form-outline mb-4">
-                                <input type="email" id="form3Example3" className="form-control form-control-lg"
+                                <input type="text" value={userName} onChange={e => setUserName(e.target.value)} id="username" className="form-control form-control-lg"
                                     placeholder="Ingrese un usuario válido" />
-                                <label className="form-label" for="form3Example3">Usuario</label>
+                                <label className="form-label" for="username">Usuario</label>
                             </div>
-
                             <div className="form-outline mb-3">
-                                <input type="password" id="form3Example4" className="form-control form-control-lg"
+                                <input type="password" value={password} onChange={e => setPassword(e.target.value)} id="password" className="form-control form-control-lg"
                                     placeholder="Enter password" />
-                                <label className="form-label" for="form3Example4">Contraseña</label>
+                                <label className="form-label" for="password">Contraseña</label>
                             </div>
                             <div className="form-outline mb-3">
-                                <button className="btn btn-primary btn-lg w-50">Ingresar</button>
+                                <button type="submit" className="btn btn-primary btn-lg w-50">Ingresar</button>
                             </div>
                         </form>
                     </div>

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import FormContent from "./FormContent";
 import Pagination from "./Pagination";
 import { useSearchParams } from "react-router-dom"
-import apis from "../../apiCalls";
+import apis from "../../../services/apiCalls"
 import Loading from "../../commons/Loading"
 import ExtractionContext from "../../../context/ExtractionContext";
 function DeviceForm() {

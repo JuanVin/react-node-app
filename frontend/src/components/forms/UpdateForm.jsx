@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import apis from "../apiCalls"
+import apis from "../../services/apiCalls";
 import Form from "./Form"
 import Loading from "../commons/Loading"
+import UserService from "../../services/user.service";
 
 function UpdateForm() {
     const [isLoading, setIsLoading] = useState(true)
     const [fetchFile, setFetchFile] = useState(null)
+    const [content, setContent] = useState("")
     const Navigate = useNavigate()
     let { id } = useParams();
 
@@ -18,7 +20,9 @@ function UpdateForm() {
         Navigate(-1)
     }
     async function getFetchData() {
+
         let fetchData = await apis.getFileById(id)
+        setContent(await UserService.getUserBoard())
         setFetchFile(fetchData)
         setIsLoading(false)
     }
@@ -27,6 +31,12 @@ function UpdateForm() {
         return (
             <Loading></Loading>
         )
+    }
+    if (content.status !== "") {
+        if (content.status !== 200) {
+            Navigate("/login")
+            window.location.reload();
+        }
     }
     return (
         <>
@@ -43,8 +53,6 @@ function UpdateForm() {
             </div>
         </>
     )
-
-
 }
 
 export default UpdateForm
