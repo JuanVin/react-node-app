@@ -7,6 +7,7 @@ import NavBar from './components/commons/navbar/NavBar';
 import Stadistics from './components/stadistics/Stadistics';
 import Searcher from './components/searcher/Searcher';
 import DeviceForm from './components/forms/deviceForm/DeviceForm';
+import Footer from './components/commons/Footer'
 import { useState } from "react"
 
 const App = () => {
@@ -16,7 +17,7 @@ const App = () => {
         <>
             <Router>
                 <Routes>
-                    <Route path='/login' element={<Login setShowNav={setShowNav}/>} />
+                    <Route path='/login' element={<Login setShowNav={setShowNav} />} />
                 </Routes>
             </Router>
 
@@ -30,7 +31,7 @@ const App = () => {
             <div className='container'>
                 <Router>
                     <Routes>
-                        <Route path='/' element={<Home setShowNav={setShowNav}/>} />
+                        <Route path='/' element={<Home setShowNav={setShowNav} />} />
                         <Route path='/update_form/:id' element={<UpdateForm />} />
                         <Route path='/stadistics' element={<Stadistics />} />
                         <Route path='/finder' element={<Searcher />} />
@@ -38,6 +39,12 @@ const App = () => {
                     </Routes>
                 </Router>
             </div>
+            {showNav
+                ?
+                <Footer></Footer>
+                :
+                ""
+            }
         </>
     )
 }

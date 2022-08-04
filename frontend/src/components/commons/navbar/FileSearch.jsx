@@ -25,16 +25,16 @@ function FileSearch() {
   return (
     <div className="my-2 my-lg-0 d-flex">
       <form onSubmit={(e) => handleSubmit(e)}>
-        <div className="input-group mt-1">
+        <div className="input-group">
           <input
-            className="form-control mr-sm-2 text-center"
+            className="form-control text-center"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             type="search"
             placeholder="Expediente"
             required
           ></input>
-          <input type="submit" className="btn btn-success" value="Submit" />
+          <button type="submit" className="btn btn-success">Buscar</button>
         </div>
       </form>
 

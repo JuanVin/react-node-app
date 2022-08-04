@@ -58,7 +58,7 @@ function Stadistics() {
   }
   return (
     <>
-      <div className="bg-light shadow p-3 rounded">
+      <div className="bg-light shadow p-3 rounded" style={{ height: "100%" }}>
         <h1 className="p-3">Estadísticas</h1>
         <div className="form-group">
           <label className="p-3" for="start">

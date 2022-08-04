@@ -25,7 +25,6 @@ module.exports = controller = {
                 }, { transaction: t }));
             })
         } catch (error) {
-            console.log(error)
             res.status(400).send({ message: "Ocurrió un error" })
         }
     },
