@@ -53,7 +53,10 @@ function TechnicianSearcher(param) {
       startDate: startDate,
       endDate: endDate,
     };
-    setData(await apis.getFilesByTechnician(body));
+    const query = await apis.getFilesByTechnician(body)
+    if (query.status === 200) {
+      setData(query.response);
+    }
   }
 
   if (isLoading) {

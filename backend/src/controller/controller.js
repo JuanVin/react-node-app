@@ -11,7 +11,7 @@ const type = require("../models/FileType")
 const extraction = require("../models/Extraction")
 const { Op } = require("sequelize");
 const CellPhone = require('../models/CellPhone')
-
+const User = require('../models/User')
 module.exports = controller = {
     getFileById: async (req, res) => {
         let id = req.params.id
@@ -134,7 +134,7 @@ module.exports = controller = {
                             { model: type, attributes: { exclude: ["createdAt", "updatedAt"] } }
                         ],
                     attributes: {
-                        exclude: ["ConditionId", "FileDateId", "FileTypeId", "FiscalOfficeId", "createdAt", "updatedAt"]
+                        exclude: ["ConditionId", "FileDateId", "FileTypeId", "FiscalOfficeId"]
                     }
                 }, { transaction: t }))
             })
@@ -213,7 +213,7 @@ module.exports = controller = {
     updateFiles: async (req, res) => {
 
         let newFile = req.body
-        
+
         for (const key in newFile) {
             if (newFile[key] === 0 || newFile[key] === "0" || newFile[key] === '') {
                 newFile[key] = null
@@ -222,7 +222,6 @@ module.exports = controller = {
 
         try {
             const results = sequelize.transaction(async (t) => {
-
                 let oldFile = await files.findByPk(newFile.file_id)
                 let oldDate = await dates.findByPk(newFile.date_id)
 
@@ -236,7 +235,9 @@ module.exports = controller = {
                 oldFile.TechnicianId = newFile.TechnicianId
                 oldFile.file_number = newFile.file_number.slice(0, -2) + "/" + newFile.file_number.slice(-2)
                 oldFile.FileTypeId = newFile.file_type
-
+                oldFile.ModifiedBy = (await User.findByPk(req.userId, {
+                    attributes: ['username']
+                })).dataValues.username
                 oldDate = await oldDate.save({ transaction: t })
                 oldFile = await oldFile.save({ transaction: t })
                 res.status(200).send({ message: "Expediente " + newFile.file_number + " actualizado correctamente" })
@@ -256,7 +257,6 @@ module.exports = controller = {
         }
 
         request.file_number = request.file_number.slice(0, -2) + "/" + request.file_number.slice(-2)
-
         try {
             const results = sequelize.transaction(async (t) => {
                 newDates = await dates.create({
@@ -272,7 +272,10 @@ module.exports = controller = {
                     ConditionId: request.ConditionId,
                     shift_granted: "si",
                     file_number: request.file_number,
-                    FileTypeId: request.file_type
+                    FileTypeId: request.file_type,
+                    CreatedBy: (await User.findByPk(req.userId, {
+                        attributes: ['username']
+                    })).dataValues.username
                 }, { transaction: t })
                 newDetail = await details.create({
                     detail: request.detail,
@@ -288,17 +291,16 @@ module.exports = controller = {
     updateDetail: async (req, res) => {
 
         let params = req.body
-
         try {
             const result = await sequelize.transaction(async (t) => {
                 let detail = await details.findByPk(params.detail_id, { transaction: t })
                 detail.detail = params.detail
                 detail = await detail.save({ transaction: t })
                 res.statusCode = 200
-                res.status(200).send({ message: "Detalle actualizado correctamente", detail: detail, status: 200 })
+                res.status(200).send({ message: "Detalle actualizado correctamente", detail: detail })
             })
         } catch (error) {
-            res.status(400).send({ message: "Ocurrió un error", detail: null, status: 400 })
+            res.status(400).send({ message: "Ocurrió un error", detail: null })
         }
     },
     newDetail: async (req, res) => {

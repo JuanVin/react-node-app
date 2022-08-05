@@ -2,7 +2,8 @@ const { DataTypes, ExclusionConstraintError } = require('sequelize');
 let sequelize = require('../database/db'),
     Detail = require('./Detail'),
     Dates = require('./FileDate'),
-    Extraction = require('./Extraction')
+    Extraction = require('./Extraction'),
+    User = require("./User")
 
 const Files = sequelize.define('File', {
 
@@ -14,6 +15,14 @@ const Files = sequelize.define('File', {
     file_number: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    CreatedBy:{
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    ModifiedBy:{
+        type: DataTypes.STRING,
+        allowNull: true
     },
     shift_granted: {
         type: DataTypes.STRING,

@@ -6,7 +6,7 @@ import "./styles/home.css"
 import AccordionFile from "./commons/AccordionFile"
 import Loading from "./commons/Loading"
 import UserService from "../services/user.service"
-function Home({setShowNav}) {
+function Home({ setShowNav }) {
     let [isLoading, setIsLoading] = useState(true)
     let [fetchCurrentData, setFetchCurrentData] = useState(null)
     let [refreshData, setRefreshData] = useState(0)
@@ -21,9 +21,16 @@ function Home({setShowNav}) {
     }, [isLoading])
 
     let getFetchData = async () => {
+        const query = await UserService.getUserBoard()
         setContent(await UserService.getUserBoard())
-        setFetchCurrentData(await apis.getCurrentDayFiles())
-        setIsLoading(false)
+        if (query.status === 200) {
+            console.log(query)
+            setFetchCurrentData(await apis.getCurrentDayFiles())
+            setIsLoading(false)
+        } else {
+            setIsLoading(false)
+        }
+
     }
 
     if (isLoading) {
@@ -33,6 +40,7 @@ function Home({setShowNav}) {
             </>
         )
     }
+
     if (content.status !== "") {
         if (content.status !== 200) {
             Navigate("/login")

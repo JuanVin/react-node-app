@@ -342,19 +342,21 @@ function Form(params) {
         </div>
         <div className="col">
           <button
-            className="mt-3 btn btn-dark w-100 m-1 btn-lg"
+            className="mt-3 btn btn-dark w-100 m-1"
             type="button"
             onClick={handleUpdate}
           >
             Actualizar expediente
           </button>
         </div>
-        <Link className="link-info"
-          to={{
-            pathname: "/device",
-            search: `?file=${fileData.file_number}&id=${fileData.id}`,
-          }}
-        >Cargar extracción</Link>
+        <div className="col">
+          <Link className="btn btn-outline-dark mt-3 w-100"
+            to={{
+              pathname: "/device",
+              search: `?file=${fileData.file_number}&id=${fileData.id}`,
+            }}
+          >Cargar extracción</Link>
+        </div>
       </div>
     </>
   );

@@ -35,7 +35,7 @@ function ModalDetails(params) {
     
     return (
         <>
-            <Button className="w-100 mt-3" variant="outline-dark" size="lg" onClick={handleShow}>
+            <Button className="w-100 mt-3" variant="outline-dark" onClick={handleShow}>
                 Ver detalles
             </Button>
             <Modal show={show} onHide={handleClose}>

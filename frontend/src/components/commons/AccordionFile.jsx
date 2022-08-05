@@ -2,7 +2,6 @@ import { Accordion } from "react-bootstrap"
 import "../styles/accordionFile.css"
 
 function AccordionFile({ files, option }) {
-
     console.log(files)
     let accordion = []
     function formatDate(data, option) {
@@ -56,6 +55,12 @@ function AccordionFile({ files, option }) {
         return "NO REGISTRA"
     }
 
+    function formatModifiedAndCreatedInformation(name, date) {
+        if (name) {
+            return name.toUpperCase() +" "+ formatDate(date, 1)
+        }
+        return "Sin datos"
+    }
 
     files.forEach((rowData, index) => {
         accordion.push(
@@ -68,6 +73,21 @@ function AccordionFile({ files, option }) {
                     justifyContent: "center",
                 }}>
                     <table id={option + "table" + index} className="table w-75" >
+                        <thead className="thead-dark">
+                            <tr>
+                                <th scope="col"><h5>Algo</h5></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Creado por</th>
+                                <td>{formatModifiedAndCreatedInformation(rowData.CreatedBy, rowData.createdAt)}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Modificado por</th>
+                                <td>{formatModifiedAndCreatedInformation(rowData.ModifiedBy, rowData.updatedAt)}</td>
+                            </tr>
+                        </tbody>
                         <thead className="thead-dark">
                             <tr>
                                 <th scope="col"><h5>Fechas</h5></th>

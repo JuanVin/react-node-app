@@ -10,7 +10,7 @@ function handleLogout() {
 const NavBar = () => {
 
     const user = (AuthService.getCurrentUser())
-
+    
     return (
         <Navbar bg="dark" variant="dark" style={{ zIndex: "1" }}>
             <Navbar.Brand href="#home">
@@ -26,22 +26,24 @@ const NavBar = () => {
             <Navbar.Brand href="#home"><strong>U.D.A.P.I.F.</strong> <small className="text-muted d-block">Departamento de Informática Forense</small></Navbar.Brand>
 
             <Container>
-                {
-                    user !== null
-                        ?
-                        <>
-                            <Navbar.Collapse>
-                                <Navbar.Text>
-                                    Logeado como: <a href="/profile">{(user.username).toUpperCase()}</a>
-                                </Navbar.Text>
-                            </Navbar.Collapse>
-                        </>
-
-                        :
-                        ""
-                }
+                <Nav></Nav>
                 <Nav>
+                    {
+                        user !== null
+                            ?
+                            <>
+                                <Navbar.Collapse>
+                                    <Navbar.Text>
+                                        Logeado como: <a href="/profile">{(user.username).toUpperCase()}</a>
+                                    </Navbar.Text>
+                                </Navbar.Collapse>
+                            </>
+
+                            :
+                            ""
+                    }
                     <Nav.Link style={{ fontSize: "18px", marginLeft: "20px" }} href="/">Home</Nav.Link>
+
                     {
                         (user !== null && user.roles.includes('ROLE_ADMIN'))
                             ?
@@ -56,9 +58,6 @@ const NavBar = () => {
                             :
                             ""
                     }
-
-                </Nav>
-                <Nav>
                     <FileSearch></FileSearch>
                     <Button variant="outline-light" style={{ marginLeft: "10px" }} onClick={handleLogout}>Salir</Button>
                 </Nav>

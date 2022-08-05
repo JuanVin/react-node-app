@@ -21,7 +21,7 @@ function Login({setShowNav}) {
     return (
 
         <section className="vh-100" style={{ marginTop: "100px" }}>
-            <div classNames="container-fluid h-custom">
+            <div className="container-fluid h-custom">
                 <div className="row d-flex justify-content-center align-items-center h-100">
                     <div className="col-md-9 col-lg-6 col-xl-5" style={{
                         display: "flex",
@@ -38,12 +38,12 @@ function Login({setShowNav}) {
                             <div className="form-outline mb-4">
                                 <input type="text" value={userName} onChange={e => setUserName(e.target.value)} id="username" className="form-control form-control-lg"
                                     placeholder="Ingrese un usuario válido" />
-                                <label className="form-label" for="username">Usuario</label>
+                                <label className="form-label" htmlFor="username">Usuario</label>
                             </div>
                             <div className="form-outline mb-3">
                                 <input type="password" value={password} onChange={e => setPassword(e.target.value)} id="password" className="form-control form-control-lg"
                                     placeholder="Enter password" />
-                                <label className="form-label" for="password">Contraseña</label>
+                                <label className="form-label" htmlFor="password">Contraseña</label>
                             </div>
                             <div className="form-outline mb-3">
                                 <button type="submit" className="btn btn-primary btn-lg w-50">Ingresar</button>

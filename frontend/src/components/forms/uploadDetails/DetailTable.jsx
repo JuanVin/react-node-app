@@ -15,24 +15,24 @@ function DetailTable(params) {
     let trParam = []
 
     async function postUpdDetail(id, index) {
-        let response
+        let query
         try {
-            response = await apis.updateDetail(
+            query = await apis.updateDetail(
                 {
                     detail_id: id,
                     detail: document.getElementById("newDetail" + id).value
                 }
             )
-            if (response) {
-                details[index] = response.detail
+            if (query.status === 200) {
+                details[index] = query.response.detail
                 setDetails(details)
             }
         } catch (error) {
             console.log(error)
         }
-        setMessage({ message: response.message, status: response.status })
+        setMessage({ message: query.response.message, status: query.status })
         handleCloseTextArea()
-        
+
     }
     async function postDeleteDetail(id, index) {
         let query = null
@@ -47,7 +47,7 @@ function DetailTable(params) {
         }
         setMessage({ message: query.response.message, status: query.status })
         handleCloseTextArea()
-       
+
     }
     details.forEach((param, index) => {
         trParam.push(
@@ -86,7 +86,7 @@ function DetailTable(params) {
             </tr >
         )
     })
-   
+
     return (
         <>
             <Message props={message}></Message>
