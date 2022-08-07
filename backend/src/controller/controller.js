@@ -131,7 +131,9 @@ module.exports = controller = {
                             { model: fiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: conditions, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: type, attributes: { exclude: ["createdAt", "updatedAt"] } }
+                            { model: type, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: User, as: 'createdByUser', attributes: { exclude: ["createdAt", "updatedAt", "password"] } },
+                            { model: User, as: 'updatedByUser', attributes: { exclude: ["createdAt", "updatedAt", "password"] } }
                         ],
                     attributes: {
                         exclude: ["ConditionId", "FileDateId", "FileTypeId", "FiscalOfficeId"]
@@ -235,9 +237,7 @@ module.exports = controller = {
                 oldFile.TechnicianId = newFile.TechnicianId
                 oldFile.file_number = newFile.file_number.slice(0, -2) + "/" + newFile.file_number.slice(-2)
                 oldFile.FileTypeId = newFile.file_type
-                oldFile.ModifiedBy = (await User.findByPk(req.userId, {
-                    attributes: ['username']
-                })).dataValues.username
+                oldFile.updateBy = req.userId
                 oldDate = await oldDate.save({ transaction: t })
                 oldFile = await oldFile.save({ transaction: t })
                 res.status(200).send({ message: "Expediente " + newFile.file_number + " actualizado correctamente" })
@@ -273,9 +273,7 @@ module.exports = controller = {
                     shift_granted: "si",
                     file_number: request.file_number,
                     FileTypeId: request.file_type,
-                    CreatedBy: (await User.findByPk(req.userId, {
-                        attributes: ['username']
-                    })).dataValues.username
+                    createdBy: req.userId
                 }, { transaction: t })
                 newDetail = await details.create({
                     detail: request.detail,

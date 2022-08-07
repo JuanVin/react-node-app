@@ -55,9 +55,9 @@ function AccordionFile({ files, option }) {
         return "NO REGISTRA"
     }
 
-    function formatModifiedAndCreatedInformation(name, date) {
-        if (name) {
-            return name.toUpperCase() +" "+ formatDate(date, 1)
+    function formatUpdateAndCreatedInformation(obj, date) {
+        if (obj) {
+            return obj.username.toUpperCase() +" "+ formatDate(date, 1)
         }
         return "Sin datos"
     }
@@ -81,11 +81,11 @@ function AccordionFile({ files, option }) {
                         <tbody>
                             <tr>
                                 <th scope="row">Creado por</th>
-                                <td>{formatModifiedAndCreatedInformation(rowData.CreatedBy, rowData.createdAt)}</td>
+                                <td>{formatUpdateAndCreatedInformation(rowData.createdByUser, rowData.createdAt)}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Modificado por</th>
-                                <td>{formatModifiedAndCreatedInformation(rowData.ModifiedBy, rowData.updatedAt)}</td>
+                                <td>{formatUpdateAndCreatedInformation(rowData.updatedByUser, rowData.updatedAt)}</td>
                             </tr>
                         </tbody>
                         <thead className="thead-dark">
