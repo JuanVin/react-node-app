@@ -4,10 +4,14 @@ const ApiService = {
         let options = {
             method: 'get',
             headers: authHeader(),
-        }
-        let data = await fetch(url, options)
-        data = await data.json()
-        return data
+        },
+        response,
+        status
+
+        response = await fetch(url, options)
+        status = response.status
+        response = await response.json()
+        return {response, status}
     },
     genericPost: async (body, url) => {
         const header = authHeader()

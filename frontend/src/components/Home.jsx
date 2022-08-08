@@ -5,32 +5,41 @@ import UploadForm from "./forms/UploadForm"
 import "./styles/home.css"
 import AccordionFile from "./commons/AccordionFile"
 import Loading from "./commons/Loading"
-import UserService from "../services/user.service"
+import AuthService from "../services/auth.service"
+import checkUserAndRole from "../services/checkUserAndRole"
+
 function Home({ setShowNav }) {
     let [isLoading, setIsLoading] = useState(true)
     let [fetchCurrentData, setFetchCurrentData] = useState(null)
     let [refreshData, setRefreshData] = useState(0)
-    let [content, setContent] = useState("")
     const Navigate = useNavigate()
     setShowNav(true)
     let morning_shift = [],
         late_shift = []
 
     useEffect(() => {
-        getFetchData()
+        checkUser()
     }, [isLoading])
 
+    async function checkUser() {
+        if (await checkUserAndRole.checkUser()) {
+            getFetchData()
+        }
+        else {
+            AuthService.logout()
+            Navigate("/login")
+            window.location.reload();
+        }
+    }
+
     let getFetchData = async () => {
-        const query = await UserService.getUserBoard()
-        setContent(await UserService.getUserBoard())
+        const query = await apis.getCurrentDayFiles()
         if (query.status === 200) {
-            console.log(query)
-            setFetchCurrentData(await apis.getCurrentDayFiles())
+            setFetchCurrentData(query.response)
             setIsLoading(false)
         } else {
             setIsLoading(false)
         }
-
     }
 
     if (isLoading) {
@@ -41,12 +50,6 @@ function Home({ setShowNav }) {
         )
     }
 
-    if (content.status !== "") {
-        if (content.status !== 200) {
-            Navigate("/login")
-            window.location.reload();
-        }
-    }
     if (refreshData !== 0) {
         setRefreshData(0)
         getFetchData()

@@ -16,7 +16,7 @@ function FileSearch() {
     if (event.target.checkValidity()) {
       let query = await apis.getFileByFileNumber(input.trim().replace("/", "-"))
       if (query.status === 200) {
-        setData(query.data);
+        setData(query.response);
         handleShow();
       }
     }

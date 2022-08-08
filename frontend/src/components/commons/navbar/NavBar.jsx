@@ -10,7 +10,7 @@ function handleLogout() {
 const NavBar = () => {
 
     const user = (AuthService.getCurrentUser())
-    
+   
     return (
         <Navbar bg="dark" variant="dark" style={{ zIndex: "1" }}>
             <Navbar.Brand href="#home">
@@ -34,7 +34,7 @@ const NavBar = () => {
                             <>
                                 <Navbar.Collapse>
                                     <Navbar.Text>
-                                        Logeado como: <a href="/profile">{(user.username).toUpperCase()}</a>
+                                        Logeado como: <a href="/profile">{(user.name + " " + user.last).toUpperCase()}</a>
                                     </Navbar.Text>
                                 </Navbar.Collapse>
                             </>
@@ -43,7 +43,7 @@ const NavBar = () => {
                             ""
                     }
                     <Nav.Link style={{ fontSize: "18px", marginLeft: "20px" }} href="/">Home</Nav.Link>
-
+                    <Nav.Link style={{ fontSize: "18px", marginLeft: "20px" }} href="#">Mis expedientes</Nav.Link>
                     {
                         (user !== null && user.roles.includes('ROLE_ADMIN'))
                             ?

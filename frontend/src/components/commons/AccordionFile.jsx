@@ -57,7 +57,7 @@ function AccordionFile({ files, option }) {
 
     function formatUpdateAndCreatedInformation(obj, date) {
         if (obj) {
-            return obj.username.toUpperCase() +" "+ formatDate(date, 1)
+            return (obj.name.charAt(0)+obj.lastname.charAt(0)).toUpperCase() + " - " + formatDate(date, 1)
         }
         return "Sin datos"
     }
@@ -75,7 +75,7 @@ function AccordionFile({ files, option }) {
                     <table id={option + "table" + index} className="table w-75" >
                         <thead className="thead-dark">
                             <tr>
-                                <th scope="col"><h5>Algo</h5></th>
+                                <th scope="col"><h5>Info</h5></th>
                             </tr>
                         </thead>
                         <tbody>

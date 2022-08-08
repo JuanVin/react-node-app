@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import FormContent from "./FormContent";
 import Pagination from "./Pagination";
-import { useSearchParams } from "react-router-dom"
+import { useSearchParams, useNavigate } from "react-router-dom"
 import apis from "../../../services/apiCalls"
 import Loading from "../../commons/Loading"
 import ExtractionContext from "../../../context/ExtractionContext";
+import AuthService from "../../../services/auth.service";
+import checkUserAndRole from "../../../services/checkUserAndRole";
+
 function DeviceForm() {
 
     const [amount, setAmount] = useState([])
@@ -16,9 +19,20 @@ function DeviceForm() {
     const [devices, setDevices] = useState(null)
     const [extractionId, setExtractionId] = useState(null)
 
+    const Navigate = useNavigate()
     useEffect(() => {
-        handleNumber()
+        checkUser()
     }, [loading])
+
+    async function checkUser() {
+        if (await checkUserAndRole.checkUser()) {
+            handleNumber()
+        } else {
+            AuthService.logout()
+            Navigate("/login")
+            window.location.reload();
+        }
+    }
 
     const handleAmount = async (e) => {
         e.preventDefault()

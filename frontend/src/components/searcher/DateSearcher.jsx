@@ -9,16 +9,26 @@ function DateSearcher(param) {
 
     async function postData(event) {
         event.preventDefault();
+        let query
         if (event.target.checkValidity()) {
             switch (param.props) {
                 case 0:
-                    setData(await apis.getFileByAdmissionDate(date))
+                    query = await apis.getFileByAdmissionDate(date)
+                    if (query.status === 200) {
+                        setData(query.response)
+                    }
                     break;
                 case 1:
-                    setData(await apis.getFileByEgressDate(date))
+                    query = await apis.getFileByEgressDate(date)
+                    if (query.status === 200) {
+                        setData(query.response)
+                    }
                     break;
                 case 2:
-                    setData(await apis.getFileByShiftDate(date))
+                    query = await apis.getFileByShiftDate(date)
+                    if (query.status === 200) {
+                        setData(query.response)
+                    }
                     break;
                 default:
                     break;
@@ -29,7 +39,6 @@ function DateSearcher(param) {
         <>
 
             <div className="p-3">
-
                 <h2>Filtro: {dateTypes[param.props]}</h2>
                 <form onSubmit={(e) => postData(e)}>
                     <label style={{ fontSize: "20px" }} className="p-3" htmlFor="start">Fecha de búsqueda:</label>
@@ -41,9 +50,7 @@ function DateSearcher(param) {
 
                 <hr></hr>
                 <div style={{ display: "flex", justifyContent: "center" }}>
-
                     {
-
                         (data !== null) ?
                             <div className="w-50 mt-3">
                                 <AccordionFile files={data} option={"a5"}></AccordionFile>

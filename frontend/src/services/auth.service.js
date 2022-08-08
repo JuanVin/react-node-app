@@ -1,5 +1,5 @@
 import secureStorage from "./hash.service"
-const URL = 'http://localhost:3000'
+const URL = 'http://172.17.17.21:3000'
 const AuthService = {
     login: async (username, password) => {
         let options = {
@@ -35,6 +35,7 @@ const AuthService = {
         const query = await fetch(url, options)
     },
     getCurrentUser: () => {
+        
         return secureStorage.getItem('user');
         //return JSON.parse(localStorage.getItem('user'));
     }

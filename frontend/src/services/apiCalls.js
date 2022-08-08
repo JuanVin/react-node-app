@@ -1,16 +1,17 @@
 import ApiService from './api.services';
-const URL = 'http://localhost:3000'
+const URL = 'http://172.17.17.21:3000'
 const apis = {
     getFiles: async () => {
         return ApiService.genericGet(`${URL}/files`)
     },
     getFileByFileNumber: async (file_number) => {
-
+        return ApiService.genericGet(`${URL}/api/files/${file_number}`)
+        /*
         let data = await fetch(`${URL}/api/files/${file_number}`),
             status = data.status
 
         data = await data.json()
-        return { data, status }
+        return { data, status }*/
     },
     getFileByAdmissionDate: async (date) => {
         return ApiService.genericGet(`${URL}/api/files/date/admission/${date}`)

@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import apis from "./../../services/apiCalls"
 import BarGraphic from "./BarGraphic";
 import PendingFilesTable from "./PendingFilesTable";
 import FilesPercentage from "./FilesPercentage";
+import Loading from "../commons/Loading";
 import UserService from "../../services/user.service";
+import AuthService from "../../services/auth.service";
+import checkUserAndRole from "../../services/checkUserAndRole";
 function Stadistics() {
 
   const [fileStadistic, setFileStadistic] = useState(null);
@@ -14,17 +18,26 @@ function Stadistics() {
   const [total, setTotal] = useState(null);
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
-  const [isAdmin, setIsAdmin] = useState(false)
-  const [content, setContent] = useState(null)
-  useEffect(() => {
-    checkRole()
-  }, [])
+  const [isLoading, setIsLoading] = useState(true)
 
-  async function checkRole() {
-    let query = await UserService.getAdminBoard()
-    setContent(query)
-    if (query.status === 200) {
-      setIsAdmin(true)
+  const Navigate = useNavigate()
+
+  useEffect(() => {
+    checkUser()
+  }, [isLoading])
+
+  async function checkUser() {
+    if (await checkUserAndRole.checkAdmin()) {
+      setIsLoading(false)
+    }
+    else if (await checkUserAndRole.checkUser()) {
+      Navigate("/")
+      window.location.reload();
+    }
+    else {
+      AuthService.logout()
+      Navigate("/login")
+      window.location.reload();
     }
   }
 
@@ -49,12 +62,10 @@ function Stadistics() {
       )
     );
   }
-  if (isAdmin === false) {
-    if (content !== null) {
-      return (
-        <h1>{content.response.message}</h1>
-      )
-    }
+  if (isLoading) {
+    return (
+      <Loading></Loading>
+    )
   }
   return (
     <>

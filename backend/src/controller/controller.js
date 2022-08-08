@@ -101,13 +101,13 @@ module.exports = controller = {
         }
     },
     getCurrentDayFiles: async (req, res) => {
-        
+
         let today = new Date(),
             startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0),
             finalDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 20, 59, 59, 0)
         try {
             const results = sequelize.transaction(async (t) => {
-                
+
                 res.status(200).send(await db.File.findAll({
                     include:
                         [
