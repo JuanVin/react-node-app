@@ -1,27 +1,17 @@
-const sequelize = require('../database/db')
-const fiscalUnit = require('../models/FiscalUnit')
-const fiscalOffice = require('../models/FiscalOffice')
-const technician = require('../models/Technician')
-const files = require('../models/File')
-const dates = require('../models/FileDate')
-const details = require('../models/Detail')
-const conditions = require('../models/Condition')
-const districts = require("../models/District")
-const type = require("../models/FileType")
-const extraction = require("../models/Extraction")
+const db = require("../models/index")
+const sequelize = db.sequelize
 const { Op } = require("sequelize");
-const CellPhone = require('../models/CellPhone')
-const User = require('../models/User')
+
 module.exports = controller = {
     getFileById: async (req, res) => {
         let id = req.params.id
         try {
             const result = await sequelize.transaction(async (t) => {
-                res.status(200).send(await files.findOne({
+                res.status(200).send(await db.File.findOne({
                     where: {
                         id: id
                     },
-                    include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions, type]
+                    include: [db.FileDate, db.Detail, db.FiscalOffice, db.FiscalUnit, db.Technician, db.Condition, db.FileType]
                 }, { transaction: t }));
             })
         } catch (error) {
@@ -37,21 +27,21 @@ module.exports = controller = {
 
         try {
             const result = await sequelize.transaction(async (t) => {
-                res.status(200).send(await files.findAll({
+                res.status(200).send(await db.File.findAll({
                     include: [
                         {
-                            model: dates, where: {
+                            model: db.FileDate, where: {
                                 shift_date: {
                                     [Op.between]: [startDate, finalDate]
                                 }
                             }
                         },
-                        { model: details, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                        { model: fiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                        { model: fiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                        { model: technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                        { model: conditions, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                        { model: type, attributes: { exclude: ["createdAt", "updatedAt"] } }
+                        { model: db.Detail, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: db.FiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: db.FiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: db.Technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: db.Condition, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: db.FileType, attributes: { exclude: ["createdAt", "updatedAt"] } }
                     ],
                 }, { transaction: t }))
             })
@@ -64,20 +54,20 @@ module.exports = controller = {
         param.setMinutes(param.getMinutes() + param.getTimezoneOffset())
         try {
             const results = sequelize.transaction(async (t) => {
-                res.status(200).send(await files.findAll({
+                res.status(200).send(await db.File.findAll({
                     include: [{
-                        model: dates, where: {
+                        model: db.FileDate, where: {
                             egress_date: {
                                 [Op.like]: `%${param}`
                             },
                         },
                     },
-                    { model: details, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                    { model: fiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                    { model: fiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                    { model: technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                    { model: conditions, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                    { model: type, attributes: { exclude: ["createdAt", "updatedAt"] } }],
+                    { model: db.Detail, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: db.FiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: db.FiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: db.Technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: db.Condition, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: db.FileType, attributes: { exclude: ["createdAt", "updatedAt"] } }],
                 }, { transaction: t }))
             })
         } catch (error) {
@@ -90,20 +80,20 @@ module.exports = controller = {
 
         try {
             const results = await sequelize.transaction(async (t) => {
-                res.status(200).send(await files.findAll({
+                res.status(200).send(await db.File.findAll({
                     include: [{
-                        model: dates, where: {
+                        model: db.FileDate, where: {
                             admission_date: {
                                 [Op.like]: `%${param}`
                             },
                         },
                     },
-                    { model: details, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                    { model: fiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                    { model: fiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                    { model: technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                    { model: conditions, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                    { model: type, attributes: { exclude: ["createdAt", "updatedAt"] } }],
+                    { model: db.Detail, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: db.FiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: db.FiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: db.Technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: db.Condition, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: db.FileType, attributes: { exclude: ["createdAt", "updatedAt"] } }],
                 }, { transaction: t }))
             })
         } catch (error) {
@@ -111,29 +101,31 @@ module.exports = controller = {
         }
     },
     getCurrentDayFiles: async (req, res) => {
+        
         let today = new Date(),
             startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0),
             finalDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 20, 59, 59, 0)
         try {
             const results = sequelize.transaction(async (t) => {
-                res.status(200).send(await files.findAll({
+                
+                res.status(200).send(await db.File.findAll({
                     include:
                         [
                             {
-                                model: dates, where: {
+                                model: db.FileDate, where: {
                                     shift_date: {
                                         [Op.between]: [startDate, finalDate]
                                     }
                                 }
                             },
-                            { model: details, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: fiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: fiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: conditions, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: type, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: User, as: 'createdByUser', attributes: { exclude: ["createdAt", "updatedAt", "password"] } },
-                            { model: User, as: 'updatedByUser', attributes: { exclude: ["createdAt", "updatedAt", "password"] } }
+                            { model: db.Detail, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.FiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.FiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.Technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.Condition, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.FileType, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.User, as: 'createdByUser', attributes: { exclude: ["createdAt", "updatedAt", "password"] } },
+                            { model: db.User, as: 'updatedByUser', attributes: { exclude: ["createdAt", "updatedAt", "password"] } }
                         ],
                     attributes: {
                         exclude: ["ConditionId", "FileDateId", "FileTypeId", "FiscalOfficeId"]
@@ -150,20 +142,20 @@ module.exports = controller = {
         try {
             const result = sequelize.transaction(async (t) => {
                 res.status(200).send(
-                    await files.findAll({
+                    await db.File.findAll({
                         where: {
                             file_number: {
                                 [Op.like]: `%${fileNumber}%`
                             }
                         },
                         include: [
-                            { model: dates, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: details, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: fiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: fiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: conditions, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: type, attributes: { exclude: ["createdAt", "updatedAt"] } }
+                            { model: db.FileDate, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.Detail, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.FiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.FiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.Technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.Condition, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.FileType, attributes: { exclude: ["createdAt", "updatedAt"] } }
                         ],
                         attributes: {
                             exclude: ["ConditionId", "FileDateId", "FileTypeId", "FiscalOfficeId", "createdAt", "updatedAt"]
@@ -178,18 +170,18 @@ module.exports = controller = {
         try {
             const result = sequelize.transaction(async (t) => {
                 res.status(200).send({
-                    fiscalOffices: await fiscalOffice.findAll({ transaction: t }),
-                    fiscalUnits: await fiscalUnit.findAll({
+                    fiscalOffices: await db.FiscalOffice.findAll({ transaction: t }),
+                    fiscalUnits: await db.FiscalUnit.findAll({
                         include: [
                             {
-                                model: districts,
+                                model: db.Disctrict,
                                 attributes: { exclude: ["createdAt", "updatedAt"] }
                             }
                         ],
                     }, { transaction: t }),
-                    condition: await conditions.findAll({ transaction: t }),
-                    technicians: await technician.findAll({ transaction: t }),
-                    types: await type.findAll({ transaction: t })
+                    condition: await db.Condition.findAll({ transaction: t }),
+                    technicians: await db.Technician.findAll({ transaction: t }),
+                    types: await db.FileType.findAll({ transaction: t })
                 })
             })
         } catch (error) {
@@ -200,10 +192,10 @@ module.exports = controller = {
         let number = parseInt(req.params.number)
         try {
             const result = await sequelize.transaction(async (t) => {
-                const lastFiles = await files.findAll({
+                const lastFiles = await db.File.findAll({
                     limit: number,
                     order: [['id', 'DESC']],
-                    include: [dates, details, fiscalOffice, fiscalUnit, technician, conditions]
+                    include: [db.FileDate, db.Detail, db.FiscalOffice, db.FiscalUnit, db.Technician, db.Condition]
                 }, { transaction: t })
                 res.status(200).send(lastFiles)
             })
@@ -224,8 +216,8 @@ module.exports = controller = {
 
         try {
             const results = sequelize.transaction(async (t) => {
-                let oldFile = await files.findByPk(newFile.file_id)
-                let oldDate = await dates.findByPk(newFile.date_id)
+                let oldFile = await db.File.findByPk(newFile.file_id)
+                let oldDate = await db.FileDate.findByPk(newFile.date_id)
 
                 oldDate.egress_date = newFile.egress_date
                 oldDate.admission_date = newFile.admission_date
@@ -259,12 +251,12 @@ module.exports = controller = {
         request.file_number = request.file_number.slice(0, -2) + "/" + request.file_number.slice(-2)
         try {
             const results = sequelize.transaction(async (t) => {
-                newDates = await dates.create({
+                newDates = await db.FileDate.create({
                     shift_date: request.shift_date,
                     admission_date: request.admission_date,
                     egress_date: request.egress_date
                 }, { transaction: t })
-                newFile = await files.create({
+                newFile = await db.File.create({
                     FiscalOfficeId: request.FiscalOfficeId,
                     FiscalUnitId: request.FiscalUnitId,
                     FileDateId: newDates.id,
@@ -275,7 +267,7 @@ module.exports = controller = {
                     FileTypeId: request.file_type,
                     createdBy: req.userId
                 }, { transaction: t })
-                newDetail = await details.create({
+                newDetail = await db.Detail.create({
                     detail: request.detail,
                     FileId: newFile.id
                 }, { transaction: t })
@@ -291,7 +283,7 @@ module.exports = controller = {
         let params = req.body
         try {
             const result = await sequelize.transaction(async (t) => {
-                let detail = await details.findByPk(params.detail_id, { transaction: t })
+                let detail = await db.Detail.findByPk(params.detail_id, { transaction: t })
                 detail.detail = params.detail
                 detail = await detail.save({ transaction: t })
                 res.statusCode = 200
@@ -305,7 +297,7 @@ module.exports = controller = {
         let params = req.body
         try {
             const resuls = await sequelize.transaction(async (t) => {
-                let detail = await details.create(
+                let detail = await db.Detail.create(
                     {
                         FileId: params.file_id,
                         detail: params.detail
@@ -326,7 +318,7 @@ module.exports = controller = {
 
         try {
             const resuls = await sequelize.transaction(async (t) => {
-                let detail = await details.findByPk(id, { transaction: t })
+                let detail = await db.Detail.findByPk(id, { transaction: t })
                 await detail.destroy({ transaction: t })
                 res.status(200).send({ message: "Detalle borrado correctamente" })
             })
@@ -344,14 +336,14 @@ module.exports = controller = {
 
         try {
             const results = await sequelize.transaction(async (t) => {
-                let _conditions = await conditions.findAll({ transaction: t }),
-                    _technicians = await technician.findAll({ transaction: t })
+                let _conditions = await db.Condition.findAll({ transaction: t }),
+                    _technicians = await db.Technician.findAll({ transaction: t })
 
                 for (const key in _conditions) {
                     fileStadistic.push(
                         {
                             name: (_conditions[key].condition).replace(" ", "_"),
-                            amount: await dates.count(
+                            amount: await db.FileDate.count(
                                 {
                                     where: {
                                         shift_date: {
@@ -359,7 +351,7 @@ module.exports = controller = {
                                         }
                                     },
                                     include: {
-                                        model: files, where: {
+                                        model: db.File, where: {
                                             ConditionId: _conditions[key].id,
                                         }
                                     }
@@ -372,7 +364,7 @@ module.exports = controller = {
                     technicianStadistic.push(
                         {
                             name: _technicians[key].name,
-                            amount: await dates.count(
+                            amount: await db.FileDate.count(
                                 {
                                     where: {
                                         shift_date: {
@@ -380,9 +372,9 @@ module.exports = controller = {
                                         }
                                     },
                                     include: {
-                                        model: files, where: {
+                                        model: db.File, where: {
                                             TechnicianId: _technicians[key].id,
-                                            ConditionId: (await conditions.findOne({
+                                            ConditionId: (await db.Condition.findOne({
                                                 where: {
                                                     condition: "archivado"
                                                 }
@@ -392,7 +384,7 @@ module.exports = controller = {
                                 },
                                 { transaction: t }
                             ),
-                            amount2: await dates.count(
+                            amount2: await db.FileDate.count(
                                 {
                                     where: {
                                         shift_date: {
@@ -400,9 +392,9 @@ module.exports = controller = {
                                         }
                                     },
                                     include: {
-                                        model: files, where: {
+                                        model: db.File, where: {
                                             TechnicianId: _technicians[key].id,
-                                            ConditionId: (await conditions.findOne({
+                                            ConditionId: (await db.Condition.findOne({
                                                 where: {
                                                     condition: "falta entregar"
                                                 }
@@ -415,7 +407,7 @@ module.exports = controller = {
                         }
                     )
                 }
-                pendingFiles = await dates.findAll(
+                pendingFiles = await db.FileDate.findAll(
                     {
                         where: {
                             shift_date: {
@@ -423,8 +415,8 @@ module.exports = controller = {
                             }
                         },
                         include: {
-                            model: files, where: {
-                                ConditionId: (await conditions.findOne({
+                            model: db.File, where: {
+                                ConditionId: (await db.Condition.findOne({
                                     where: {
                                         condition: "falta comenzar"
                                     }
@@ -447,7 +439,7 @@ module.exports = controller = {
         try {
             const results = sequelize.transaction(async (t) => {
                 res.status(200).send(
-                    await technician.findAll()
+                    await db.Technician.findAll()
                 )
             }, { transaction: t })
         } catch (error) {
@@ -462,24 +454,24 @@ module.exports = controller = {
         try {
             const results = sequelize.transaction(async (t) => {
                 res.status(200).send(
-                    await files.findAll({
+                    await db.File.findAll({
                         where: {
                             TechnicianId: data.technician
                         },
                         include: [
                             {
-                                model: dates, where: {
+                                model: db.FileDate, where: {
                                     shift_date: {
                                         [Op.between]: [startDate, endDate]
                                     }
                                 },
                             },
-                            { model: details, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: fiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: fiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: conditions, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: type, attributes: { exclude: ["createdAt", "updatedAt"] } }
+                            { model: db.Detail, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.FiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.FiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.Technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.Condition, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.FileType, attributes: { exclude: ["createdAt", "updatedAt"] } }
                         ]
                     })
                 )
@@ -494,7 +486,7 @@ module.exports = controller = {
 
         try {
             const result = await sequelize.transaction(async (t) => {
-                let newExtraction = await CellPhone.create({
+                let newExtraction = await db.CellPhone.create({
                     deviceNumber: body.device,
                     phoneBrand: body.phoneBrand,
                     phoneModel: body.phoneModel,
@@ -511,7 +503,7 @@ module.exports = controller = {
                     microsdCapacity: body.microsd.capacity,
                     detail: body.detail,
                     extraction: body.extraction,
-                    ExtractionId: (await extraction.findOne({
+                    ExtractionId: (await db.Extraction.findOne({
                         where: {
                             FileId: body.id
                         }
@@ -532,7 +524,7 @@ module.exports = controller = {
 
         try {
             const result = await sequelize.transaction(async (t) => {
-                let newExtraction = await extraction.create(
+                let newExtraction = await db.Extraction.create(
                     {
                         numberOfDevices: number,
                         FileId: id
@@ -550,12 +542,12 @@ module.exports = controller = {
         try {
             const result = await sequelize.transaction(async (t) => {
 
-                let response = await extraction.findOne(
+                let response = await db.Extraction.findOne(
                     {
                         where: {
                             FileId: id
                         },
-                        include: [CellPhone]
+                        include: [db.CellPhone]
                     }, { transaction: t }
                 )
                 if (response === null) {
@@ -573,7 +565,7 @@ module.exports = controller = {
         const id = req.params.id
         try {
             const result = await sequelize.transaction(async (t) => {
-                let response = await CellPhone.findAll(
+                let response = await db.CellPhone.findAll(
                     {
                         where: {
                             ExtractionId: id
@@ -595,9 +587,9 @@ module.exports = controller = {
         let body = req.body
         try {
             const result = await sequelize.transaction(async (t) => {
-                let extraction = await CellPhone.findByPk(body.phoneId, { transaction: t })
+                let extraction = await db.CellPhone.findByPk(body.phoneId, { transaction: t })
                 if (extraction.deviceNumber !== body.device) {
-                    let extraction2 = await CellPhone.findOne({
+                    let extraction2 = await db.CellPhone.findOne({
                         where: {
                             deviceNumber: body.device,
                             ExtractionId: body.extractionId
@@ -633,7 +625,7 @@ module.exports = controller = {
     updateExtractionNumber: async (req, res) => {
         try {
             const result = sequelize.transaction(async (t) => {
-                const response = await extraction.findOne({
+                const response = await db.Extraction.findOne({
                     where: {
                         FileId: req.body.id
                     }
@@ -651,8 +643,8 @@ module.exports = controller = {
         let id = req.body.id
         try {
             const result = await sequelize.transaction(async (t) => {
-                const phone = await CellPhone.findByPk(id, { transaction: t })
-                const phones = await CellPhone.findAll({
+                const phone = await db.CellPhone.findByPk(id, { transaction: t })
+                const phones = await db.CellPhone.findAll({
                     where: {
                         ExtractionId: phone.ExtractionId
                     }
@@ -676,7 +668,7 @@ module.exports = controller = {
             number = req.body.number
         try {
             const result = await sequelize.transaction(async (t) => {
-                const phones = await CellPhone.findAll({
+                const phones = await db.CellPhone.findAll({
                     where: {
                         ExtractionId: id
                     }

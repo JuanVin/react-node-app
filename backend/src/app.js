@@ -1,10 +1,8 @@
 require('dotenv').config()
 
 let express = require('express'),
-    routes = require('./routes/routes'),
     app = express(),
     port = 3000,
-    models = require('./models'),
     sequelize = require('./database/db'),
     cors = require('cors')
 
@@ -13,11 +11,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(cors({
-    origin: 'http://localhost:3001'
+    origin: 'http://172.17.17.21:3001'
 }))
 
 //routes
-app.use(routes);
+
+require('./routes/routes')(app)
 require('./routes/auth.routes')(app);
 require('./routes/user.routes')(app);
 

@@ -3,6 +3,7 @@ exports.allAccess = (req, res) => {
 };
 
 exports.userBoard = (req, res) => {
+    console.log("asdadsasd")
     res.status(200).send({message: "Contenido de usuario."});
 };
 

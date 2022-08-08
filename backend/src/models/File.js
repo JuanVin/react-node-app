@@ -1,4 +1,4 @@
-const { DataTypes, ExclusionConstraintError } = require('sequelize');
+const { DataTypes } = require('sequelize');
 let sequelize = require('../database/db'),
     Detail = require('./Detail'),
     Dates = require('./FileDate'),

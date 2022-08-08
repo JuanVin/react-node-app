@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/db')
-const Files = require("./File")
 const CellPhone = require("./CellPhone");
 const Extraction = sequelize.define('Extraction', {
     id: {

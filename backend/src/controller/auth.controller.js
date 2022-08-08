@@ -1,17 +1,18 @@
-const User = require("../models/User");
-const Role = require("../models/Role");
+const db = require("../models/index")
 const { Op } = require("sequelize");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 exports.signup = (req, res) => {
     // Save User to Database
-    User.create({
+    db.User.create({
         username: req.body.username,
-        password: bcrypt.hashSync(req.body.password, 8)
+        password: bcrypt.hashSync(req.body.password, 8),
+        name: req.body.name,
+        lastname: req.body.lastname
     })
         .then(user => {
             if (req.body.roles) {
-                Role.findAll({
+                db.Role.findAll({
                     where: {
                         name: {
                             [Op.or]: req.body.roles
@@ -34,9 +35,9 @@ exports.signup = (req, res) => {
         });
 };
 exports.signin = (req, res) => {
-    console.log("asdasdasdasdasd")
+
     console.log(req.body)
-    User.findOne({
+    db.User.findOne({
         where: {
             username: req.body.username
         }
@@ -66,6 +67,8 @@ exports.signin = (req, res) => {
                 res.status(200).send({
                     id: user.id,
                     username: user.username,
+                    name: user.name,
+                    lastname: user.lastname,
                     email: user.email,
                     roles: authorities,
                     accessToken: token

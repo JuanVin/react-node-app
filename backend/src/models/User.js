@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/db')
 const Files = require("./File")
-
+const Technician = require("./Technician")
 const User = sequelize.define('User', {
     id: {
         type: DataTypes.INTEGER,
@@ -9,6 +9,14 @@ const User = sequelize.define('User', {
         primaryKey: true
     },
     username: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    lastname: {
         type: DataTypes.STRING,
         allowNull: false
     },
@@ -48,5 +56,8 @@ Files.belongsTo(User, {
         allowNull: true
     }
 })
+
+User.hasOne(Technician)
+Technician.belongsTo(User)
 
 module.exports = User
