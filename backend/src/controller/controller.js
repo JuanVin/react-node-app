@@ -149,16 +149,18 @@ module.exports = controller = {
                             }
                         },
                         include: [
-                            { model: db.FileDate, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.FileDate, required: true, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.Detail, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.FiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.FiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.Technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.Condition, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: db.FileType, attributes: { exclude: ["createdAt", "updatedAt"] } }
+                            { model: db.FileType, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.User, as: 'createdByUser', attributes: { exclude: ["createdAt", "updatedAt", "password"] } },
+                            { model: db.User, as: 'updatedByUser', attributes: { exclude: ["createdAt", "updatedAt", "password"] } }
                         ],
                         attributes: {
-                            exclude: ["ConditionId", "FileDateId", "FileTypeId", "FiscalOfficeId", "createdAt", "updatedAt"]
+                            exclude: ["ConditionId", "FileDateId", "FileTypeId", "FiscalOfficeId", "FiscalUnitId"]
                         }
                     }, { transaction: t }))
             })
@@ -327,11 +329,14 @@ module.exports = controller = {
         }
     },
     getStadisticsByDate: async (req, res) => {
+
+        let dates = JSON.parse(req.params.dates)
+
         let fileStadistic = [],
             technicianStadistic = [],
             pendingFiles,
-            startDate = new Date(req.body.start),
-            endDate = new Date(req.body.end),
+            startDate = new Date(dates.start),
+            endDate = new Date(dates.end),
             total = 0
 
         try {
@@ -447,7 +452,7 @@ module.exports = controller = {
         }
     },
     getFileByTechnician: async (req, res) => {
-        let data = req.body,
+        let data = JSON.parse(req.params.params),
             startDate = new Date(data.startDate),
             endDate = new Date(data.endDate)
 
@@ -471,7 +476,9 @@ module.exports = controller = {
                             { model: db.FiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.Technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.Condition, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: db.FileType, attributes: { exclude: ["createdAt", "updatedAt"] } }
+                            { model: db.FileType, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.User, as: 'createdByUser', attributes: { exclude: ["createdAt", "updatedAt", "password"] } },
+                            { model: db.User, as: 'updatedByUser', attributes: { exclude: ["createdAt", "updatedAt", "password"] } }
                         ]
                     })
                 )

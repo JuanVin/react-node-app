@@ -48,12 +48,12 @@ function TechnicianSearcher(param) {
   }
   async function handleSubmit(e) {
     e.preventDefault();
-    let body = {
+    let params = {
       technician: technician,
       startDate: startDate,
       endDate: endDate,
     };
-    const query = await apis.getFilesByTechnician(body)
+    const query = await apis.getFilesByTechnician(params)
     if (query.status === 200) {
       setData(query.response);
     }

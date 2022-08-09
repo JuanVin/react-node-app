@@ -48,19 +48,22 @@ function Stadistics() {
       start: startDate,
       end: endDate,
     });
+    console.log(query)
+    if (query.status === 200) {
 
-    setFileStadistic(query.fileStadistic);
-    setTechnicianStadistic(query.technicianStadistic);
-    setPendingFiles(query.pendingFiles);
-    setTotal(query.fileStadistic[query.fileStadistic.length - 1].total);
-    setArchivedFile(
-      query.fileStadistic.find((element) => element.name === "archivado")
-    );
-    setDeliverFile(
-      query.fileStadistic.find(
-        (element) => element.name === "falta_entregar"
-      )
-    );
+      setFileStadistic(query.response.fileStadistic);
+      setTechnicianStadistic(query.response.technicianStadistic);
+      setPendingFiles(query.response.pendingFiles);
+      setTotal(query.response.fileStadistic[query.response.fileStadistic.length - 1].total);
+      setArchivedFile(
+        query.response.fileStadistic.find((element) => element.name === "archivado")
+      );
+      setDeliverFile(
+        query.response.fileStadistic.find(
+          (element) => element.name === "falta_entregar"
+        )
+      );
+    }
   }
   if (isLoading) {
     return (

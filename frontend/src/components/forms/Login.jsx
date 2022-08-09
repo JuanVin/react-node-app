@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
 import AuthService from "./../../services/auth.service"
-function Login({setShowNav}) {
+import Message from "../commons/Message"
+function Login({ setShowNav }) {
     const [userName, setUserName] = useState("")
     const [password, setPassword] = useState("")
     const [message, setMessage] = useState("")
@@ -9,12 +10,12 @@ function Login({setShowNav}) {
     setShowNav(false)
     async function handleLogin(e) {
         e.preventDefault();
-        const response = await AuthService.login(userName, password)
-        if (response.accessToken) {
+        const query = await AuthService.login(userName, password)
+        if (query.response.accessToken) {
             navigate('/');
             window.location.reload();
-        }else{
-            setMessage(response.message)
+        } else {
+            setMessage({ message: query.response.message, status: query.status })
         }
     }
 
@@ -31,6 +32,12 @@ function Login({setShowNav}) {
                             className="img-fluid" alt="Sample image"></img>
                     </div>
                     <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                        {message !== ""
+                            ?
+                            <Message props={message}></Message>
+                            :
+                            ""
+                        }
                         <form onSubmit={(e) => handleLogin(e)}>
                             <h2 className="mb-4">
                                 Acceso

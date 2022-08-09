@@ -6,12 +6,6 @@ const apis = {
     },
     getFileByFileNumber: async (file_number) => {
         return ApiService.genericGet(`${URL}/api/files/${file_number}`)
-        /*
-        let data = await fetch(`${URL}/api/files/${file_number}`),
-            status = data.status
-
-        data = await data.json()
-        return { data, status }*/
     },
     getFileByAdmissionDate: async (date) => {
         return ApiService.genericGet(`${URL}/api/files/date/admission/${date}`)
@@ -56,21 +50,11 @@ const apis = {
         return ApiService.genericDelete(`${URL}/api/files/details/delete/${id}`)
     },
     getStadisticsByDate: async (fetchData) => {
-        let options = {
-            method: 'post',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(fetchData)
-        },
-            url = `${URL}/api/files/stadistics/all`,
-            response
-
-        response = await fetch(url, options)
-        response = await response.json()
-        console.log(response)
-        return response
+        return ApiService.genericGet(`${URL}/api/files/stadistics/${JSON.stringify(fetchData)}`)
     },
-    getFilesByTechnician: async (fetchData) => {
-        return ApiService.genericPost(fetchData, `${URL}/api/files/technician`)
+    getFilesByTechnician: async (params) => {
+        return ApiService.genericGet(`${URL}/api/files/technician/${JSON.stringify(params)}`)
+        //return ApiService.genericPost(fetchData, `${URL}/api/files/technician`)
     },
     postNewExtraction: async (fetchData) => {
         return ApiService.genericPost(fetchData, `${URL}/api/files/new_extraction`)
@@ -79,16 +63,10 @@ const apis = {
         return ApiService.genericPost(fetchData, `${URL}/api/files/set_extraction_number`)
     },
     getExtractionInfo: async (id) => {
-        let response = await fetch(`${URL}/api/files/get_extraction/${id}`)
-        let status = response.status
-        response = await response.json()
-        return { response, status }
+        return ApiService.genericGet(`${URL}/api/files/get_extraction/${id}`)
     },
     getExtractionsById: async (id) => {
-        let response = await fetch(`${URL}/api/files/get_extractions_by_id/${id}`)
-        let status = response.status
-        response = await response.json()
-        return { response, status }
+        return ApiService.genericGet(`${URL}/api/files/get_extractions_by_id/${id}`)
     },
     updateExtraction: async (fetchData) => {
         return ApiService.genericPost(fetchData, `${URL}/api/files/update_extraction`)

@@ -10,7 +10,7 @@ function handleLogout() {
 const NavBar = () => {
 
     const user = (AuthService.getCurrentUser())
-   
+
     return (
         <Navbar bg="dark" variant="dark" style={{ zIndex: "1" }}>
             <Navbar.Brand href="#home">
@@ -34,7 +34,7 @@ const NavBar = () => {
                             <>
                                 <Navbar.Collapse>
                                     <Navbar.Text>
-                                        Logeado como: <a href="/profile">{(user.name + " " + user.last).toUpperCase()}</a>
+                                        Logeado como: <a href="/profile">{(user.name + " " + user.lastname).toUpperCase()}</a>
                                     </Navbar.Text>
                                 </Navbar.Collapse>
                             </>
@@ -44,25 +44,29 @@ const NavBar = () => {
                     }
                     <Nav.Link style={{ fontSize: "18px", marginLeft: "20px" }} href="/">Home</Nav.Link>
                     <Nav.Link style={{ fontSize: "18px", marginLeft: "20px" }} href="#">Mis expedientes</Nav.Link>
-                    {
-                        (user !== null && user.roles.includes('ROLE_ADMIN'))
-                            ?
-                            <>
-                                <NavDropdown style={{ fontSize: "18px" }} title="Opciones" id="navbarScrollingDropdown">
+                    <NavDropdown style={{ fontSize: "18px" }} title="Opciones" id="navbarScrollingDropdown">
+                        <NavDropdown.Item style={{ fontSize: "18px" }} href="#">Agenda</NavDropdown.Item>
+                        {
+
+                            (user !== null && user.roles.includes('ROLE_ADMIN'))
+                                ?
+                                <>
+
                                     <NavDropdown.Item style={{ fontSize: "18px" }} href="/stadistics">Estadísticas</NavDropdown.Item>
                                     <NavDropdown.Item style={{ fontSize: "18px" }} href="/finder">Buscador</NavDropdown.Item>
                                     <NavDropdown.Divider />
                                     <NavDropdown.Item style={{ fontSize: "18px" }} href="#">Alta usuario</NavDropdown.Item>
-                                </NavDropdown>
-                            </>
-                            :
-                            ""
-                    }
+
+                                </>
+                                :
+                                ""
+                        }
+                    </NavDropdown>
                     <FileSearch></FileSearch>
                     <Button variant="outline-light" style={{ marginLeft: "10px" }} onClick={handleLogout}>Salir</Button>
                 </Nav>
             </Container>
-        </Navbar>
+        </Navbar >
     )
 }
 

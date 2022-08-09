@@ -12,7 +12,6 @@ const Detail = sequelize.define('Detail', {
         type: DataTypes.TEXT,
         allowNull: true
     }
-
 })
 
 module.exports = Detail

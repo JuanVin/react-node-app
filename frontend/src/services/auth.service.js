@@ -5,7 +5,7 @@ const AuthService = {
         let options = {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({username, password})
+            body: JSON.stringify({ username, password })
         },
             url = `${URL}/api/auth/signin`,
             status,
@@ -18,24 +18,24 @@ const AuthService = {
             secureStorage.setItem("user", response)
             //localStorage.setItem("user", JSON.stringify(response));
         }
-        return response
+        return { response, status }
     },
     logout: () => {
         //localStorage.removeItem("user");
         secureStorage.removeItem('user');
+
     },
     register: async (username, password) => {
         let options = {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({username, password})
+            body: JSON.stringify({ username, password })
         },
             url = `${URL}/api/auth/signup`
 
         const query = await fetch(url, options)
     },
     getCurrentUser: () => {
-        
         return secureStorage.getItem('user');
         //return JSON.parse(localStorage.getItem('user'));
     }

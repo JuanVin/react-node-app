@@ -10,7 +10,7 @@ const Extraction = sequelize.define('Extraction', {
     numberOfDevices: {
         type: DataTypes.INTEGER,
         allowNull: true
-    },
+    }
 })
 
 Extraction.hasMany(CellPhone)

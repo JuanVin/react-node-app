@@ -9,9 +9,6 @@ function DetailTable(params) {
     const handleShowTextArea = (index, opt) => setShowOptiones({ index: index, opt: opt })
     const handleCloseTextArea = () => setShowOptiones({ index: null, opt: null })
     const handleShowWarning = (index, opt) => setShowOptiones({ index: index, opt: opt })
-
-
-
     let trParam = []
 
     async function postUpdDetail(id, index) {
