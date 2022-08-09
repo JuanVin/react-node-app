@@ -11,7 +11,7 @@ function UploadForm(params) {
   const [fiscalOfficeId, setFiscalOfficeId] = useState(0);
   const [fiscalUnitId, setFiscalUnitId] = useState(0);
   const [conditionId, setConditionId] = useState(0);
-  const [technicalId, setTechnicalId] = useState(0);
+  const [technicianId, setTechnicianId] = useState(0);
   const [detail, setDetail] = useState('');
   const [admissionDate, setAdmissionDate] = useState('');
   const [egressDate, setEgressDate] = useState('');
@@ -32,10 +32,14 @@ function UploadForm(params) {
     setIsLoading(false);
   };
   const getFetchData = async () => {
-    let formData = await apis.getFormData();
-    localStorage.setItem("data", JSON.stringify(formData));
-    setData(formData);
-    setIsLoading(false);
+  
+    let query = await apis.getFormData();
+    
+    if (query.status === 200) {
+      localStorage.setItem("data", JSON.stringify(query.response));
+      setData(query.response);
+      setIsLoading(false);
+    }
   };
 
   if (isLoading) {
@@ -50,7 +54,7 @@ function UploadForm(params) {
       egress_date: egressDate,
       shift_date: shiftDate,
       detail: detail,
-      TechnicalId: technicalId,
+      TechnicianId: technicianId,
       file_number: fileNumber.replace("/", ""),
       file_type: fileType
     }
@@ -307,9 +311,9 @@ function UploadForm(params) {
             </label>
             <select
               className="form-control"
-              value={technicalId}
+              value={technicianId}
               onChange={(e) => {
-                setTechnicalId(e.target.value);
+                setTechnicianId(e.target.value);
               }}
               id="tecnico_act"
               required

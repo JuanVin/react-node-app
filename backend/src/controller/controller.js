@@ -176,7 +176,7 @@ module.exports = controller = {
                     fiscalUnits: await db.FiscalUnit.findAll({
                         include: [
                             {
-                                model: db.Disctrict,
+                                model: db.District,
                                 attributes: { exclude: ["createdAt", "updatedAt"] }
                             }
                         ],
@@ -262,7 +262,7 @@ module.exports = controller = {
                     FiscalOfficeId: request.FiscalOfficeId,
                     FiscalUnitId: request.FiscalUnitId,
                     FileDateId: newDates.id,
-                    TechnicalId: request.TechnicalId,
+                    TechnicianId: request.TechnicianId,
                     ConditionId: request.ConditionId,
                     shift_granted: "si",
                     file_number: request.file_number,
@@ -691,6 +691,34 @@ module.exports = controller = {
         } catch (e) {
             res.status(400).send({ message: "error" })
         }
+    },
+    getFilebyUserId: async (req, res) => {
+        const userId = req.params.id
+
+        const files = await db.File.findAll(
+            {
+                include: [
+                    {
+                        model: db.Technician, where: {
+                            UserId: userId
+                        }
+                    },
+                    {
+                        model: db.Condition,
+                        where: {
+                            [Op.and]:
+                                [
+                                    { condition: { [Op.not]: 'archivado' } },
+                                    { condition: { [Op.not]: 'falta entregar' } },
+                                    { condition: { [Op.not]: 'sin efecto' } }
+                                ]
+                        }
+                    }
+                ]
+            }
+        )
+        res.status(200).send(files)
+
     }
 
 }

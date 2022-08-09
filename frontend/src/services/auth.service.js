@@ -23,7 +23,7 @@ const AuthService = {
     logout: () => {
         //localStorage.removeItem("user");
         secureStorage.removeItem('user');
-
+        localStorage.removeItem('data')
     },
     register: async (username, password) => {
         let options = {

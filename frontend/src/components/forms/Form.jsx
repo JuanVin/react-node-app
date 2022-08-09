@@ -357,6 +357,14 @@ function Form(params) {
             }}
           >Cargar extracción</Link>
         </div>
+        <div className="col">
+          <button
+            className="mt-3 btn btn-outline-danger w-100 m-1"
+            type="button"
+          >
+            Borrar
+          </button>
+        </div>
       </div>
     </>
   );

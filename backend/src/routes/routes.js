@@ -15,6 +15,7 @@ module.exports = (app) => {
     app.get('/api/files/get_extractions_by_id/:id', [authJwt.verifyToken], controller.getExtractionsById)
     app.get('/api/files/stadistics/:dates', [authJwt.verifyToken, authJwt.isAdmin], controller.getStadisticsByDate)
     app.get('/api/files/technician/:params', [authJwt.verifyToken, authJwt.isAdmin], controller.getFileByTechnician)
+    app.get('/api/files/user/:id',controller.getFilebyUserId)
 
     app.post('/api/files/form/update', [authJwt.verifyToken], controller.updateFiles)
     app.post('/api/files/details/update', [authJwt.verifyToken], controller.updateDetail)
