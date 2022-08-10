@@ -7,6 +7,7 @@ import NavBar from './components/commons/navbar/NavBar';
 import Stadistics from './components/stadistics/Stadistics';
 import Searcher from './components/searcher/Searcher';
 import DeviceForm from './components/forms/deviceForm/DeviceForm';
+import Calendar from './components/scheduler/Scheduler';
 import Footer from './components/commons/Footer'
 import { useState } from "react"
 
@@ -36,6 +37,7 @@ const App = () => {
                         <Route path='/stadistics' element={<Stadistics />} />
                         <Route path='/finder' element={<Searcher />} />
                         <Route path='/device' element={<DeviceForm />} />
+                        <Route path='/calendar' element={<Calendar />} />
                     </Routes>
                 </Router>
             </div>

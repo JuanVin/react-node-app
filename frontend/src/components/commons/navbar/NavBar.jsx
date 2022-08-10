@@ -45,7 +45,7 @@ const NavBar = () => {
                     <Nav.Link style={{ fontSize: "18px", marginLeft: "20px" }} href="/">Home</Nav.Link>
                     <Nav.Link style={{ fontSize: "18px", marginLeft: "20px" }} href="#">Mis expedientes</Nav.Link>
                     <NavDropdown style={{ fontSize: "18px" }} title="Opciones" id="navbarScrollingDropdown">
-                        <NavDropdown.Item style={{ fontSize: "18px" }} href="#">Agenda</NavDropdown.Item>
+                        <NavDropdown.Item style={{ fontSize: "18px" }} href="/calendar">Agenda</NavDropdown.Item>
                         {
 
                             (user !== null && user.roles.includes('ROLE_ADMIN'))

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 import ModalDetails from "./uploadDetails/ModalDetails";
 import Message from "../commons/Message";
 import Loading from "../commons/Loading";
+import AuthService from "../../services/auth.service";
 
 function Form(params) {
   let fileData = params.data;
@@ -357,14 +358,19 @@ function Form(params) {
             }}
           >Cargar extracción</Link>
         </div>
-        <div className="col">
-          <button
-            className="mt-3 btn btn-outline-danger w-100 m-1"
-            type="button"
-          >
-            Borrar
-          </button>
-        </div>
+        {(AuthService.getCurrentUser()).roles.includes("ROLE_ADMIN")
+          ?
+          <div className="col">
+            <button
+              className="mt-3 btn btn-outline-danger w-100 m-1"
+              type="button"
+            >
+              Borrar
+            </button>
+          </div>
+          :
+          ""
+        }
       </div>
     </>
   );

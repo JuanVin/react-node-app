@@ -92,5 +92,8 @@ const apis = {
     updateDeviceNumbers: async (fetchData) => {
         return ApiService.genericPost(fetchData, `${URL}/api/files/update_device_numbers`)
     },
+    getCalendarByDate: async(param) => {
+        return ApiService.genericGet(`${URL}/api/files/calendar/${param}`)
+    }
 }
 export default apis

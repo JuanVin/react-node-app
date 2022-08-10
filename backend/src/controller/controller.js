@@ -693,8 +693,8 @@ module.exports = controller = {
         }
     },
     getFilebyUserId: async (req, res) => {
-        const userId = req.params.id
 
+        const userId = req.params.id
         const files = await db.File.findAll(
             {
                 include: [
@@ -718,6 +718,23 @@ module.exports = controller = {
             }
         )
         res.status(200).send(files)
+    },
+    getCalendar: async (req, res) => {
+        let { date } = req.params
+        date = new Date(date)
+        const start = new Date(date.getFullYear(), date.getMonth(), 1)
+        const end = new Date(start.getFullYear(), start.getMonth() + 1, 0)
+
+        res.status(200).send(await db.FileDate.findAll(
+            {
+                where: {
+                    shift_date: {
+                        [Op.between]: [start, end]
+                    }
+                },
+                include: [{ model: db.File }]
+            }
+        ))
 
     }
 
