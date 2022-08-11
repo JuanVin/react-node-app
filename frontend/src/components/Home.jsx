@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import apis from "../services/apiCalls"
-import UploadForm from "./forms/UploadForm"
-import "./styles/home.css"
-import AccordionFile from "./commons/AccordionFile"
+import UploadForm from "./forms/uploadForm/UploadForm"
+import "./home.css"
+import AccordionFile from "./commons/Accordion/AccordionFile"
 import Loading from "./commons/Loading"
 import AuthService from "../services/auth.service"
 import checkUserAndRole from "../services/checkUserAndRole"
-
 function Home({ setShowNav }) {
     let [isLoading, setIsLoading] = useState(true)
     let [fetchCurrentData, setFetchCurrentData] = useState(null)

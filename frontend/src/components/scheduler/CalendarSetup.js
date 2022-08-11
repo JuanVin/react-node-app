@@ -1,20 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Paper from '@mui/material/Paper';
-import { ViewState } from '@devexpress/dx-react-scheduler';
-import checkUserAndRole from "../../services/checkUserAndRole";
-import {
-    Scheduler,
-    MonthView,
-    Appointments,
-    AppointmentTooltip,
-    AppointmentForm,
-} from '@devexpress/dx-react-scheduler-material-ui';
 import apis from "../../services/apiCalls";
 import Loading from "../commons/Loading";
 import AuthService from "../../services/auth.service";
-
-function Calendar() {
+import checkUserAndRole from "../../services/checkUserAndRole";
+import Calendar from "./Calendar";
+function CalendarSetup() {
     const [currentDate, setCurrentDate] = useState(null)
     const [date, setDate] = useState(new Date().toISOString().substring(0, 10))
     const [appointments, setAppointments] = useState(null)
@@ -69,16 +60,16 @@ function Calendar() {
         return {
             title: date.File.file_number + " " + (startDate.getHours() + ":" + startDate.getMinutes()) + "hrs",
             startDate: startDate,
-            endDate: endDate,
-            algo: "asdasdasda"
+            endDate: endDate
         }
     }
-    console.log(currentDate)
+
     if (isLoading) {
         return (
             <Loading></Loading>
         )
     }
+
     return (
         <>
             <h1 className="m-3">Calendario</h1>
@@ -88,8 +79,7 @@ function Calendar() {
                     <div className="col-md-4">
                         <form onSubmit={e => handleSubmit(e)}>
                             <div className="input-group">
-                                <input type="date" className="form-control" id="start" value={date} onChange={e => setDate(e.target.value)}
-                                ></input>
+                                <input type="date" className="form-control" id="start" value={date} onChange={e => setDate(e.target.value)}></input>
                                 <button type="submit" className="btn btn-success">Enviar</button>
                             </div>
                         </form>
@@ -100,26 +90,7 @@ function Calendar() {
                 {
                     (appointments !== null)
                         ?
-                        <Paper>
-                            <Scheduler
-                                data={appointments}
-                                height={660}
-                            >
-                                <ViewState
-                                    startDayHour={7}
-                                    endDayHour={22}
-                                    currentDate={currentDate}
-                                />
-                                <MonthView />
-                                <Appointments />
-                                <AppointmentTooltip
-                                    showCloseButton
-                                    showOpenButton
-                                /><AppointmentForm
-                                    readOnly
-                                />
-                            </Scheduler>
-                        </Paper>
+                        <Calendar appointments={appointments} currentDate={currentDate}></Calendar>
                         :
                         ""
                 }
@@ -130,4 +101,4 @@ function Calendar() {
 
     )
 }
-export default Calendar
+export default CalendarSetup

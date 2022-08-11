@@ -1,6 +1,6 @@
 import apis from "./../../services/apiCalls";
 import { useState } from "react"
-import AccordionFile from "../commons/AccordionFile";
+import AccordionFile from "../commons/Accordion/AccordionFile";
 
 function DateSearcher(param) {
     const [data, setData] = useState(null)

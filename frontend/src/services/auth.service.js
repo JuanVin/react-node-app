@@ -1,11 +1,11 @@
 import secureStorage from "./hash.service"
 const URL = 'http://172.17.17.21:3000'
 const AuthService = {
-    login: async (username, password) => {
+    login: async (body) => {
         let options = {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
+            body: JSON.stringify(body)
         },
             url = `${URL}/api/auth/signin`,
             status,

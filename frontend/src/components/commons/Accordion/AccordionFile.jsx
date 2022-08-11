@@ -1,5 +1,5 @@
 import { Accordion } from "react-bootstrap"
-import "../styles/accordionFile.css"
+import "./accordion.css"
 
 function AccordionFile({ files, option }) {
     console.log(files)

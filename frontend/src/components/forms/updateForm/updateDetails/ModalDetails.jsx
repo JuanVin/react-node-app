@@ -1,8 +1,8 @@
 import { useState } from "react"
 import { Button, Modal } from "react-bootstrap"
-import apis from "../../../services/apiCalls"
+import apis from "../../../../services/apiCalls"
 import DetailTable from "./DetailTable"
-import Message from "../../commons/Message";
+import Message from "../../../commons/Message";
 function ModalDetails(params) {
 
     const [show, setShow] = useState(false);

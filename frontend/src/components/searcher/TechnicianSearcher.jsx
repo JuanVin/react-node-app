@@ -1,6 +1,6 @@
 import apis from "../../services/apiCalls"
 import { useState, useEffect } from "react";
-import AccordionFile from "../commons/AccordionFile";
+import AccordionFile from "../commons/Accordion/AccordionFile";
 import Loading from "../commons/Loading";
 function TechnicianSearcher(param) {
   const [data, setData] = useState(null);

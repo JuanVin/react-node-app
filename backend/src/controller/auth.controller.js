@@ -52,6 +52,7 @@ exports.signup = async (req, res) => {
 
 };
 exports.signin = async (req, res) => {
+    console.log(req.body)
     try {
         const results = await sequelize.transaction(async (t) => {
             const user = await db.User.findOne({

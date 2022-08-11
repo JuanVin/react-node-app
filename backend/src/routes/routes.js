@@ -19,7 +19,6 @@ module.exports = (app) => {
     app.get('/api/files/calendar/:date', [authJwt.verifyToken], controller.getCalendar)
 
 
-
     app.post('/api/files/form/update', [authJwt.verifyToken], controller.updateFiles)
     app.post('/api/files/details/update', [authJwt.verifyToken], controller.updateDetail)
     app.post('/api/files/details/new_detail', [authJwt.verifyToken], controller.newDetail)

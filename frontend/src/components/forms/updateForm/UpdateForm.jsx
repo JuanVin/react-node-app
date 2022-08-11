@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import apis from "../../services/apiCalls";
+import apis from "../../../services/apiCalls";
 import Form from "./Form"
-import Loading from "../commons/Loading"
-import AuthService from "../../services/auth.service";
-import checkUserAndRole from "../../services/checkUserAndRole";
+import Loading from "../../commons/Loading"
+import AuthService from "../../../services/auth.service";
+import checkUserAndRole from "../../../services/checkUserAndRole";
 
 function UpdateForm() {
     const [isLoading, setIsLoading] = useState(true)

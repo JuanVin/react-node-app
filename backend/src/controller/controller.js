@@ -243,30 +243,28 @@ module.exports = controller = {
     newFile: async (req, res) => {
 
         let request = req.body
-        console.log(req.body)
         for (const key in request) {
             if (request[key] === '' || request[key] === '0' || request[key] === 0) {
                 request[key] = null
             }
         }
-
-        request.file_number = request.file_number.slice(0, -2) + "/" + request.file_number.slice(-2)
+        request.fileNumber = request.fileNumber.replace("/", "")
         try {
             const results = sequelize.transaction(async (t) => {
                 newDates = await db.FileDate.create({
-                    shift_date: request.shift_date,
-                    admission_date: request.admission_date,
-                    egress_date: request.egress_date
+                    shift_date: request.shiftDate,
+                    admission_date: request.admissionDate,
+                    egress_date: request.egressDate
                 }, { transaction: t })
                 newFile = await db.File.create({
-                    FiscalOfficeId: request.FiscalOfficeId,
-                    FiscalUnitId: request.FiscalUnitId,
+                    FiscalOfficeId: request.fiscalOfficeId,
+                    FiscalUnitId: request.fiscalUnitId,
                     FileDateId: newDates.id,
-                    TechnicianId: request.TechnicianId,
-                    ConditionId: request.ConditionId,
+                    TechnicianId: request.technicianId,
+                    ConditionId: request.conditionId,
                     shift_granted: "si",
-                    file_number: request.file_number,
-                    FileTypeId: request.file_type,
+                    file_number: request.fileNumber,
+                    FileTypeId: request.fileType,
                     createdBy: req.userId
                 }, { transaction: t })
                 newDetail = await db.Detail.create({

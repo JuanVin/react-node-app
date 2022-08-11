@@ -1,14 +1,14 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import Home from "./components/Home"
-import UpdateForm from './components/forms/UpdateForm';
-import Login from './components/forms/Login';
 import NavBar from './components/commons/navbar/NavBar';
 import Stadistics from './components/stadistics/Stadistics';
 import Searcher from './components/searcher/Searcher';
 import DeviceForm from './components/forms/deviceForm/DeviceForm';
-import Calendar from './components/scheduler/Scheduler';
+import CalendarSetup from './components/scheduler/CalendarSetup';
 import Footer from './components/commons/Footer'
+import UpdateForm from './components/forms/updateForm/UpdateForm';
+import Login from './components/forms/login/Login';
+import Home from './components/Home';
 import { useState } from "react"
 
 const App = () => {
@@ -37,7 +37,7 @@ const App = () => {
                         <Route path='/stadistics' element={<Stadistics />} />
                         <Route path='/finder' element={<Searcher />} />
                         <Route path='/device' element={<DeviceForm />} />
-                        <Route path='/calendar' element={<Calendar />} />
+                        <Route path='/calendar' element={<CalendarSetup />} />
                     </Routes>
                 </Router>
             </div>

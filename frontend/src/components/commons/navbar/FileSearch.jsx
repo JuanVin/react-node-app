@@ -1,8 +1,8 @@
 import { Button, Modal } from "react-bootstrap";
 import { useState } from "react";
 import apis from "../../../services/apiCalls";
-import AccordionFile from "../AccordionFile";
-import "../../styles/modal.css";
+import AccordionFile from "../Accordion/AccordionFile";
+import "./modal.css";
 
 function FileSearch() {
   const [show, setShow] = useState(false);
