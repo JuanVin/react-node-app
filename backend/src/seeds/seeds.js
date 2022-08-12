@@ -1,5 +1,7 @@
 require('dotenv').config()
+
 const sequelize = require('../database/db')
+const { Op } = require("sequelize");
 const fiscalUnit = require('../models/FiscalUnit')
 const condition = require('../models/Condition')
 const fiscalOffice = require('../models/FiscalOffice')
@@ -7,6 +9,9 @@ const technician = require('../models/Technician')
 const district = require('../models/District')
 const type = require('../models/FileType')
 const Role = require("../models/Role")
+const User = require("../models/User")
+const Roles = require("../models/Role")
+const bcrypt = require("bcryptjs");
 const dist = [{
     name: "1ra circunscripcion"
 },
@@ -264,6 +269,48 @@ const unit = [{
         { name: "cn" },
         { name: "jp" },
         { name: "fb" }
+    ],
+    users = [
+        {
+            username: "cnieto",
+            password: bcrypt.hashSync("12345", 8),
+            name: "cristian",
+            lastname: "nieto",
+            active: false,
+            roles: ["technician"]
+        },
+        {
+            username: "jsalgado",
+            password: bcrypt.hashSync("12345", 8),
+            name: "juan",
+            lastname: "salgado",
+            active: true,
+            roles: ["technician"]
+        },
+        {
+            username: "loliva",
+            password: bcrypt.hashSync("12345", 8),
+            name: "luis",
+            lastname: "oliva",
+            active: true,
+            roles: ["technician"]
+        },
+        {
+            username: "sgarcia",
+            password: bcrypt.hashSync("12345", 8),
+            name: "sebastián",
+            lastname: "garcía",
+            active: true,
+            roles: ["technician"]
+        },
+        {
+            username: "jvinci",
+            password: bcrypt.hashSync("12345", 8),
+            name: "juan",
+            lastname: "vinci",
+            active: true,
+            roles: ["technician"]
+        }
     ]
 
 const tech =
@@ -273,7 +320,7 @@ const tech =
             unit.forEach(item => fiscalUnit.create(item))
             conditions.forEach(item => condition.create(item))
             office.forEach(item => fiscalOffice.create(item))
-            technicians.forEach(item => technician.create(item))
+            //technicians.forEach(item => technician.create(item))
             types.forEach(item => type.create(item))
 
             Role.create({
@@ -282,7 +329,32 @@ const tech =
             });
             Role.create({
                 id: 2,
+                name: "technician"
+            });
+            Role.create({
+                id: 3,
                 name: "admin"
             });
-            
+
+            users.forEach(user => {
+                User.create(
+                    {
+                        username: user.username,
+                        password: user.password,
+                        name: user.name,
+                        lastname: user.lastname,
+                        active: user.active
+                    }
+                ).then(newUser => {
+                    const rol = Roles.findOne({
+                        where: {
+                            name: {
+                                [Op.or]: user.roles
+                            }
+                        }
+                    }).then(rol => {
+                        newUser.setRoles(rol)
+                    })
+                })
+            })
         })

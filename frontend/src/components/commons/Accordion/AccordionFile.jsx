@@ -38,7 +38,7 @@ function AccordionFile({ files, option }) {
 
     function formatTechnician(Technician) {
         if (Technician !== null) {
-            return Technician.name.toUpperCase()
+            return `${Technician.name.toUpperCase()} ${Technician.lastname.charAt(0).toUpperCase()}.` 
         }
         return "No asignado"
     }
@@ -57,7 +57,7 @@ function AccordionFile({ files, option }) {
 
     function formatUpdateAndCreatedInformation(obj, date) {
         if (obj) {
-            return (obj.name.charAt(0)+obj.lastname.charAt(0)).toUpperCase() + " - " + formatDate(date, 1)
+            return `${obj.name.toUpperCase()} ${obj.lastname.charAt(0).toUpperCase()}.`
         }
         return "Sin datos"
     }
@@ -128,7 +128,7 @@ function AccordionFile({ files, option }) {
                             </tr>
                             <tr>
                                 <th scope="row">Técnico</th>
-                                <td>{formatTechnician(rowData.Technician)}</td>
+                                <td>{formatTechnician(rowData.technician)}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Detalle</th>

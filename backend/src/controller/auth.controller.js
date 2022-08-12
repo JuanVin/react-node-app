@@ -73,6 +73,12 @@ exports.signin = async (req, res) => {
                     message: "Contraseña incorrecta!"
                 });
             }
+            if (!user.active) {
+                return res.status(403).send({
+                    accessToken: null,
+                    message: "Usuario inactivo!"
+                });
+            }
             let token = jwt.sign({ id: user.id }, process.env.SECRET, {
                 expiresIn: "2h" // 24 hours
             });

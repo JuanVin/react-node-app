@@ -13,7 +13,7 @@ import Types from "../generics/Types";
 import genericFunctions from "../generics/genericFunctions";
 
 function UploadForm(params) {
-  const initialValues = { fiscalOfficeId: 0, fiscalUnitId: 0, conditionId: 0, technicianId: 0, detail: '', egressDate: '', admissionDate: '', shiftDate: '', fileNumber: '', fileType: 1 }
+  const initialValues = { fiscalOfficeId: 0, fiscalUnitId: 0, conditionId: 1, technicianId: 0, detail: '', egressDate: '', admissionDate: '', shiftDate: '', fileNumber: '', fileType: 1 }
   const [formValues, setFormValues] = useState(initialValues)
   const [formErrors, setFormErrors] = useState({})
   const [isLoading, setIsLoading] = useState(true);

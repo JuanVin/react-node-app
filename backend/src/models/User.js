@@ -23,6 +23,26 @@ const User = sequelize.define('User', {
     password: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    active: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
+    }
+})
+
+
+User.hasMany(Files,{
+    as: "technician",
+    foreignKey: {
+        name: 'userId',
+        allowNull: true
+    }
+})
+Files.belongsTo(User,{
+    as: "technician",
+    foreignKey: {
+        name: 'userId',
+        allowNull: true
     }
 })
 

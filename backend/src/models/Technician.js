@@ -13,8 +13,8 @@ const Technician = sequelize.define('Technician', {
         allowNull: false
     }
 })
-
+/*
 Technician.hasMany(File)
 File.belongsTo(Technician)
-
+*/
 module.exports = Technician

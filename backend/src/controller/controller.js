@@ -121,7 +121,7 @@ module.exports = controller = {
                             { model: db.Detail, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.FiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.FiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: db.Technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.User, as: 'technician',attributes: { exclude: ["createdAt", "updatedAt", "password", "active"] } },
                             { model: db.Condition, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.FileType, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.User, as: 'createdByUser', attributes: { exclude: ["createdAt", "updatedAt", "password"] } },
@@ -182,7 +182,14 @@ module.exports = controller = {
                         ],
                     }, { transaction: t }),
                     condition: await db.Condition.findAll({ transaction: t }),
-                    technicians: await db.Technician.findAll({ transaction: t }),
+                    technicians: await db.User.findAll(
+                        {
+                            attributes: {
+                                exclude: ["password", "username", "createdAt", "updatedAt", "active"]
+                            }
+                        },
+                        { transaction: t }
+                    ),
                     types: await db.FileType.findAll({ transaction: t })
                 })
             })
@@ -215,11 +222,11 @@ module.exports = controller = {
                 newFile[key] = null
             }
         }
-        
+
         try {
             const results = sequelize.transaction(async (t) => {
-                let oldFile = await db.File.findByPk(newFile.fileId, {transaction: t})
-                let oldDate = await db.FileDate.findByPk(newFile.dateId, {transaction: t})
+                let oldFile = await db.File.findByPk(newFile.fileId, { transaction: t })
+                let oldDate = await db.FileDate.findByPk(newFile.dateId, { transaction: t })
 
                 oldDate.egress_date = newFile.egressDate
                 oldDate.admission_date = newFile.admissionDate
@@ -240,8 +247,9 @@ module.exports = controller = {
         }
     },
     newFile: async (req, res) => {
-
+        
         let request = req.body
+       
         for (const key in request) {
             if (request[key] === '' || request[key] === '0' || request[key] === 0) {
                 request[key] = null
@@ -259,7 +267,7 @@ module.exports = controller = {
                     FiscalOfficeId: request.fiscalOfficeId,
                     FiscalUnitId: request.fiscalUnitId,
                     FileDateId: newDates.id,
-                    TechnicianId: request.technicianId,
+                    userId: request.technicianId,
                     ConditionId: request.conditionId,
                     shift_granted: "si",
                     file_number: request.fileNumber,

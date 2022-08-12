@@ -9,7 +9,7 @@ const genericFunctions = {
         techData.push(<option value={0}>No asignado</option>);
         technicians.forEach((technician) => {
             techData.push(
-                <option value={technician.id}>{technician.name.toUpperCase()}</option>
+                <option value={technician.id}>{`${technician.name.toUpperCase()}. ${technician.lastname.charAt(0).toUpperCase()}`}</option>
             );
         });
         return techData;
