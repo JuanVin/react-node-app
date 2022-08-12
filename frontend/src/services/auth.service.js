@@ -1,5 +1,5 @@
 import secureStorage from "./hash.service"
-const URL = 'http://172.17.17.21:3000'
+const URL = 'http://localhost:3000'
 const AuthService = {
     login: async (body) => {
         let options = {

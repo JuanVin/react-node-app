@@ -215,26 +215,25 @@ module.exports = controller = {
                 newFile[key] = null
             }
         }
-
+        
         try {
             const results = sequelize.transaction(async (t) => {
-                let oldFile = await db.File.findByPk(newFile.file_id)
-                let oldDate = await db.FileDate.findByPk(newFile.date_id)
+                let oldFile = await db.File.findByPk(newFile.fileId, {transaction: t})
+                let oldDate = await db.FileDate.findByPk(newFile.dateId, {transaction: t})
 
-                oldDate.egress_date = newFile.egress_date
-                oldDate.admission_date = newFile.admission_date
-                oldDate.shift_date = newFile.shift_date
-
-                oldFile.ConditionId = newFile.ConditionId
-                oldFile.FiscalOfficeId = newFile.FiscalOfficeId
-                oldFile.FiscalUnitId = newFile.FiscalUnitId
-                oldFile.TechnicianId = newFile.TechnicianId
-                oldFile.file_number = newFile.file_number.slice(0, -2) + "/" + newFile.file_number.slice(-2)
-                oldFile.FileTypeId = newFile.file_type
+                oldDate.egress_date = newFile.egressDate
+                oldDate.admission_date = newFile.admissionDate
+                oldDate.shift_date = newFile.shiftDate
+                oldFile.ConditionId = newFile.conditionId
+                oldFile.FiscalOfficeId = newFile.fiscalOfficeId
+                oldFile.FiscalUnitId = newFile.fiscalUnitId
+                oldFile.TechnicianId = newFile.technicianId
+                oldFile.file_number = newFile.fileNumber.slice(0, -2) + "/" + newFile.fileNumber.slice(-2)
+                oldFile.FileTypeId = newFile.fileType
                 oldFile.updateBy = req.userId
                 oldDate = await oldDate.save({ transaction: t })
                 oldFile = await oldFile.save({ transaction: t })
-                res.status(200).send({ message: "Expediente " + newFile.file_number + " actualizado correctamente" })
+                res.status(200).send({ message: "Expediente " + newFile.fileNumber + " actualizado correctamente" })
             })
         } catch (error) {
             res.status(400).send({ message: "Algo ocurrió mal" })

@@ -26,15 +26,24 @@ const genericFunctions = {
         return fileCondition;
     },
     loadOffices: (offices) => {
-        let fiscalData = [];
+        let fiscalData = [], aux = ""
         fiscalData.push(<option value={0}>{"Sin asignar"}</option>);
         offices.sort();
         offices.forEach((office) => {
-            fiscalData.push(
-                <option value={office.id}>
-                    {capitalizeFirstLetter(office.name)}
-                </option>
-            )
+            if (office.District) {
+                aux = (
+                    <option value={office.id}>
+                        {office.District.name + " - " + capitalizeFirstLetter(office.name)}
+                    </option>
+                )
+            } else {
+                aux = (
+                    <option value={office.id}>
+                        {capitalizeFirstLetter(office.name)}
+                    </option>
+                )
+            }
+            fiscalData.push(aux)
         })
         return fiscalData
     },
