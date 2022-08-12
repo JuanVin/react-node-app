@@ -41,7 +41,7 @@ module.exports = controller = {
                         { model: db.Detail, attributes: { exclude: ["createdAt", "updatedAt"] } },
                         { model: db.FiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
                         { model: db.FiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                        { model: db.Technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: db.User, as: "technician", attributes: { exclude: ["createdAt", "updatedAt", "password", "username"] } },
                         { model: db.Condition, attributes: { exclude: ["createdAt", "updatedAt"] } },
                         { model: db.FileType, attributes: { exclude: ["createdAt", "updatedAt"] } }
                     ],
@@ -67,7 +67,7 @@ module.exports = controller = {
                     { model: db.Detail, attributes: { exclude: ["createdAt", "updatedAt"] } },
                     { model: db.FiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
                     { model: db.FiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                    { model: db.Technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: db.User, as: "technician", attributes: { exclude: ["createdAt", "updatedAt", "password", "username"] } },
                     { model: db.Condition, attributes: { exclude: ["createdAt", "updatedAt"] } },
                     { model: db.FileType, attributes: { exclude: ["createdAt", "updatedAt"] } }],
                 }, { transaction: t }))
@@ -93,7 +93,7 @@ module.exports = controller = {
                     { model: db.Detail, attributes: { exclude: ["createdAt", "updatedAt"] } },
                     { model: db.FiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
                     { model: db.FiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                    { model: db.Technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    { model: db.User, as: "technician", attributes: { exclude: ["createdAt", "updatedAt", "password", "username"] } },
                     { model: db.Condition, attributes: { exclude: ["createdAt", "updatedAt"] } },
                     { model: db.FileType, attributes: { exclude: ["createdAt", "updatedAt"] } }],
                 }, { transaction: t }))
@@ -184,7 +184,7 @@ module.exports = controller = {
                         ],
                     }, { transaction: t }),
                     condition: await db.Condition.findAll({ transaction: t }),
-                    technicians: await db.Technician.findAll({ transaction: t }),
+                    technicians: await db.User.findAll({ attributes: { exclude: ["createdAt", "updatedAt", "password", "username"] } }, { transaction: t }),
                     types: await db.FileType.findAll({ transaction: t })
                 })
             })
@@ -192,22 +192,7 @@ module.exports = controller = {
             res.status(400).send({ message: "Algo ocurrio mal" })
         }
     },
-    getLastFiles: async (req, res) => {
-        let number = parseInt(req.params.number)
-        try {
-            const result = await sequelize.transaction(async (t) => {
-                const lastFiles = await db.File.findAll({
-                    limit: number,
-                    order: [['id', 'DESC']],
-                    include: [db.FileDate, db.Detail, db.FiscalOffice, db.FiscalUnit, db.Technician, db.Condition]
-                }, { transaction: t })
-                res.status(200).send(lastFiles)
-            })
-        } catch (error) {
-            res.status(400).send({ message: "Ocurrió un error" })
-        }
 
-    },
     updateFiles: async (req, res) => {
 
         let newFile = req.body
@@ -261,7 +246,7 @@ module.exports = controller = {
                     FiscalOfficeId: request.fiscalOfficeId,
                     FiscalUnitId: request.fiscalUnitId,
                     FileDateId: newDates.id,
-                    TechnicianId: request.technicianId,
+                    userId: request.technicianId,
                     ConditionId: request.conditionId,
                     shift_granted: "si",
                     file_number: request.fileNumber,
@@ -341,7 +326,7 @@ module.exports = controller = {
         try {
             const results = await sequelize.transaction(async (t) => {
                 let _conditions = await db.Condition.findAll({ transaction: t }),
-                    _technicians = await db.Technician.findAll({ transaction: t })
+                    _technicians = await db.User.findAll({ attributes: { exclude: ["password", "username"] } }, { transaction: t })
 
                 for (const key in _conditions) {
                     fileStadistic.push(
@@ -377,7 +362,7 @@ module.exports = controller = {
                                     },
                                     include: {
                                         model: db.File, where: {
-                                            TechnicianId: _technicians[key].id,
+                                            userId: _technicians[key].id,
                                             ConditionId: (await db.Condition.findOne({
                                                 where: {
                                                     condition: "archivado"
@@ -397,7 +382,7 @@ module.exports = controller = {
                                     },
                                     include: {
                                         model: db.File, where: {
-                                            TechnicianId: _technicians[key].id,
+                                            userId: _technicians[key].id,
                                             ConditionId: (await db.Condition.findOne({
                                                 where: {
                                                     condition: "falta entregar"
@@ -443,7 +428,7 @@ module.exports = controller = {
         try {
             const results = sequelize.transaction(async (t) => {
                 res.status(200).send(
-                    await db.Technician.findAll()
+                    await db.User.findAll({ attributes: { exclude: ["password"] } })
                 )
             }, { transaction: t })
         } catch (error) {
@@ -460,7 +445,7 @@ module.exports = controller = {
                 res.status(200).send(
                     await db.File.findAll({
                         where: {
-                            TechnicianId: data.technician
+                            userId: data.technician
                         },
                         include: [
                             {
@@ -473,11 +458,11 @@ module.exports = controller = {
                             { model: db.Detail, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.FiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.FiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: db.Technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.User, as: "technician", attributes: { exclude: ["createdAt", "updatedAt", "password", "username"] } },
                             { model: db.Condition, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.FileType, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: db.User, as: 'createdByUser', attributes: { exclude: ["createdAt", "updatedAt", "password"] } },
-                            { model: db.User, as: 'updatedByUser', attributes: { exclude: ["createdAt", "updatedAt", "password"] } }
+                            { model: db.User, as: 'createdByUser', attributes: { exclude: ["createdAt", "updatedAt", "password", "username"] } },
+                            { model: db.User, as: 'updatedByUser', attributes: { exclude: ["createdAt", "updatedAt", "password", "username"] } }
                         ]
                     })
                 )
@@ -486,237 +471,37 @@ module.exports = controller = {
             console.log(error)
         }
     },
-    newExtraction: async (req, res) => {
-        console.log(req.body)
-        let body = req.body
-
-        try {
-            const result = await sequelize.transaction(async (t) => {
-                let newExtraction = await db.CellPhone.create({
-                    deviceNumber: body.device,
-                    phoneBrand: body.phoneBrand,
-                    phoneModel: body.phoneModel,
-                    type: body.type,
-                    simcardNumber1: body.simcard.simcard1.number,
-                    simcardNumber2: body.simcard.simcard2.number,
-                    simcardCompany1: body.simcard.simcard1.company,
-                    simcardCompany2: body.simcard.simcard2.company,
-                    imeiNumber1: body.imei.imeiNumber1,
-                    imeiNumber2: body.imei.imeiNumber2,
-                    batteryBrand: body.battery.brand,
-                    batteryModel: body.battery.model,
-                    microsdType: body.microsd.type,
-                    microsdCapacity: body.microsd.capacity,
-                    detail: body.detail,
-                    extraction: body.extraction,
-                    ExtractionId: (await db.Extraction.findOne({
-                        where: {
-                            FileId: body.id
-                        }
-                    })).id
-                }, { transaction: t })
-
-                res.status(200).send({ message: "Extracción cargada con éxito", device: newExtraction })
-            })
-        } catch (e) {
-            console.log(e)
-            res.status(400).send({ message: "error" })
-        }
-
-    },
-    setExtractionNumber: async (req, res) => {
-        let number = req.body.numberOfDevices,
-            id = req.body.fileId
-
-        try {
-            const result = await sequelize.transaction(async (t) => {
-                let newExtraction = await db.Extraction.create(
-                    {
-                        numberOfDevices: number,
-                        FileId: id
-                    }, { transaction: t })
-                res.status(200).send({ message: "ok", info: newExtraction.id })
-            })
-        } catch (error) {
-            console.log(error)
-            res.status(400).send({ message: "Algo salió mal" })
-        }
-    },
-    getExtractionInfo: async (req, res) => {
-
-        const id = req.params.id
-        try {
-            const result = await sequelize.transaction(async (t) => {
-
-                let response = await db.Extraction.findOne(
-                    {
-                        where: {
-                            FileId: id
-                        },
-                        include: [db.CellPhone]
-                    }, { transaction: t }
-                )
-                if (response === null) {
-                    res.status(404).send({ message: "no hallado" })
-                } else {
-                    res.status(200).send(response)
-                }
-
-            })
-        } catch (e) {
-            res.status(400).send({ message: "error" })
-        }
-    },
-    getExtractionsById: async (req, res) => {
-        const id = req.params.id
-        try {
-            const result = await sequelize.transaction(async (t) => {
-                let response = await db.CellPhone.findAll(
-                    {
-                        where: {
-                            ExtractionId: id
-                        }
-                    }, { transaction: t }
-                )
-                if (response.length < 1) {
-
-                    res.status(404).send({ message: "no hallado" })
-                } else {
-                    res.status(200).send(response)
-                }
-            })
-        } catch (e) {
-            res.status(404).send({ message: "error" })
-        }
-    },
-    updateExtraction: async (req, res) => {
-        let body = req.body
-        try {
-            const result = await sequelize.transaction(async (t) => {
-                let extraction = await db.CellPhone.findByPk(body.phoneId, { transaction: t })
-                if (extraction.deviceNumber !== body.device) {
-                    let extraction2 = await db.CellPhone.findOne({
-                        where: {
-                            deviceNumber: body.device,
-                            ExtractionId: body.extractionId
-                        }
-                    }, { transaction: t })
-                    if (extraction2) {
-                        extraction2.deviceNumber = extraction.deviceNumber
-                        extraction2 = await extraction2.save({ transaction: t })
-                    }
-                }
-                extraction.deviceNumber = body.device
-                extraction.phoneBrand = body.phoneBrand
-                extraction.phoneModel = body.phoneModel
-                extraction.simcardNumber1 = body.simcard.simcard1.number
-                extraction.simcardNumber2 = body.simcard.simcard2.number
-                extraction.simcardCompany1 = body.simcard.simcard1.company
-                extraction.simcardCompany2 = body.simcard.simcard2.company
-                extraction.imeiNumber1 = body.imei.imeiNumber1
-                extraction.imeiNumber2 = body.imei.imeiNumber2
-                extraction.batteryBrand = body.battery.brand
-                extraction.batteryModel = body.battery.model
-                extraction.microsdType = body.microsd.type
-                extraction.microsdCapacity = body.microsd.capacity
-                extraction.detail = body.detail
-                extraction.extraction = body.extraction
-                extraction = await extraction.save({ transaction: t })
-                res.status(200).send({ message: "Extracción actualizada con éxito", device: extraction })
-            })
-        } catch (error) {
-            res.status(400).send({ message: "Ocurrió un error", detail: null })
-        }
-    },
-    updateExtractionNumber: async (req, res) => {
-        try {
-            const result = sequelize.transaction(async (t) => {
-                const response = await db.Extraction.findOne({
-                    where: {
-                        FileId: req.body.id
-                    }
-                }, { transaction: t })
-                response.numberOfDevices = req.body.number
-                await response.save({ transaction: t })
-                res.status(200).send({ message: "ok" })
-            })
-        } catch (e) {
-            console.log(e)
-            res.status(400).send({ message: "Ocurrió un error" })
-        }
-    },
-    deleteExtraction: async (req, res) => {
-        let id = req.body.id
-        try {
-            const result = await sequelize.transaction(async (t) => {
-                const phone = await db.CellPhone.findByPk(id, { transaction: t })
-                const phones = await db.CellPhone.findAll({
-                    where: {
-                        ExtractionId: phone.ExtractionId
-                    }
-                })
-                for (let index = 0; index < phones.length; index++) {
-                    if (phones[index].deviceNumber > phone.deviceNumber) {
-                        phones[index].deviceNumber = (phones[index].deviceNumber) - 1
-                        await phones[index].save({ transaction: t })
-                    }
-                }
-                await phone.destroy({ transaction: t })
-                res.status(200).send({ message: "Borrado correctamente" })
-            })
-        } catch (e) {
-            console.log(e)
-            res.status(400).send({ message: "error" })
-        }
-    },
-    updateDeviceNumbers: async (req, res) => {
-        let id = req.body.id,
-            number = req.body.number
-        try {
-            const result = await sequelize.transaction(async (t) => {
-                const phones = await db.CellPhone.findAll({
-                    where: {
-                        ExtractionId: id
-                    }
-                })
-                for (let index = 0; index < phones.length; index++) {
-                    if (phones[index].deviceNumber > number) {
-                        phones[index].deviceNumber = (phones[index].deviceNumber) - 1
-                        await phones[index].save({ transaction: t })
-                    }
-                }
-                res.status(200).send({ message: "Actualizado correctamente" })
-            })
-        } catch (e) {
-            res.status(400).send({ message: "error" })
-        }
-    },
     getFilebyUserId: async (req, res) => {
 
         const userId = req.params.id
-        const files = await db.File.findAll(
-            {
-                include: [
-                    {
-                        model: db.Technician, where: {
-                            UserId: userId
-                        }
-                    },
-                    {
-                        model: db.Condition,
-                        where: {
-                            [Op.and]:
-                                [
-                                    { condition: { [Op.not]: 'archivado' } },
-                                    { condition: { [Op.not]: 'falta entregar' } },
-                                    { condition: { [Op.not]: 'sin efecto' } }
-                                ]
-                        }
-                    }
-                ]
-            }
-        )
-        res.status(200).send(files)
+        try {
+            const results = await sequelize.transaction(async (t) => {
+                res.status(200).send(
+                    await db.File.findAll(
+                        {
+                            where: {
+                                userId: userId
+                            },
+                            include: {
+                                model: db.Condition,
+                                where: {
+                                    [Op.and]:
+                                        [
+                                            { condition: { [Op.not]: 'archivado' } },
+                                            { condition: { [Op.not]: 'falta entregar' } },
+                                            { condition: { [Op.not]: 'sin efecto' } }
+                                        ]
+                                }
+                            }
+
+                        }, { transaction: t }
+                    )
+                )
+            })
+        }
+        catch (err) {
+            res.status(500).send({ message: err })
+        }
     },
     getCalendar: async (req, res) => {
         let { date } = req.params
