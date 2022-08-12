@@ -1,10 +1,12 @@
 const db = require("../models/index")
 const sequelize = db.sequelize
+const extractionService = require("../services/extraction.service")
 
 const extractionController = {
     newExtraction: async (req, res) => {
         let body = req.body
         try {
+            /*
             const result = await sequelize.transaction(async (t) => {
                 let newExtraction = await db.CellPhone.create({
                     deviceNumber: body.device,
@@ -31,9 +33,10 @@ const extractionController = {
                 }, { transaction: t })
 
                 res.status(200).send({ message: "Extracción cargada con éxito", device: newExtraction })
-            })
+            })*/
+            const extraction = await extractionService.newExtraction(body)
+            res.status(200).send({ message: "Extracción cargada con éxito", device: extraction })
         } catch (e) {
-            console.log(e)
             res.status(400).send({ message: "error" })
         }
 

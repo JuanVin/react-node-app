@@ -20,6 +20,7 @@ function UploadForm(params) {
   const [data, setData] = useState(null);
   const [message, setMessage] = useState(null);
 
+
   useEffect(() => {
     if (localStorage.getItem("data") !== null) {
       getDataFromLocalStorage();
@@ -71,7 +72,7 @@ function UploadForm(params) {
       <pre>{JSON.stringify(formValues, undefined, 2)}</pre>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <p> Número de expediente </p>
+          <p> Número de expediente (*)</p>
           <div className="input-group w-100">
             <Types fileType={formValues.fileType} handleChange={handleChange} loadTypes={genericFunctions.loadTypes(data.types)}></Types>
             <FileNumber fileNumber={formValues.fileNumber} handleChange={handleChange}></FileNumber>
@@ -99,7 +100,7 @@ function UploadForm(params) {
           </div>
         </div>
         <div className="form-group mt-3">
-          <Dates date={formValues.shiftDate} name={"shiftDate"} handleChange={handleChange} type={"datetime-local"} title={"turno"}></Dates>
+          <Dates date={formValues.shiftDate} name={"shiftDate"} handleChange={handleChange} type={"datetime-local"} title={"turno (*)"}></Dates>
           <p className="text-danger">{formErrors.shiftDate}</p>
         </div>
         <div className="row">

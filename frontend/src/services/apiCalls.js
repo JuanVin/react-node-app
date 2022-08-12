@@ -1,4 +1,5 @@
 import ApiService from './api.services';
+import authHeader from './auth-header';
 const URL = 'http://localhost:3000'
 const apis = {
     getFiles: async () => {
@@ -75,9 +76,11 @@ const apis = {
         return ApiService.genericPost(fetchData, `${URL}/api/files/update_extraction_number`)
     },
     deleteForm: async (fetchData) => {
+        const header = authHeader()
+        header['Content-Type'] = 'application/json'
         let options = {
             method: 'delete',
-            headers: { 'Content-Type': 'application/json' },
+            headers: header,
             body: JSON.stringify(fetchData)
         },
             url = `${URL}/api/files/delete_extraction_form`,

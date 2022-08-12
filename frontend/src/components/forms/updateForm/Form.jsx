@@ -16,7 +16,6 @@ import Technician from "../generics/Technician";
 function Form(params) {
 
   let fileData = params.data;
-  console.log(fileData)
   const initialValues =
   {
     fiscalOfficeId: fileData.FiscalOfficeId,
