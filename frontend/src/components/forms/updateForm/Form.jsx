@@ -16,12 +16,13 @@ import Technician from "../generics/Technician";
 function Form(params) {
 
   let fileData = params.data;
+  console.log(fileData)
   const initialValues =
   {
     fiscalOfficeId: fileData.FiscalOfficeId,
     fiscalUnitId: fileData.FiscalUnitId,
     conditionId: fileData.ConditionId,
-    technicianId: fileData.TechnicianId,
+    technicianId: fileData.userId,
     detail: fileData.Details,
     admissionDate: fileData.FileDate.admission_date,
     egressDate: fileData.FileDate.egress_date,

@@ -28,7 +28,6 @@ const App = () => {
                 :
                 ""
             }
-
             <div className='container'>
                 <Router>
                     <Routes>
@@ -50,7 +49,6 @@ const App = () => {
         </>
     )
 }
-
 
 
 

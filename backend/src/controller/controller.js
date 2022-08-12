@@ -11,7 +11,9 @@ module.exports = controller = {
                     where: {
                         id: id
                     },
-                    include: [db.FileDate, db.Detail, db.FiscalOffice, db.FiscalUnit, db.Technician, db.Condition, db.FileType]
+                    include: [db.FileDate, db.Detail, db.FiscalOffice, db.FiscalUnit,
+                    { model: db.User, as: "technician", attributes: { exclude: ["createdAt", "updatedAt", "password"] } },
+                    db.Condition, db.FileType]
                 }, { transaction: t }));
             })
         } catch (error) {
@@ -121,7 +123,7 @@ module.exports = controller = {
                             { model: db.Detail, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.FiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.FiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: db.User, as: 'technician',attributes: { exclude: ["createdAt", "updatedAt", "password", "active"] } },
+                            { model: db.User, as: "technician", attributes: { exclude: ["createdAt", "updatedAt", "password", "username"] } },
                             { model: db.Condition, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.FileType, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.User, as: 'createdByUser', attributes: { exclude: ["createdAt", "updatedAt", "password"] } },
@@ -153,7 +155,7 @@ module.exports = controller = {
                             { model: db.Detail, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.FiscalOffice, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.FiscalUnit, attributes: { exclude: ["createdAt", "updatedAt"] } },
-                            { model: db.Technician, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                            { model: db.User, as: "technician", attributes: { exclude: ["createdAt", "updatedAt", "password", "username"] } },
                             { model: db.Condition, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.FileType, attributes: { exclude: ["createdAt", "updatedAt"] } },
                             { model: db.User, as: 'createdByUser', attributes: { exclude: ["createdAt", "updatedAt", "password"] } },
@@ -182,14 +184,7 @@ module.exports = controller = {
                         ],
                     }, { transaction: t }),
                     condition: await db.Condition.findAll({ transaction: t }),
-                    technicians: await db.User.findAll(
-                        {
-                            attributes: {
-                                exclude: ["password", "username", "createdAt", "updatedAt", "active"]
-                            }
-                        },
-                        { transaction: t }
-                    ),
+                    technicians: await db.Technician.findAll({ transaction: t }),
                     types: await db.FileType.findAll({ transaction: t })
                 })
             })
@@ -234,7 +229,7 @@ module.exports = controller = {
                 oldFile.ConditionId = newFile.conditionId
                 oldFile.FiscalOfficeId = newFile.fiscalOfficeId
                 oldFile.FiscalUnitId = newFile.fiscalUnitId
-                oldFile.TechnicianId = newFile.technicianId
+                oldFile.userId = newFile.technicianId
                 oldFile.file_number = newFile.fileNumber.slice(0, -2) + "/" + newFile.fileNumber.slice(-2)
                 oldFile.FileTypeId = newFile.fileType
                 oldFile.updateBy = req.userId
@@ -247,9 +242,8 @@ module.exports = controller = {
         }
     },
     newFile: async (req, res) => {
-        
+
         let request = req.body
-       
         for (const key in request) {
             if (request[key] === '' || request[key] === '0' || request[key] === 0) {
                 request[key] = null
@@ -267,7 +261,7 @@ module.exports = controller = {
                     FiscalOfficeId: request.fiscalOfficeId,
                     FiscalUnitId: request.fiscalUnitId,
                     FileDateId: newDates.id,
-                    userId: request.technicianId,
+                    TechnicianId: request.technicianId,
                     ConditionId: request.conditionId,
                     shift_granted: "si",
                     file_number: request.fileNumber,
