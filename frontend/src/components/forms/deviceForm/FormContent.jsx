@@ -1,6 +1,6 @@
 import { useState } from "react";
 import CellForm from "./CellForm";
-
+import PcForm from "./PcForm";
 function FormContent({ elementNumber, device, amount, setAmount, currentPage, loaded, setLoaded }) {
   const [option, setOption] = useState("1");
   const [currentOption, setCurrentOption] = useState("1");
@@ -21,7 +21,7 @@ function FormContent({ elementNumber, device, amount, setAmount, currentPage, lo
           setLoaded={setLoaded}>
         </CellForm>;
       case "2":
-        return "Formulario de PC";
+        return <PcForm amount={amount}></PcForm>
       case "3":
         return "Formulario de algo mas";
       default:

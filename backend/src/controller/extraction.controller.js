@@ -46,7 +46,6 @@ const extractionController = {
                     }, { transaction: t }
                 )
                 if (response.length < 1) {
-
                     res.status(404).send({ message: "no hallado" })
                 } else {
                     res.status(200).send(response)

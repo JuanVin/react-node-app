@@ -1,6 +1,10 @@
-function PcForm(){
+function PcForm({amount}){
+
     return(
-        <h1>PC</h1>
+        <>
+         <h1>{amount}</h1>
+
+        </>
     )
 }
 export default PcForm

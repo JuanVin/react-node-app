@@ -4,6 +4,8 @@ import Loading from "../../commons/Loading";
 import Message from "../../commons/Message";
 import { useSearchParams } from "react-router-dom"
 import useExtraction from "../../../hooks/useExtraction";
+import ImeiNumber from "./generics/ImeiNumber";
+import SimcardData from "./generics/SimcardData";
 function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount }) {
 
   const [searchParams] = useSearchParams();
@@ -34,6 +36,47 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
   const [deviceInfo, setDeviceInfo] = useState(device)
 
   const { id } = useExtraction()
+  const initialValues = {
+    id: searchParams.get("id"),
+    file: searchParams.get("file"),
+    extractionId: id,
+    type: 1,
+    device: elementNumber,
+    phoneBrand: "",
+    phoneModel: "",
+    imei: {
+      imeiNumber1: "",
+      imeiNumber2: ""
+    },
+    simcard: {
+      simcard1: {
+        number: "",
+        company: ""
+      },
+      simcard2: {
+        number: "",
+        company: ""
+      }
+    },
+    battery: {
+      brand: "",
+      model: ""
+    },
+    microsd: {
+      type: "",
+      capacity: ""
+    },
+    options: {
+      simcard: "",
+      imei: "",
+      microsd: "",
+      battery: ""
+    },
+    detail: "",
+    extraction: "",
+  };
+
+  const [formValues, setFormValues] = useState(initialValues)
 
   useEffect(() => {
     if (device) {
@@ -70,50 +113,12 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
 
   }
   async function handleSubmit(e) {
+    
     e.preventDefault();
-    let fileExtraction = {
-      id: searchParams.get("id"),
-      file: searchParams.get("file"),
-      extractionId: id,
-      type: 1,
-      device: deviceNumber,
-      phoneBrand: phoneBrand,
-      phoneModel: phoneModel,
-      imei: {
-        imeiNumber1: imeiNumber1,
-        imeiNumber2: imeiNumber2
-      },
-      simcard: {
-        simcard1: {
-          number: simcardNumber1,
-          company: simcardCompany1
-        },
-        simcard2: {
-          number: simcardNumber2,
-          company: simcardCompany2
-        }
-      },
-      battery: {
-        brand: batteryBrand,
-        model: batteryModel
-      },
-      microsd: {
-        type: microsdType,
-        capacity: microsdCapacity
-      },
-      options: {
-        simcard: simcardOption,
-        imei: imeiOption,
-        microsd: microsdOption,
-        battery: batteryOption
-      },
-      detail: detail,
-      extraction: extraction,
-    };
 
     if (deviceInfo) {
-      fileExtraction.phoneId = deviceInfo.id
-      let query = await apis.updateExtraction(fileExtraction)
+      formValues.phoneId = deviceInfo.id
+      let query = await apis.updateExtraction(formValues)
       if (query.status === 200) {
         setMessage({ message: query.response.message, status: query.status })
         if (query.response.device.deviceNumber !== elementNumber) {
@@ -132,7 +137,7 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
         }
       }
     } else {
-      let query = await apis.postNewExtraction(fileExtraction);
+      let query = await apis.postNewExtraction(formValues);
       if (query.status === 200) {
         setMessage({ message: query.response.message, status: query.status })
         if (query.response.device.deviceNumber !== elementNumber) {
@@ -151,7 +156,36 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
     }
   }
 
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormValues({ ...formValues, [name]: value })
+  }
 
+  const handleImeiChange = (e) => {
+    const { name, value } = e.target
+    const imei = formValues.imei
+    imei[name] = value
+    setFormValues({
+      ...formValues, imei
+    }
+    )
+  }
+
+  const handleSimcardData = (e) => {
+    const { name, value } = e.target
+    const container = e.target.getAttribute("container")
+    const simcard = formValues.simcard
+    simcard[container][name] = value
+    setFormValues({ ...formValues, simcard })
+  }
+
+  const handleObjectChange = (e) => {
+    const { name, value } = e.target
+    const container = e.target.getAttribute("container")
+    const aux = formValues[container]
+    aux[name] = value
+    setFormValues({ ...formValues, [container]: aux })
+  }
   const deleteForm = async () => {
     if (deviceInfo) {
       let query = await apis.deleteForm({ id: deviceInfo.id })
@@ -195,56 +229,38 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
       case "1":
         return (
           <div className="row mt-3">
-            <div className="col">
-              <div className="form-group">
-                <label htmlFor="simcard">Simcard</label>
-                <input type="number" value={simcardNumber1} onChange={(e) => setSimcardNumber1(e.target.value)} className="form-control" id="simcard" required
-                ></input>
-              </div>
-            </div>
-            <div className="col">
-              <div className="form-group">
-                <label htmlFor="company">Empresa</label>
-                <input type="text" value={simcardCompany1} onChange={(e) => setSimcardCompany1(e.target.value)} className="form-control" id="company" required
-                ></input>
-              </div>
-            </div>
+            <SimcardData
+              container={"simcard1"}
+              value1={formValues.simcard.simcard1.number}
+              value2={formValues.simcard.simcard1.company}
+              handleSimcardData={handleSimcardData}
+              titles={{ 1: "Simcard", 2: "Empresa" }}
+            >
+            </SimcardData>
           </div>
         );
       case "2":
         return (
           <>
             <div className="row mt-3">
-              <div className="col">
-                <div className="form-group">
-                  <label htmlFor="simcard1">Simcard 1</label>
-                  <input type="number" value={simcardNumber1} onChange={(e) => setSimcardNumber1(e.target.value)} className="form-control" id="simcard1" required
-                  ></input>
-                </div>
-              </div>
-              <div className="col">
-                <div className="form-group">
-                  <label htmlFor="company1">Empresa 1</label>
-                  <input type="text" value={simcardCompany1} onChange={(e) => setSimcardCompany1(e.target.value)} className="form-control" id="company1" required
-                  ></input>
-                </div>
-              </div>
+              <SimcardData
+                container={"simcard1"}
+                value1={formValues.simcard.simcard1.number}
+                value2={formValues.simcard.simcard1.company}
+                handleSimcardData={handleSimcardData}
+                titles={{ 1: "Simcard 1", 2: "Empresa 1" }}
+              >
+              </SimcardData>
             </div>
             <div className="row mt-3">
-              <div className="col">
-                <div className="form-group">
-                  <label htmlFor="simcard2">Simcard 2</label>
-                  <input type="number" value={simcardNumber2} onChange={(e) => setSimcardNumber2(e.target.value)} className="form-control" id="simcard2" required
-                  ></input>
-                </div>
-              </div>
-              <div className="col">
-                <div className="form-group">
-                  <label htmlFor="company2">Empresa 2</label>
-                  <input type="text" value={simcardCompany2} onChange={(e) => setSimcardCompany2(e.target.value)} className="form-control" id="company2" required
-                  ></input>
-                </div>
-              </div>
+              <SimcardData
+                container={"simcard2"}
+                value1={formValues.simcard.simcard2.number}
+                value2={formValues.simcard.simcard2.company}
+                handleSimcardData={handleSimcardData}
+                titles={{ 1: "Simcard 2", 2: "Empresa 2" }}
+              >
+              </SimcardData>
             </div>
           </>
         );
@@ -260,14 +276,14 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
             <div className="col">
               <div className="form-group">
                 <label htmlFor="simcard">Marca</label>
-                <input type="text" value={batteryBrand} onChange={(e) => setBatteryBrand(e.target.value)} className="form-control" id="simcard" required
+                <input type="text" value={formValues.battery.brand} name="brand" container="battery" onChange={handleObjectChange} className="form-control" id="simcard" required
                 ></input>
               </div>
             </div>
             <div className="col">
               <div className="form-group">
                 <label htmlFor="company">Modelo</label>
-                <input type="text" value={batteryModel} onChange={(e) => setBatteryModel(e.target.value)} className="form-control" id="company" required
+                <input type="text" value={formValues.battery.model} name="model" container="battery" onChange={handleObjectChange} className="form-control" id="company" required
                 ></input>
               </div>
             </div>
@@ -283,16 +299,7 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
       case "1":
         return (
           <div className="form-group">
-            <label htmlFor="imei">IMEI</label>
-            <input
-              type="number"
-              className="form-control"
-              id="imei"
-              value={imeiNumber1}
-              onChange={(e) => setImeiNumber1(e.target.value)}
-              minLength={15}
-              required
-            ></input>
+            <ImeiNumber name={"imeiNumber1"} value={formValues.imei.imeiNumber1} handleObjectChange={handleObjectChange} title={"IMEI"}></ImeiNumber>
           </div>
         );
 
@@ -302,30 +309,12 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
             <div className="row mt-3">
               <div className="col">
                 <div className="form-group">
-                  <label htmlFor="imei1">IMEI 1</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    minLength={15}
-                    value={imeiNumber1}
-                    onChange={(e) => setImeiNumber1(e.target.value)}
-                    id="imei1"
-                    required
-                  ></input>
+                  <ImeiNumber name={"imeiNumber1"} value={formValues.imei.imeiNumber1} handleObjectChange={handleObjectChange} title={"IMEI 1"}></ImeiNumber>
                 </div>
               </div>
               <div className="col">
                 <div className="form-group">
-                  <label htmlFor="imei2">IMEI 2</label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    minLength={15}
-                    value={imeiNumber2}
-                    onChange={(e) => setImeiNumber2(e.target.value)}
-                    id="imei2"
-                    required
-                  ></input>
+                  <ImeiNumber name={"imeiNumber2"} value={formValues.imei.imeiNumber2} handleObjectChange={handleObjectChange} title={"IMEI 2"}></ImeiNumber>
                 </div>
               </div>
             </div>
@@ -347,8 +336,10 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
                 <input
                   type="text"
                   className="form-control"
-                  value={microsdType}
-                  onChange={(e) => setMicrosdType(e.target.value)}
+                  defaultValue={formValues.microsd.type}
+                  container="microsd"
+                  name="type"
+                  onChange={handleObjectChange}
                   id="micro-type"
                   required
                 ></input>
@@ -361,8 +352,10 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
                   type="number"
                   className="form-control"
                   minLength={15}
-                  value={microsdCapacity}
-                  onChange={(e) => setMicrosdCapacity(e.target.value)}
+                  defaultValue={formValues.microsd.capacity}
+                  name="capacity"
+                  container="microsd"
+                  onChange={handleObjectChange}
                   id="micro-capacity"
                   required
                 ></input>
@@ -382,6 +375,7 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
   return (
     <>
       <Message props={message}></Message>
+      <pre>{JSON.stringify(formValues, undefined, 2)}</pre>
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="text-center mt-1">
           <button className="btn btn-success text-center">
@@ -408,7 +402,7 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
             <div className="col">
               <div className="form-group">
                 <label htmlFor="model">Dispositivo N°: </label>
-                <select className="form-control" value={deviceNumber} onChange={(e) => setDeviceNumber(e.target.value)} id="simcardSelect">
+                <select className="form-control" value={formValues.device} name="device" onChange={handleChange} id="simcardSelect">
                   {amount.map(device => {
                     return (
                       <option value={device + 1}>{device + 1}</option>
@@ -420,13 +414,13 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
             <div className="col">
               <div className="form-group">
                 <label htmlFor="brand">Marca</label>
-                <input type="text" value={phoneBrand} name="brand" onChange={(e) => setPhoneBrand(e.target.value)} className="form-control" id="brand" required></input>
+                <input type="text" value={formValues.phoneBrand} name="phoneBrand" onChange={handleChange} className="form-control" id="brand" required></input>
               </div>
             </div>
             <div className="col">
               <div className="form-group">
                 <label htmlFor="model">Modelo</label>
-                <input type="text" value={phoneModel} name="model" onChange={(e) => setPhoneModel(e.target.value)} className="form-control" id="model" required ></input>
+                <input type="text" value={formValues.phoneModel} name="phoneModel" onChange={handleChange} className="form-control" id="model" required ></input>
               </div>
             </div>
           </div>
@@ -472,12 +466,12 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
           <hr />
           <div className="form-group">
             <label htmlFor="detalle">Detalle</label>
-            <textarea className="form-control" value={detail} onChange={(e) => setDetail(e.target.value)} id="detalle" rows="1" ></textarea>
+            <textarea className="form-control" value={formValues.detail} name="detail" onChange={handleChange} id="detalle" rows="1" ></textarea>
           </div>
 
           <div className="form-group">
             <label htmlFor="extraction">Extracción</label>
-            <textarea className="form-control" id="extraction" rows="3" value={extraction} onChange={(e) => setExtraction(e.target.value)} ></textarea>
+            <textarea className="form-control" id="extraction" rows="3" value={formValues.extraction} name="extraction" onChange={handleChange} ></textarea>
           </div>
           <div className="text-center mt-1">
             <button className="btn btn-success text-center">
