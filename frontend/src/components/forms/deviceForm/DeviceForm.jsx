@@ -38,17 +38,30 @@ function DeviceForm() {
         e.preventDefault()
 
         let _amount = []
-        let query = await handleSubmit(number)
 
+        let query = await apis.getExtractionInfo(searchParams.get("id"))
+        console.log(query)
         if (query.status === 200) {
-            for (let index = 0; index < number; index++) {
-                _amount.push(index)
+            let updateNumber = await apis.updateFormsNumber({ id: query.response.FileId, number: number })
+            if (updateNumber.status === 200) {
+                for (let index = 0; index < number; index++) {
+                    _amount.push(index)
+                }
+                setExtractionId(updateNumber.response.info)
+                setAmount(_amount)
             }
-            setExtractionId(query.response.info)
-            setAmount(_amount)
-        }
-        else {
-            console.log("error")
+        } else {
+            let newNumber = await apis.postExtractionNumber({ numberOfDevices: number, fileId: searchParams.get("id") })
+            if (newNumber.status === 200) {
+                for (let index = 0; index < number; index++) {
+                    _amount.push(index)
+                }
+                setExtractionId(newNumber.response.info)
+                setAmount(_amount)
+            }
+            else {
+                console.log("error")
+            }
         }
     }
 

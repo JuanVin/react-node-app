@@ -1,11 +1,15 @@
 import { useState, useEffect, memo } from "react";
-import apis from "../../../services/apiCalls"
-import Loading from "../../commons/Loading";
-import Message from "../../commons/Message";
+import apis from "../../../../services/apiCalls"
+import Loading from "../../../commons/Loading";
+import Message from "../../../commons/Message";
 import { useSearchParams } from "react-router-dom"
-import useExtraction from "../../../hooks/useExtraction";
+import useExtraction from "../../../../hooks/useExtraction";
 import ImeiNumber from "./generics/ImeiNumber";
 import SimcardData from "./generics/SimcardData";
+import Microsd from "./generics/Microsd";
+import Battery from "./generics/Battery";
+import DeleteButton from "../generics/DeleteButton";
+import UpdateButton from "../generics/UpdateButton";
 function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount }) {
 
   const [searchParams] = useSearchParams();
@@ -17,25 +21,12 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
   const [microsdOption, setMicrosdOption] = useState("1")
 
   const [deviceNumber, setDeviceNumber] = useState(elementNumber)
-  const [phoneBrand, setPhoneBrand] = useState("")
-  const [phoneModel, setPhoneModel] = useState("")
-  const [simcardNumber1, setSimcardNumber1] = useState("");
-  const [simcardNumber2, setSimcardNumber2] = useState("");
-  const [simcardCompany1, setSimcardCompany1] = useState("");
-  const [simcardCompany2, setSimcardCompany2] = useState("");
-  const [batteryBrand, setBatteryBrand] = useState("");
-  const [batteryModel, setBatteryModel] = useState("");
-  const [imeiNumber1, setImeiNumber1] = useState("");
-  const [imeiNumber2, setImeiNumber2] = useState("");
-  const [detail, setDetail] = useState("");
-  const [extraction, setExtraction] = useState("");
-  const [microsdType, setMicrosdType] = useState("")
-  const [microsdCapacity, setMicrosdCapacity] = useState("")
 
   const [message, setMessage] = useState(null)
   const [deviceInfo, setDeviceInfo] = useState(device)
 
   const { id } = useExtraction()
+
   const initialValues = {
     id: searchParams.get("id"),
     file: searchParams.get("file"),
@@ -88,45 +79,46 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
 
   function setInputValues() {
 
-    setPhoneBrand(deviceInfo.phoneBrand)
-    setPhoneModel(deviceInfo.phoneModel)
+    initialValues.phoneBrand = deviceInfo.phoneBrand
+    initialValues.phoneModel = deviceInfo.phoneModel
 
-    setSimcardNumber1(deviceInfo.simcardNumber1)
-    setSimcardNumber2(deviceInfo.simcardNumber2)
+    initialValues.simcard.simcard1.number = deviceInfo.simcardNumber1
+    initialValues.simcard.simcard2.number = deviceInfo.simcardNumber2
 
-    setSimcardCompany1(deviceInfo.simcardCompany1)
-    setSimcardCompany2(deviceInfo.simcardCompany2)
+    initialValues.simcard.simcard1.company = deviceInfo.simcardCompany1
+    initialValues.simcard.simcard2.company = deviceInfo.simcardCompany2
 
-    setImeiNumber1(deviceInfo.imeiNumber1)
-    setImeiNumber2(deviceInfo.imeiNumber2)
+    initialValues.imei.imeiNumber1 = deviceInfo.imeiNumber1
+    initialValues.imei.imeiNumber2 = deviceInfo.imeiNumber2
 
-    setDetail(deviceInfo.detail)
-    setExtraction(deviceInfo.extraction)
+    initialValues.detail = deviceInfo.detail
+    initialValues.extraction = deviceInfo.extraction
 
-    setBatteryBrand(deviceInfo.batteryBrand)
-    setBatteryModel(deviceInfo.batteryModel)
+    initialValues.battery.brand = deviceInfo.batteryBrand
+    initialValues.battery.model = deviceInfo.batteryModel
 
-    setMicrosdType(deviceInfo.microsdType)
-    setMicrosdCapacity(deviceInfo.microsdCapacity)
+    initialValues.microsd.type = deviceInfo.microsdType
+    initialValues.microsd.capacity = deviceInfo.microsdCapacity
 
     setLoading(false)
 
   }
   async function handleSubmit(e) {
-    
+
     e.preventDefault();
 
     if (deviceInfo) {
       formValues.phoneId = deviceInfo.id
+      setFormValues(formValues)
       let query = await apis.updateExtraction(formValues)
       if (query.status === 200) {
         setMessage({ message: query.response.message, status: query.status })
-        if (query.response.device.deviceNumber !== elementNumber) {
+        if (query.response.device.deviceNumber !== deviceNumber) {
           setTimeout(() => {
             window.location.reload(false);
           }, 1000);
         } else {
-          setDeviceInfo(...query.response.device, ...deviceInfo)
+          setDeviceInfo({ ...deviceInfo, ...query.response.device })
           setInputValues()
           let _loaded = [...loaded]
           _loaded = _loaded.filter(element => element !== elementNumber)
@@ -143,7 +135,7 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
         if (query.response.device.deviceNumber !== elementNumber) {
           setTimeout(() => {
             window.location.reload(false);
-          }, 1000);
+          }, 500);
         } else {
           let _loaded = [...loaded]
           if (!_loaded.find(element => element === deviceNumber)) {
@@ -160,17 +152,6 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
     const { name, value } = e.target
     setFormValues({ ...formValues, [name]: value })
   }
-
-  const handleImeiChange = (e) => {
-    const { name, value } = e.target
-    const imei = formValues.imei
-    imei[name] = value
-    setFormValues({
-      ...formValues, imei
-    }
-    )
-  }
-
   const handleSimcardData = (e) => {
     const { name, value } = e.target
     const container = e.target.getAttribute("container")
@@ -178,7 +159,6 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
     simcard[container][name] = value
     setFormValues({ ...formValues, simcard })
   }
-
   const handleObjectChange = (e) => {
     const { name, value } = e.target
     const container = e.target.getAttribute("container")
@@ -186,6 +166,7 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
     aux[name] = value
     setFormValues({ ...formValues, [container]: aux })
   }
+  
   const deleteForm = async () => {
     if (deviceInfo) {
       let query = await apis.deleteForm({ id: deviceInfo.id })
@@ -194,16 +175,15 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
       }
     } else {
       if (loaded.find(element => { return element > elementNumber })) {
-        let query = await apis.updateDeviceNumbers({ id: id, number: elementNumber })
+        let query = await apis.updateFormsNumber({ id: id, number: elementNumber })
         if (query.status === 200) {
           updateFormsNumber(0)
         }
       } else {
-        updateFormsNumber(1)
+        updateFormsNumber(0)
       }
     }
   }
-
   const updateFormsNumber = async (opt) => {
     let body = {
       id: searchParams.get("id"),
@@ -224,7 +204,6 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
   }
 
   function setSimcardForm() {
-
     switch (simcardOption) {
       case "1":
         return (
@@ -272,22 +251,7 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
     switch (batteryOption) {
       case "1":
         return (
-          <div className="row mt-3">
-            <div className="col">
-              <div className="form-group">
-                <label htmlFor="simcard">Marca</label>
-                <input type="text" value={formValues.battery.brand} name="brand" container="battery" onChange={handleObjectChange} className="form-control" id="simcard" required
-                ></input>
-              </div>
-            </div>
-            <div className="col">
-              <div className="form-group">
-                <label htmlFor="company">Modelo</label>
-                <input type="text" value={formValues.battery.model} name="model" container="battery" onChange={handleObjectChange} className="form-control" id="company" required
-                ></input>
-              </div>
-            </div>
-          </div>
+          <Battery value1={formValues.battery.brand} value2={formValues.battery.model} handleObjectChange={handleObjectChange}></Battery>
         );
       default:
         break;
@@ -329,39 +293,7 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
     if (microsdOption === "1") {
       return (
         <>
-          <div className="row mt-3">
-            <div className="col">
-              <div className="form-group">
-                <label htmlFor="micro-type">Tipo</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  defaultValue={formValues.microsd.type}
-                  container="microsd"
-                  name="type"
-                  onChange={handleObjectChange}
-                  id="micro-type"
-                  required
-                ></input>
-              </div>
-            </div>
-            <div className="col">
-              <div className="form-group">
-                <label htmlFor="micro-capacity">Capacidad</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  minLength={15}
-                  defaultValue={formValues.microsd.capacity}
-                  name="capacity"
-                  container="microsd"
-                  onChange={handleObjectChange}
-                  id="micro-capacity"
-                  required
-                ></input>
-              </div>
-            </div>
-          </div>
+          <Microsd value1={formValues.microsd.type} value2={formValues.microsd.capacity} handleObjectChange={handleObjectChange}></Microsd>
         </>
       )
     }
@@ -378,24 +310,8 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
       <pre>{JSON.stringify(formValues, undefined, 2)}</pre>
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="text-center mt-1">
-          <button className="btn btn-success text-center">
-            {
-              deviceInfo
-                ?
-                "Actualizar"
-                :
-                "Cargar"
-            }
-          </button>
-          <button type="button" className="btn btn-outline-warning" onClick={deleteForm} style={{ marginLeft: "10px" }}>
-            {
-              deviceInfo
-                ?
-                "Borrar en DB"
-                :
-                "Borrar"
-            }
-          </button>
+          <UpdateButton deviceInfo={deviceInfo}></UpdateButton>
+          <DeleteButton deviceInfo={deviceInfo} deleteForm={deleteForm}></DeleteButton>
         </div>
         <div className="p-3 bg-light shadow-sm rounded">
           <div className="row">
@@ -464,6 +380,7 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
           </div>
           {setMicrosdForm()}
           <hr />
+
           <div className="form-group">
             <label htmlFor="detalle">Detalle</label>
             <textarea className="form-control" value={formValues.detail} name="detail" onChange={handleChange} id="detalle" rows="1" ></textarea>
@@ -474,24 +391,8 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
             <textarea className="form-control" id="extraction" rows="3" value={formValues.extraction} name="extraction" onChange={handleChange} ></textarea>
           </div>
           <div className="text-center mt-1">
-            <button className="btn btn-success text-center">
-              {
-                deviceInfo
-                  ?
-                  "Actualizar"
-                  :
-                  "Cargar"
-              }
-            </button>
-            <button type="button" className="btn btn-outline-warning" onClick={deleteForm} style={{ marginLeft: "10px" }}>
-              {
-                deviceInfo
-                  ?
-                  "Borrar en DB"
-                  :
-                  "Borrar"
-              }
-            </button>
+            <UpdateButton deviceInfo={deviceInfo}></UpdateButton>
+            <DeleteButton deviceInfo={deviceInfo} deleteForm={deleteForm}></DeleteButton>
           </div>
         </div>
       </form>

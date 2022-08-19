@@ -1,6 +1,6 @@
 import { useState } from "react";
-import CellForm from "./CellForm";
-import PcForm from "./PcForm";
+import CellForm from "./phone/CellForm";
+import PcForm from "./pc/PcForm";
 function FormContent({ elementNumber, device, amount, setAmount, currentPage, loaded, setLoaded }) {
   const [option, setOption] = useState("1");
   const [currentOption, setCurrentOption] = useState("1");
