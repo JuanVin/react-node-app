@@ -1,7 +1,9 @@
 import { useState } from "react";
 import CellForm from "./phone/CellForm";
 import PcForm from "./pc/PcForm";
+import PhoneForm from "./phone1/PhoneForm";
 function FormContent({ elementNumber, device, amount, setAmount, currentPage, loaded, setLoaded }) {
+
   const [option, setOption] = useState("1");
   const [currentOption, setCurrentOption] = useState("1");
 
@@ -12,14 +14,14 @@ function FormContent({ elementNumber, device, amount, setAmount, currentPage, lo
   const optionSwitch = () => {
     switch (currentOption) {
       case "1":
-        return <CellForm
+        return <PhoneForm></PhoneForm>/*<CellForm
           elementNumber={elementNumber}
           amount={amount}
           setAmount={setAmount}
           device={device}
           loaded={loaded}
           setLoaded={setLoaded}>
-        </CellForm>;
+        </CellForm>;*/
       case "2":
         return <PcForm amount={amount}></PcForm>
       case "3":

@@ -1,6 +1,6 @@
-function DeleteButton({ deviceInfo, deleteForm }) {
+function DeleteButton({ deviceInfo, handleDelete }) {
     return (
-        <button type="button" className="btn btn-outline-warning" onClick={deleteForm} style={{ marginLeft: "10px" }}>
+        <button type="button" className="btn btn-outline-warning" onClick={handleDelete} style={{ marginLeft: "10px" }}>
             {
                 deviceInfo
                     ?

@@ -40,7 +40,6 @@ function DeviceForm() {
         let _amount = []
 
         let query = await apis.getExtractionInfo(searchParams.get("id"))
-        console.log(query)
         if (query.status === 200) {
             let updateNumber = await apis.updateFormsNumber({ id: query.response.FileId, number: number })
             if (updateNumber.status === 200) {
@@ -88,35 +87,13 @@ function DeviceForm() {
         }
     }
 
-    const handleSubmit = async () => {
-        let query = await apis.postExtractionNumber({ numberOfDevices: number, fileId: searchParams.get("id") })
-        return query
-    }
+
 
     function filterDevice(index) {
         if (devices) {
             return (devices.filter(device => device.deviceNumber === index))[0]
         }
         return null
-    }
-
-    const updateFormsNumber = async (e) => {
-        e.preventDefault()
-        let body = {
-            id: searchParams.get("id"),
-            number: amount.length + 1
-        }
-        let query = await apis.updateFormsNumber(body)
-        if (query.status === 200) {
-            let _amount = [...amount]
-            _amount.push(_amount.length)
-            setAmount(_amount)
-        }
-    }
-
-    function handleReturn() {
-        setAmount([])
-        setLoaded([])
     }
 
     if (loading) {
@@ -150,12 +127,6 @@ function DeviceForm() {
                                 })
                             }
                             <Pagination amount={amount.length} loaded={loaded} currentPage={currentPage} setCurrentPage={setCurrentPage}></Pagination>
-                            <div className="mb-3" style={{ display: "flex", justifyContent: "center" }}>
-                                <button className="btn btn-dark" onClick={handleReturn}>Volver</button>
-                                <form onSubmit={(e) => updateFormsNumber(e)}>
-                                    <button type="submit" className="btn btn-success" style={{ marginLeft: "10px" }}>Agregar</button>
-                                </form>
-                            </div>
                         </ExtractionContext.Provider>
                     </>
                     :

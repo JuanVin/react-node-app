@@ -11,7 +11,7 @@ import Battery from "./generics/Battery";
 import DeleteButton from "../generics/DeleteButton";
 import UpdateButton from "../generics/UpdateButton";
 function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount }) {
-
+ 
   const [searchParams] = useSearchParams();
 
   const [loading, setLoading] = useState(true)
@@ -166,40 +166,36 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
     aux[name] = value
     setFormValues({ ...formValues, [container]: aux })
   }
-  
+
   const deleteForm = async () => {
     if (deviceInfo) {
       let query = await apis.deleteForm({ id: deviceInfo.id })
       if (query.status === 200) {
-        updateFormsNumber(0)
+        setMessage({ message: query.response.message, status: query.status })
+        updateFormsNumber()
       }
     } else {
       if (loaded.find(element => { return element > elementNumber })) {
-        let query = await apis.updateFormsNumber({ id: id, number: elementNumber })
+        let query = await apis.updateDeviceNumbers({ id: id, number: elementNumber })
         if (query.status === 200) {
-          updateFormsNumber(0)
+          window.location.reload(false);
         }
       } else {
-        updateFormsNumber(0)
+        updateFormsNumber()
       }
     }
   }
-  const updateFormsNumber = async (opt) => {
+  const updateFormsNumber = async () => {
     let body = {
       id: searchParams.get("id"),
       number: amount.length - 1
     }
     let query = await apis.updateFormsNumber(body)
     if (query.status === 200) {
-      if (opt === 0) {
+
+      setTimeout(() => {
         window.location.reload(false);
-      } else {
-        let _amount = [...amount]
-        let _loaded = loaded.filter((element) => { return element !== deviceNumber })
-        _amount.splice(deviceNumber - 1, 1)
-        setLoaded(_loaded)
-        setAmount(_amount)
-      }
+      }, 1000);
     }
   }
 
@@ -307,7 +303,6 @@ function CellForm({ elementNumber, loaded, setLoaded, device, amount, setAmount 
   return (
     <>
       <Message props={message}></Message>
-      <pre>{JSON.stringify(formValues, undefined, 2)}</pre>
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="text-center mt-1">
           <UpdateButton deviceInfo={deviceInfo}></UpdateButton>
