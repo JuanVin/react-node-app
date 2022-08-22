@@ -126,6 +126,66 @@ module.exports = extractionService = {
         } catch (err) {
             throw err
         }
+    },
+    newPhone: async (body) => {
+        const { device, imei, simcard, battery, microsd, info } = body
+        let phone, response
+        try {
+            const results = await sequelize.transaction(async (t) => {
+                phone = await db.CellPhone.create({
+                    deviceNumber: info.deviceNumber,
+                    brand: device.brand,
+                    model: device.model,
+                    detail: device.detail,
+                    extraction: device.extraction,
+                    ExtractionId: info.extractionId
+                }, { transaction: t })
+                for (let index = 0; index < simcard.length; index++) {
+                    await phone.createSimcard(simcard[index], { transaction: t })
+                }
+                for (let index = 0; index < imei.length; index++) {
+                    await phone.createImei(imei[index], { transaction: t })
+                }
+                for (let index = 0; index < battery.length; index++) {
+                    await phone.createBattery(battery[index], { transaction: t })
+                }
+                for (let index = 0; index < battery.length; index++) {
+                    await phone.createMicrosd(microsd[index], { transaction: t })
+                }
+                /*
+                response = await db.CellPhone.findByPk(phone.id, {
+                    include: [
+                        {
+                            model: db.Microsd
+                        },
+                        {
+                            model: db.Simcard
+                        },
+                        {
+                            model: db.Battery
+                        },
+                        {
+                            model: db.Imei
+                        }
+                    ]
+                }, { transaction: t })
+                */
+            })
+            return {device: phone, simcard: await phone.getSimcards(), microsd: await phone.getMicrosd(), battery: await phone.getBattery(), imei: await phone.getImeis()}
+        } catch (err) {
+            console.log(err)
+            throw err
+        }
+    },
+    updatePhone: async (body) => {
+
+    },
+    newDesktop: async (body) => {
+        console.log(body)
+        console.log("pc")
+    },
+    newNotebook: async (body) => {
+        console.log("notebook")
     }
 }
 

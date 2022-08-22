@@ -4,7 +4,7 @@ import Loading from "../../../commons/Loading";
 import Message from "../../../commons/Message";
 import Notebook from "./Notebook";
 import Desktop from "./Desktop";
-function PcForm({ amount }) {
+function PcForm({ info }) {
     const [searchParams] = useSearchParams();
     const [loading, setLoading] = useState(true)
     const [formOptions, setFormOptions] = useState(
@@ -21,9 +21,9 @@ function PcForm({ amount }) {
     const getForm = () => {
         switch (formOptions.selectedDevice) {
             case "1":
-                return <Notebook></Notebook>
+                return <Notebook info={{...info, type: 2}}></Notebook>
             case "2":
-                return <Desktop></Desktop>
+                return <Desktop info={{...info, type: 3}}></Desktop>
             default:
                 break;
         }

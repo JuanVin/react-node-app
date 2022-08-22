@@ -1,100 +1,77 @@
 import { useState } from "react";
 
+import apis from "../../../../services/apiCalls"
 import UpdateButton from "../generics/UpdateButton";
 import DeleteButton from "../generics/DeleteButton";
 
 import GenericFeature from "../generics/GenericFeature"
-import GenericSelectFeature from "../generics/GenericSelectFeature";
 import GenericTextArea from "../generics/GenericTextArea";
+import Header from "./generics/Header";
 
 import Imei from "./generics/Imei";
 import Simcard from "./generics/Simcard";
 import Battery from "./generics/Battery";
 import Microsd from "./generics/Microsd";
 
-function PhoneForm() {
+function PhoneForm({ info }) {
+
     const initialFormValues =
     {
-        type: "1",
         device: {
             brand: "",
             model: "",
-            deviceNumber: 0,
             detail: "",
             extraction: ""
         },
-        imei: {
-            imeiNumber1: "",
-            imeiNumber2: ""
-        },
-        simcard: {
-            simcard1: {
-                number: "",
-                company: ""
-            },
-            simcard2: {
-                number: "",
-                company: ""
-            }
-        },
-        battery: {
-            brand: "",
-            model: ""
-        },
-        microsd: {
-            type: "",
-            capacity: ""
-        },
-        options: {
-            simcard: "",
-            imei: "",
-            microsd: "",
-            battery: ""
-        },
+        imei: [],
+        simcard: [],
+        battery: [],
+        microsd: [],
     };
 
-    const initialFormOptions = {
-        imeiForm: "0",
-        simcardForm: "0",
-        batteryForm: "0",
-        microsdForm: "0"
-    }
-
     const [formValues, setFormValues] = useState(initialFormValues)
-    const [formOptions, setFormOptions] = useState(initialFormOptions)
     const [deviceInfo, setDeviceInfo] = useState("")
-    const handleFormChange = (e) => {
-        const { name, value } = e.target
-        setFormOptions({ ...formOptions, [name]: value })
-    }
 
-    const handleSimcardChange = (e) => {
-        const { name, value } = e.target
-        const container = e.target.getAttribute("container")
-        console.log(container, name)
-        const simcard = formValues.simcard
-        simcard[container][name] = value
-        setFormValues({ ...formValues, simcard })
-    }
-
-    const handleChange = (e) => {
+    const handleChange = (e, index) => {
         const { name, value } = e.target
         const container = e.target.getAttribute("container")
         const aux = formValues[container]
-        aux[name] = value
+        if (index || index === 0) {
+            aux[index][name] = value
+        } else {
+            aux[name] = value
+        }
         setFormValues({ ...formValues, [container]: aux })
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
+        const query = await apis.newDevice({ ...formValues, info })
+        if(query.status === 200){
+            console.log(query)
+        }
     }
 
     const handleDelete = () => {
 
     }
 
+    const handleRemove = (name, index) => {
+        const aux = formValues[name]
+        aux.splice(index, 1)
+        setFormValues({ ...formValues, [name]: aux })
+    }
+
+    const handleAdd = (name, options) => {
+        const aux = formValues[name]
+        aux.push(options)
+        setFormValues({ ...formValues, [name]: aux })
+    }
+
     return (
         <div className="p-3">
+            <pre>{JSON.stringify(formValues, undefined, 2)}</pre>
+            <pre>{JSON.stringify(info, undefined, 2)}</pre>
             <form onSubmit={handleSubmit}>
                 <h3>Celular</h3>
                 <div className="row">
@@ -107,82 +84,49 @@ function PhoneForm() {
                 </div>
                 <hr />
                 <section>
-                    <h3>IMEI</h3>
-                    <GenericSelectFeature
-                        title="Cantidad"
-                        name="imeiForm"
-                        value={formOptions.imeiForm}
-                        handleFormChange={handleFormChange}
-                        options={["No posee", "1", "2"]}
-                    ></GenericSelectFeature>
-                    <Imei
-                        option={formOptions.imeiForm}
-                        value1={formValues.imei.imeiNumber1}
-                        value2={formValues.imei.imeiNumber2}
-                        name1="imeiNumber1"
-                        name2="imeiNumber2"
-                        container="imei"
-                        handleChange={handleChange}>
-                    </Imei>
+                    <Header title={"Imei"} handleAdd={() => handleAdd("imei", { number: "" })}></Header>
+                    {formValues.imei.map(
+                        (item, index) => {
+                            return (
+                                <Imei value={item.number} name="number" container="imei" title={`Imei ${index + 1}`} handleRemove={() => handleRemove("imei", index)} handleChange={(e) => handleChange(e, index)} key={index}></Imei>
+                            )
+                        }
+                    )}
+
                 </section>
                 <hr />
                 <section>
-                    <h3>SIMCARD</h3>
-                    <GenericSelectFeature
-                        title="Cantidad"
-                        name="simcardForm"
-                        value={formOptions.simcardForm}
-                        handleFormChange={handleFormChange}
-                        options={["No posee", "1", "2"]}
-                    ></GenericSelectFeature>
-                    <Simcard
-                        option={formOptions.simcardForm}
-                        numberValue1={formValues.simcard.simcard1.number}
-                        numberValue2={formValues.simcard.simcard2.number}
-                        companyValue1={formValues.simcard.simcard1.number}
-                        companyValue2={formValues.simcard.simcard2.number}
-                        handleChange={handleSimcardChange}
-                    ></Simcard>
+                    <Header title={"Simcard"} handleAdd={() => handleAdd("simcard", { number: "", company: "" })}></Header>
+                    {formValues.simcard.map(
+                        (sim, index) => {
+                            return (
+                                <Simcard company={sim.company} number={sim.number} container="simcard" handleRemove={() => handleRemove("simcard", index)} handleChange={(e) => handleChange(e, index)} key={index}></Simcard>
+                            )
+                        }
+                    )}
+
                 </section>
                 <hr />
                 <section>
-                    <h3>Batería</h3>
-                    <GenericSelectFeature
-                        title="Cantidad"
-                        name="batteryForm"
-                        value={formOptions.batteryForm}
-                        handleFormChange={handleFormChange}
-                        options={["No posee", "1"]}
-                    ></GenericSelectFeature>
-                    <Battery
-                        option={formOptions.batteryForm}
-                        brandValue={formValues.battery.brand}
-                        modelValue={formValues.battery.model}
-                        brandName="brand"
-                        modelName="model"
-                        container="battery"
-                        handleChange={handleChange}
-                    ></Battery>
+                    <Header title={"Batería"} handleAdd={() => handleAdd("battery", { brand: "", model: "" })}></Header>
+                    {formValues.battery.map(
+                        (item, index) => {
+                            return (
+                                <Battery brand={item.brand} model={item.model} container="battery" handleRemove={() => handleRemove("battery", index)} handleChange={(e) => handleChange(e, index)} key={index}></Battery>
+                            )
+                        }
+                    )}
                 </section>
                 <hr />
                 <section>
-                    <h3>MicroSD</h3>
-                    <GenericSelectFeature
-                        title="Cantidad"
-                        name="microsdForm"
-                        value={formOptions.microsdForm}
-                        handleFormChange={handleFormChange}
-                        options={["No posee", "1"]}
-                    ></GenericSelectFeature>
-                    <Microsd
-                        option={formOptions.microsdForm}
-                        typeValue={formValues.microsd.type}
-                        capacityValue={formValues.microsd.capacity}
-                        typeName="type"
-                        capacityName="capacity"
-                        container="microsd"
-                        handleChange={handleChange}
-                    ></Microsd>
+                    <Header title={"MicroSD"} handleAdd={() => handleAdd("microsd", { type: "", capacity: "" })}></Header>
+                    {formValues.microsd.map(
+                        (item, index) => {
+                            return (
+                                <Microsd type={item.type} capacity={item.capacity} container="microsd" handleRemove={() => handleRemove("microsd", index)} handleChange={(e) => handleChange(e, index)} key={index}></Microsd>
+                            )
+                        }
+                    )}
                 </section>
                 <hr />
                 <section>

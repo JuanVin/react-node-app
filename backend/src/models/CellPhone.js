@@ -7,68 +7,24 @@ const CellPhone = sequelize.define('CellPhone', {
         autoIncrement: true,
         primaryKey: true
     },
-    type: {
+    deviceNumber: {
         type: DataTypes.INTEGER,
         allowNull: true
     },
-    deviceNumber:{
-        type: DataTypes.INTEGER,
-        allowNull: true
-    },
-    phoneBrand: {
+    brand: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    phoneModel: {
+    model: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    simcardNumber1:{
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    simcardNumber2:{
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    simcardCompany1:{
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    simcardCompany2:{
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    imeiNumber1:{
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    imeiNumber2:{
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    batteryBrand: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    batteryModel:{
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    detail:{
+    detail: {
         type: DataTypes.TEXT,
         allowNull: true
     },
-    extraction:{
+    extraction: {
         type: DataTypes.TEXT,
-        allowNull: true
-    },
-    microsdType:{
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    microsdCapacity:{
-        type: DataTypes.STRING,
         allowNull: true
     },
 })

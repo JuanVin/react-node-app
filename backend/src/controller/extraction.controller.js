@@ -117,6 +117,28 @@ const extractionController = {
         } catch (e) {
             res.status(400).send({ message: "error" })
         }
+    },
+    newDevice: async (req, res) => {
+
+        const body = req.body
+
+        switch (body.info.type) {
+            case 1:
+                try {
+                    res.status(200).send(await extractionService.newPhone(body))
+                } catch (err) {
+                    res.status(500).send(err)
+                }
+                break;
+            case 2:
+                await extractionService.newNotebook(body)
+                break;
+            case 3:
+                await extractionService.newDesktop(body)
+                break;
+            default:
+                break;
+        }
     }
 }
 

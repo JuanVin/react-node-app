@@ -1,19 +1,19 @@
+import apis from "../../../../services/apiCalls"
+
 import Disk from "./generic/Disk"
 import DeviceDetail from "./generic/DeviceDetail"
 import GenericFeature from "../generics/GenericFeature"
 import DeleteButton from "../generics/DeleteButton"
 import UpdateButton from "../generics/UpdateButton"
 import { useState } from "react"
-function Notebook({ device }) {
+function Notebook({ device, info }) {
+
     const initialValues = {
-        type: {
-            2: 1
-        },
         device: {
             model: "",
             brand: "",
             sn: "",
-            detail: ""
+            detail: "",
         },
         battery: {
             model: "",
@@ -27,6 +27,7 @@ function Notebook({ device }) {
             capacity: ""
         },
     }
+
     const [formValues, setFormValues] = useState(initialValues)
     const [deviceInfo, setDeviceInfo] = useState(device)
 
@@ -36,7 +37,7 @@ function Notebook({ device }) {
     }
     const handleSubmit = async (e) => {
         e.preventDefault()
-        console.log("new")
+        await apis.newDevice({ ...formValues, info })
     }
 
     const handleChange = (e) => {
@@ -55,6 +56,7 @@ function Notebook({ device }) {
 
                 <form onSubmit={handleSubmit}>
                     <pre>{JSON.stringify(formValues, null, 5)}</pre>
+                    <pre>{JSON.stringify(info, undefined, 2)}</pre>
                     <div className="text-center mt-1">
                         <UpdateButton deviceInfo={deviceInfo}></UpdateButton>
                         <DeleteButton deviceInfo={deviceInfo} deleteForm={deleteForm}></DeleteButton>

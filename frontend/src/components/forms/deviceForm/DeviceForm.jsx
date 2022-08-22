@@ -114,7 +114,7 @@ function DeviceForm() {
                                 amount.map((item, index) => {
                                     return (
                                         <FormContent
-                                            elementNumber={index + 1}
+                                            deviceNumber={index + 1}
                                             amount={amount}
                                             setAmount={setAmount}
                                             device={filterDevice(index + 1)}

@@ -97,6 +97,9 @@ const apis = {
     },
     getCalendarByDate: async(param) => {
         return ApiService.genericGet(`${URL}/api/files/calendar/${param}`)
+    },
+    newDevice: async (body) => {
+        return ApiService.genericPost(body, `${URL}/api/files/new_device`)
     }
 }
 export default apis

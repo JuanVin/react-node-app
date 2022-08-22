@@ -1,20 +1,20 @@
+import apis from "../../../../services/apiCalls"
+
 import Disk from "./generic/Disk"
 import GenericFeature from "../generics/GenericFeature"
-import DeviceDetail from "./generic/DeviceDetail"
 import DeleteButton from "../generics/DeleteButton"
 import UpdateButton from "../generics/UpdateButton"
 
 import { useState } from "react"
-function Desktop({ device }) {
+
+function Desktop({ device, info }) {
+
     const initialValues = {
-        type: {
-            2: 2
-        },
         device: {
             model: "",
             brand: "",
             sn: "",
-            detail: ""
+            detail: "",
         },
         disk: {
             brand: "",
@@ -23,6 +23,7 @@ function Desktop({ device }) {
             capacity: ""
         }
     }
+
     const [formValues, setFormValues] = useState(initialValues)
     const [deviceInfo, setDeviceInfo] = useState(device)
 
@@ -31,7 +32,7 @@ function Desktop({ device }) {
     }
     const handleSubmit = async (e) => {
         e.preventDefault()
-        console.log("new")
+        await apis.newDevice({ ...formValues, info })
     }
 
     const handleChange = (e) => {
@@ -47,6 +48,7 @@ function Desktop({ device }) {
             <div className="mt-3">
                 <h3>Pc de escritorio</h3>
                 <pre>{JSON.stringify(formValues, undefined, 2)}</pre>
+                <pre>{JSON.stringify(info, undefined, 2)}</pre>
                 <form onSubmit={handleSubmit}>
                     <div className="text-center mt-1">
                         <UpdateButton deviceInfo={deviceInfo}></UpdateButton>
