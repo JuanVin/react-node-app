@@ -152,26 +152,10 @@ module.exports = extractionService = {
                 for (let index = 0; index < battery.length; index++) {
                     await phone.createMicrosd(microsd[index], { transaction: t })
                 }
-                /*
-                response = await db.CellPhone.findByPk(phone.id, {
-                    include: [
-                        {
-                            model: db.Microsd
-                        },
-                        {
-                            model: db.Simcard
-                        },
-                        {
-                            model: db.Battery
-                        },
-                        {
-                            model: db.Imei
-                        }
-                    ]
-                }, { transaction: t })
-                */
             })
-            return {device: phone, simcard: await phone.getSimcards(), microsd: await phone.getMicrosd(), battery: await phone.getBattery(), imei: await phone.getImeis()}
+
+            //arreglar
+            return { device: phone, simcard: await phone.getSimcards(), microsd: await phone.getMicrosd(), battery: await phone.getBattery(), imei: await phone.getImeis() }
         } catch (err) {
             console.log(err)
             throw err

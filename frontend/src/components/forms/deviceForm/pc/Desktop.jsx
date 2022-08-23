@@ -1,6 +1,8 @@
 import apis from "../../../../services/apiCalls"
 
 import Disk from "./generic/Disk"
+import Header from "../generics/Header"
+
 import GenericFeature from "../generics/GenericFeature"
 import DeleteButton from "../generics/DeleteButton"
 import UpdateButton from "../generics/UpdateButton"
@@ -16,12 +18,7 @@ function Desktop({ device, info }) {
             sn: "",
             detail: "",
         },
-        disk: {
-            brand: "",
-            model: "",
-            sn: "",
-            capacity: ""
-        }
+        disk: []
     }
 
     const [formValues, setFormValues] = useState(initialValues)
@@ -35,14 +32,23 @@ function Desktop({ device, info }) {
         await apis.newDevice({ ...formValues, info })
     }
 
-    const handleChange = (e) => {
+    const handleChange = (e, index) => {
         const { name, value } = e.target
         const container = e.target.getAttribute("container")
         const aux = formValues[container]
-        aux[name] = value
+        if (index || index === 0) {
+            aux[index][name] = value
+        } else {
+            aux[name] = value
+        }
         setFormValues({ ...formValues, [container]: aux })
     }
 
+    const handleAdd = (name, options) => {
+        const aux = formValues[name]
+        aux.push(options)
+        setFormValues({ ...formValues, [name]: aux })
+    }
     return (
         <>
             <div className="mt-3">
@@ -66,7 +72,14 @@ function Desktop({ device, info }) {
                         </div>
                     </div>
                     <hr />
-                    <Disk formValues={formValues} handleChange={handleChange}></Disk>
+                    <Header title="Disco" handleAdd={() => handleAdd("disk", { brand: "", model: "", sn: "", capacity: "" })}></Header>
+                    {formValues.disk.map(
+                        (item, index) => {
+                            return (
+                                <Disk brand={item.brand} model={item.model} sn={item.sn} capacity={item.capacity} title={`Disco ${index + 1}`} container="disk" handleChange={(e) => handleChange(e, index)} key={index}></Disk>
+                            )
+                        }
+                    )}
                     <hr />
                     <GenericFeature name="detail" value={formValues.device.detail} container="device" handleChange={handleChange} title="Detalle"></GenericFeature>
                     <div className="text-center mt-1">

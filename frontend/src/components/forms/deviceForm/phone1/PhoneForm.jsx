@@ -6,7 +6,7 @@ import DeleteButton from "../generics/DeleteButton";
 
 import GenericFeature from "../generics/GenericFeature"
 import GenericTextArea from "../generics/GenericTextArea";
-import Header from "./generics/Header";
+import Header from "../generics/Header";
 
 import Imei from "./generics/Imei";
 import Simcard from "./generics/Simcard";
@@ -47,7 +47,7 @@ function PhoneForm({ info }) {
     const handleSubmit = async (e) => {
         e.preventDefault()
         const query = await apis.newDevice({ ...formValues, info })
-        if(query.status === 200){
+        if (query.status === 200) {
             console.log(query)
         }
     }
