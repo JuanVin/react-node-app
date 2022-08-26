@@ -11,7 +11,6 @@ const extractionController = {
         } catch (e) {
             res.status(400).send({ message: "error" })
         }
-
     },
     setExtractionNumber: async (req, res) => {
         try {
@@ -42,8 +41,15 @@ const extractionController = {
                     {
                         where: {
                             ExtractionId: id
-                        }
-                    }, { transaction: t }
+                        },
+                        include: [
+                            { model: db.Simcard, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
+                            { model: db.Microsd, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
+                            { model: db.Imei, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
+                            { model: db.Battery, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
+                        ]
+                    },
+                    { transaction: t }
                 )
                 if (response.length < 1) {
                     res.status(404).send({ message: "no hallado" })
@@ -126,6 +132,47 @@ const extractionController = {
             case 1:
                 try {
                     res.status(200).send(await extractionService.newPhone(body))
+                } catch (err) {
+                    res.status(500).send(err)
+                }
+                break;
+            case 2:
+                await extractionService.newNotebook(body)
+                break;
+            case 3:
+                await extractionService.newDesktop(body)
+                break;
+            default:
+                break;
+        }
+    },
+    updateDevice: async (req, res) => {
+        const body = req.body
+        switch (body.info.type) {
+            case 1:
+                try {
+                    res.status(200).send({ ...await extractionService.updatePhone(body), message: "Actualizado correctamente" })
+                } catch (err) {
+                    res.status(500).send(err)
+                }
+                break;
+            case 2:
+                await extractionService.newNotebook(body)
+                break;
+            case 3:
+                await extractionService.newDesktop(body)
+                break;
+            default:
+                break;
+        }
+    },
+    deleteDevice: async (req, res) => {
+        const body = req.body
+        console.log(body)
+        switch (body.info.type) {
+            case 1:
+                try {
+                    res.status(200).send(await extractionService.deletePhone(body.id, body.info.extractionId))
                 } catch (err) {
                     res.status(500).send(err)
                 }

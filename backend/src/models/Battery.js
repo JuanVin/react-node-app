@@ -7,15 +7,17 @@ const Battery = sequelize.define('Battery', {
         autoIncrement: true,
         primaryKey: true
     },
-    company: {
+    brand: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    number: {
+    model: {
         type: DataTypes.STRING,
         allowNull: true
     }
 })
 
-CellPhone.hasOne(Battery)
+CellPhone.hasMany(Battery, { onDelete: 'cascade' })
 Battery.belongsTo(CellPhone)
+
+module.exports = Battery

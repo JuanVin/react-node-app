@@ -40,12 +40,12 @@ function Pagination({ amount, currentPage, setCurrentPage, loaded }) {
                 <ul className="pagination">
                     <li className="page-item"><button type="button" className="page-link text-success" onClick={handlePreviousPage}>
                         <span aria-hidden="true">&laquo;</span>
-                        <span class="sr-only"></span>
+                        <span className="sr-only"></span>
                     </button></li>
                     {_pagination}
                     <li className="page-item"><button type="button" className="page-link text-success" onClick={handleNextPage}>
                         <span aria-hidden="true">&raquo;</span>
-                        <span class="sr-only"></span>
+                        <span className="sr-only"></span>
                     </button></li>
                 </ul>
             </nav>

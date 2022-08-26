@@ -5,7 +5,7 @@ function GenericSelectFeature({ title, value, options, handleFormChange, name })
             <select className="form-control" name={name} onChange={handleFormChange} value={value} >
                 {
                     options.map((opt, index) => {
-                        return (<option value={index}>{opt}</option>)
+                        return (<option value={index+1} key={index}>{opt+1}</option>)
                     })
                 }
             </select>

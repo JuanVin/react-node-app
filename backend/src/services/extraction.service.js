@@ -1,7 +1,7 @@
 
+const { Sequelize, transaction } = require("../database/db")
 const db = require("../models/index")
 const sequelize = db.sequelize
-
 module.exports = extractionService = {
     newExtraction: async (body) => {
         try {
@@ -102,7 +102,14 @@ module.exports = extractionService = {
                         where: {
                             FileId: id
                         },
-                        include: [db.CellPhone]
+                        include: {
+                            model: db.CellPhone, include: [
+                                { model: db.Simcard, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
+                                { model: db.Microsd, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
+                                { model: db.Imei, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
+                                { model: db.Battery, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
+                            ]
+                        }
                     }, { transaction: t }
                 )
             })
@@ -127,9 +134,26 @@ module.exports = extractionService = {
             throw err
         }
     },
+    deletePhone: async (id, extractionId) => {
+        try {
+            const results = await sequelize.transaction(async (t) => {
+                if (id) {
+                    const phone = await db.CellPhone.findByPk(id, { transaction: t })
+                    await phone.destroy({ transaction: t })
+                }
+                const extraction = await db.Extraction.findByPk(extractionId, { transaction: t })
+                extraction.numberOfDevices = extraction.numberOfDevices - 1
+                await extraction.save({ transaction: t })
+            })
+            return { message: "Eliminado correctamente" }
+        } catch (err) {
+            throw err
+        }
+    },
     newPhone: async (body) => {
         const { device, imei, simcard, battery, microsd, info } = body
-        let phone, response
+        let phone, data
+
         try {
             const results = await sequelize.transaction(async (t) => {
                 phone = await db.CellPhone.create({
@@ -149,20 +173,87 @@ module.exports = extractionService = {
                 for (let index = 0; index < battery.length; index++) {
                     await phone.createBattery(battery[index], { transaction: t })
                 }
-                for (let index = 0; index < battery.length; index++) {
+                for (let index = 0; index < microsd.length; index++) {
                     await phone.createMicrosd(microsd[index], { transaction: t })
                 }
             })
-
-            //arreglar
-            return { device: phone, simcard: await phone.getSimcards(), microsd: await phone.getMicrosd(), battery: await phone.getBattery(), imei: await phone.getImeis() }
+            data = await db.CellPhone.findByPk(phone.id, {
+                attributes: { exclude: ["createdAt", "updatedAt"] },
+                include: { all: true, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } }
+            })
+            return { data }
         } catch (err) {
             console.log(err)
             throw err
         }
     },
     updatePhone: async (body) => {
-
+        const { device, imei, simcard, battery, microsd, info } = body
+        let phone
+        try {
+            const results = await sequelize.transaction(async (t) => {
+                phone = await db.CellPhone.findByPk(device.id)
+                phone.deviceNumber = info.deviceNumber
+                phone.brand = device.brand
+                phone.model = device.model
+                phone.detail = device.detail
+                phone.extraction = device.extraction
+                for (let index = 0; index < imei.length; index++) {
+                    if (imei[index].id) {
+                        if (imei[index].remove) {
+                            await phone.removeImei(imei[index].id)
+                        } else {
+                            await sequelize.query(`UPDATE imeis SET number='${imei[index].number}' WHERE id='${imei[index].id}'`, { transaction: t })
+                        }
+                    } else {
+                        await phone.createImei(imei[index], { transaction: t })
+                    }
+                }
+                for (let index = 0; index < simcard.length; index++) {
+                    if (simcard[index].id) {
+                        if (simcard[index].remove) {
+                            await phone.removeSimcard(simcard[index].id)
+                        } else {
+                            await sequelize.query(`UPDATE simcards SET company='${simcard[index].company}', number='${simcard[index].number}' WHERE id='${simcard[index].id}'`, { transaction: t })
+                        }
+                    } else {
+                        await phone.createSimcard(simcard[index], { transaction: t })
+                    }
+                }
+                for (let index = 0; index < battery.length; index++) {
+                    if (battery[index].id) {
+                        if (battery[index].remove) {
+                            await phone.removeBattery(battery[index].id)
+                        }
+                        else {
+                            await sequelize.query(`UPDATE batteries SET brand='${battery[index].brand}', model='${battery[index].model}' WHERE id='${battery[index].id}'`, { transaction: t })
+                        }
+                    } else {
+                        await phone.createBattery(battery[index], { transaction: t })
+                    }
+                }
+                for (let index = 0; index < microsd.length; index++) {
+                    if (microsd[index].id) {
+                        if (microsd[index].remove) {
+                            await phone.removeMicrosd(microsd[index].id)
+                        } else {
+                            await sequelize.query(`UPDATE microsds SET type='${microsd[index].type}', capacity='${microsd[index].capacity}' WHERE id='${microsd[index].id}'`, { transaction: t })
+                        }
+                    } else {
+                        await phone.createMicrosd(microsd[index], { transaction: t })
+                    }
+                }
+                await phone.save({ transaction: t })
+            })
+            data = await db.CellPhone.findByPk(phone.id, {
+                attributes: { exclude: ["createdAt", "updatedAt"] },
+                include: { all: true, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } }
+            })
+            return { data }
+        } catch (err) {
+            console.log(err)
+            throw err
+        }
     },
     newDesktop: async (body) => {
         console.log(body)
@@ -172,4 +263,3 @@ module.exports = extractionService = {
         console.log("notebook")
     }
 }
-

@@ -17,5 +17,7 @@ const Simcard = sequelize.define('Simcard', {
     }
 })
 
-CellPhone.hasMany(Simcard)
+CellPhone.hasMany(Simcard, { onDelete: 'cascade' })
 Simcard.belongsTo(CellPhone)
+
+module.exports = Simcard

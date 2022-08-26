@@ -17,5 +17,7 @@ const Microsd = sequelize.define('Microsd', {
     }
 })
 
-CellPhone.hasOne(Microsd)
+CellPhone.hasMany(Microsd, { onDelete: 'cascade' })
 Microsd.belongsTo(CellPhone)
+
+module.exports = Microsd

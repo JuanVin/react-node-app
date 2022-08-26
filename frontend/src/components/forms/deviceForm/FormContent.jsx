@@ -10,11 +10,10 @@ function FormContent({ deviceNumber, device, amount, setAmount, currentPage, loa
   const [option, setOption] = useState("1");
   const [currentOption, setCurrentOption] = useState("1");
   const [searchParams] = useSearchParams();
-
-  const info = {
+  const [info, setInfo] = useState({
     extractionId: searchParams.get("id"),
     deviceNumber: deviceNumber,
-  }
+  })
 
   const handleOption = () => {
     setCurrentOption(option);
@@ -23,7 +22,7 @@ function FormContent({ deviceNumber, device, amount, setAmount, currentPage, loa
   const optionSwitch = () => {
     switch (currentOption) {
       case "1":
-        return <PhoneForm info={{ ...info, type: 1 }}></PhoneForm>/*<CellForm
+        return <PhoneForm info={{ ...info, type: 1 }} setInfo={setInfo} device={device} amount={amount}></PhoneForm>/*<CellForm
           elementNumber={elementNumber}
           amount={amount}
           setAmount={setAmount}

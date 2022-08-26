@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect, memo } from "react";
 
 import apis from "../../../../services/apiCalls"
 import UpdateButton from "../generics/UpdateButton";
 import DeleteButton from "../generics/DeleteButton";
+import Message from "../../../commons/Message";
 
 import GenericFeature from "../generics/GenericFeature"
 import GenericTextArea from "../generics/GenericTextArea";
+import GenericSelectFeature from "../generics/GenericSelectFeature";
 import Header from "../generics/Header";
 
 import Imei from "./generics/Imei";
@@ -13,7 +15,7 @@ import Simcard from "./generics/Simcard";
 import Battery from "./generics/Battery";
 import Microsd from "./generics/Microsd";
 
-function PhoneForm({ info }) {
+function PhoneForm({ info, device, amount, setInfo }) {
 
     const initialFormValues =
     {
@@ -21,7 +23,7 @@ function PhoneForm({ info }) {
             brand: "",
             model: "",
             detail: "",
-            extraction: ""
+            extraction: "",
         },
         imei: [],
         simcard: [],
@@ -30,7 +32,32 @@ function PhoneForm({ info }) {
     };
 
     const [formValues, setFormValues] = useState(initialFormValues)
-    const [deviceInfo, setDeviceInfo] = useState("")
+    const [message, setMessage] = useState(null)
+    const [disabled, setDisabled] = useState(false)
+
+    useEffect(() => {
+        if (device) {
+            setInputValues(device)
+        }
+    }, [])
+
+    const setInputValues = (values) => {
+        setFormValues({
+            ...formValues,
+            device: {
+                brand: values.brand,
+                model: values.model,
+                detail: values.detail,
+                extraction: values.extraction,
+                id: values.id
+            },
+            simcard: values.Simcards,
+            imei: values.Imeis,
+            battery: values.Batteries,
+            microsd: values.Microsds
+        })
+        setDisabled(false)
+    }
 
     const handleChange = (e, index) => {
         const { name, value } = e.target
@@ -46,19 +73,37 @@ function PhoneForm({ info }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const query = await apis.newDevice({ ...formValues, info })
-        if (query.status === 200) {
-            console.log(query)
+        setDisabled(true)
+        let query
+        if (formValues.device.id) {
+            query = await apis.updateDevice({ ...formValues, info })
+
+        } else {
+            query = await apis.newDevice({ ...formValues, info })
         }
+        if (query.status === 200) {
+            setMessage({ message: query.response.message, status: query.status })
+            setTimeout(() => {
+                window.location.reload()
+            }, 500);
+        }
+        setMessage({ message: query.response.message, status: query.status })
     }
 
-    const handleDelete = () => {
-
+    const handleDelete = async () => {
+        const query = await apis.deleteDevice({ ...formValues.device, info })
+        if (query.status === 200) {
+            window.location.reload()
+        }
     }
 
     const handleRemove = (name, index) => {
         const aux = formValues[name]
-        aux.splice(index, 1)
+        if (aux[index].remove) {
+            delete aux[index].remove
+        } else {
+            aux[index].remove = true
+        }
         setFormValues({ ...formValues, [name]: aux })
     }
 
@@ -70,86 +115,90 @@ function PhoneForm({ info }) {
 
     return (
         <div className="p-3">
-            <pre>{JSON.stringify(formValues, undefined, 2)}</pre>
-            <pre>{JSON.stringify(info, undefined, 2)}</pre>
+            {/*<pre>{JSON.stringify(formValues, undefined, 2)}</pre>*/}
+           
+            <Message props={message}></Message>
             <form onSubmit={handleSubmit}>
-                <h3>Celular</h3>
-                <div className="row">
-                    <div className="col">
-                        <GenericFeature type="text" value={formValues.device.brand} name="brand" container="device" title="Marca" handleChange={handleChange}></GenericFeature>
+                <fieldset disabled={disabled}>
+                    <h3>Celular</h3>
+                    <div className="row">
+                        <div className="col">
+                            <GenericSelectFeature title="Número" value={info.deviceNumber} handleFormChange={(e) => setInfo({ ...info, deviceNumber: e.target.value })} options={amount}></GenericSelectFeature>
+                        </div>
+                        <div className="col">
+                            <GenericFeature type="text" value={formValues.device.brand} name="brand" container="device" title="Marca" handleChange={handleChange}></GenericFeature>
+                        </div>
+                        <div className="col">
+                            <GenericFeature type="text" value={formValues.device.model} name="model" container="device" title="Modelo" handleChange={handleChange}></GenericFeature>
+                        </div>
                     </div>
-                    <div className="col">
-                        <GenericFeature type="text" value={formValues.device.model} name="model" container="device" title="Modelo" handleChange={handleChange}></GenericFeature>
-                    </div>
-                </div>
-                <hr />
-                <section>
-                    <Header title={"Imei"} handleAdd={() => handleAdd("imei", { number: "" })}></Header>
-                    {formValues.imei.map(
-                        (item, index) => {
-                            return (
-                                <Imei value={item.number} name="number" container="imei" title={`Imei ${index + 1}`} handleRemove={() => handleRemove("imei", index)} handleChange={(e) => handleChange(e, index)} key={index}></Imei>
-                            )
-                        }
-                    )}
-
-                </section>
-                <hr />
-                <section>
-                    <Header title={"Simcard"} handleAdd={() => handleAdd("simcard", { number: "", company: "" })}></Header>
-                    {formValues.simcard.map(
-                        (sim, index) => {
-                            return (
-                                <Simcard company={sim.company} number={sim.number} container="simcard" handleRemove={() => handleRemove("simcard", index)} handleChange={(e) => handleChange(e, index)} key={index}></Simcard>
-                            )
-                        }
-                    )}
-
-                </section>
-                <hr />
-                <section>
-                    <Header title={"Batería"} handleAdd={() => handleAdd("battery", { brand: "", model: "" })}></Header>
-                    {formValues.battery.map(
-                        (item, index) => {
-                            return (
-                                <Battery brand={item.brand} model={item.model} container="battery" handleRemove={() => handleRemove("battery", index)} handleChange={(e) => handleChange(e, index)} key={index}></Battery>
-                            )
-                        }
-                    )}
-                </section>
-                <hr />
-                <section>
-                    <Header title={"MicroSD"} handleAdd={() => handleAdd("microsd", { type: "", capacity: "" })}></Header>
-                    {formValues.microsd.map(
-                        (item, index) => {
-                            return (
-                                <Microsd type={item.type} capacity={item.capacity} container="microsd" handleRemove={() => handleRemove("microsd", index)} handleChange={(e) => handleChange(e, index)} key={index}></Microsd>
-                            )
-                        }
-                    )}
-                </section>
-                <hr />
-                <section>
-                    <h3>Detalle</h3>
-                    <GenericTextArea
-                        value={formValues.device.detail} name="detail" container="device" handleChange={handleChange}
-                    ></GenericTextArea>
-                </section>
-                <hr />
-                <section>
-                    <h3>Extracción</h3>
-                    <GenericTextArea
-                        value={formValues.device.extraction} name="extraction" container="device" handleChange={handleChange}
-                    ></GenericTextArea>
-                </section>
-                <section>
-                    <div className="text-center mt-1">
-                        <UpdateButton deviceInfo={deviceInfo}></UpdateButton>
-                        <DeleteButton deviceInfo={deviceInfo} handleDelete={handleDelete}></DeleteButton>
-                    </div>
-                </section>
+                    <hr />
+                    <section>
+                        <Header title={"Imei"} handleAdd={() => handleAdd("imei", { number: "" })}></Header>
+                        {formValues.imei.map(
+                            (item, index) => {
+                                return (
+                                    <Imei value={item.number} remove={item.remove} name="number" container="imei" title={`Imei ${index + 1}`} handleRemove={() => handleRemove("imei", index)} handleChange={(e) => handleChange(e, index)} key={index}></Imei>
+                                )
+                            }
+                        )}
+                    </section>
+                    <hr />
+                    <section>
+                        <Header title={"Simcard"} handleAdd={() => handleAdd("simcard", { number: "", company: "" })}></Header>
+                        {formValues.simcard.map(
+                            (item, index) => {
+                                return (
+                                    <Simcard company={item.company} number={item.number} container="simcard" remove={item.remove} handleRemove={() => handleRemove("simcard", index)} handleChange={(e) => handleChange(e, index)} key={index}></Simcard>
+                                )
+                            }
+                        )}
+                    </section>
+                    <hr />
+                    <section>
+                        <Header title={"Batería"} handleAdd={() => handleAdd("battery", { brand: "", model: "" })}></Header>
+                        {formValues.battery.map(
+                            (item, index) => {
+                                return (
+                                    <Battery brand={item.brand} model={item.model} container="battery" handleRemove={() => handleRemove("battery", index)} handleChange={(e) => handleChange(e, index)} key={index}></Battery>
+                                )
+                            }
+                        )}
+                    </section>
+                    <hr />
+                    <section>
+                        <Header title={"MicroSD"} handleAdd={() => handleAdd("microsd", { type: "", capacity: "" })}></Header>
+                        {formValues.microsd.map(
+                            (item, index) => {
+                                return (
+                                    <Microsd type={item.type} capacity={item.capacity} container="microsd" handleRemove={() => handleRemove("microsd", index)} handleChange={(e) => handleChange(e, index)} key={index}></Microsd>
+                                )
+                            }
+                        )}
+                    </section>
+                    <hr />
+                    <section>
+                        <h3>Detalle</h3>
+                        <GenericTextArea
+                            value={formValues.device.detail} name="detail" container="device" handleChange={handleChange}
+                        ></GenericTextArea>
+                    </section>
+                    <hr />
+                    <section>
+                        <h3>Extracción</h3>
+                        <GenericTextArea
+                            value={formValues.device.extraction} name="extraction" container="device" handleChange={handleChange}
+                        ></GenericTextArea>
+                    </section>
+                    <section>
+                        <div className="text-center mt-1">
+                            <UpdateButton deviceInfo={formValues.device.id}></UpdateButton>
+                            <DeleteButton deviceInfo={formValues.device.id} handleDelete={handleDelete}></DeleteButton>
+                        </div>
+                    </section>
+                </fieldset>
             </form>
         </div>
     )
 }
-export default PhoneForm
+export default memo(PhoneForm)

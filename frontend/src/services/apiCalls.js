@@ -75,7 +75,7 @@ const apis = {
     updateFormsNumber: async (fetchData) => {
         return ApiService.genericPost(fetchData, `${URL}/api/files/update_extraction_number`)
     },
-    deleteForm: async (fetchData) => {
+    deleteDevice: async (fetchData) => {
         const header = authHeader()
         header['Content-Type'] = 'application/json'
         let options = {
@@ -83,7 +83,7 @@ const apis = {
             headers: header,
             body: JSON.stringify(fetchData)
         },
-            url = `${URL}/api/files/delete_extraction_form`,
+            url = `${URL}/api/files/delete_device`,
             response,
             status
 
@@ -95,11 +95,14 @@ const apis = {
     updateDeviceNumbers: async (fetchData) => {
         return ApiService.genericPost(fetchData, `${URL}/api/files/update_device_numbers`)
     },
-    getCalendarByDate: async(param) => {
+    getCalendarByDate: async (param) => {
         return ApiService.genericGet(`${URL}/api/files/calendar/${param}`)
     },
     newDevice: async (body) => {
         return ApiService.genericPost(body, `${URL}/api/files/new_device`)
+    },
+    updateDevice: async (body) => {
+        return ApiService.genericPost(body, `${URL}/api/files/update_device`)
     }
 }
 export default apis

@@ -13,5 +13,7 @@ const Imei = sequelize.define('Imei', {
     }
 })
 
-CellPhone.hasMany(Imei)
+CellPhone.hasMany(Imei, { onDelete: 'cascade' })
 Imei.belongsTo(CellPhone)
+
+module.exports = Imei

@@ -1,6 +1,6 @@
-function UpdateButton({ deviceInfo }) {
+function UpdateButton({ deviceInfo, setDisabled }) {
     return (
-        <button className="btn btn-success text-center">
+        <button className="btn btn-success text-center" onClick={() => setDisabled(true)}>
             {
                 deviceInfo
                     ?
