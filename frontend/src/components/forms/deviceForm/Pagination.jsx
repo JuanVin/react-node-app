@@ -34,6 +34,8 @@ function Pagination({ amount, currentPage, setCurrentPage, loaded }) {
             setCurrentPage(currentPage - 1)
         }
     }
+
+
     return (
         <div style={{ display: "flex", justifyContent: "center" }}>
             <nav className="mt-1 text-center">

@@ -21,6 +21,14 @@ const Notebook = sequelize.define('Notebook', {
     detail: {
         type: DataTypes.TEXT,
         allowNull: true
+    },
+    type: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    deviceNumber: {
+        type: DataTypes.INTEGER,
+        allowNull: true
     }
 })
 

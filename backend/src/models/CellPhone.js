@@ -27,6 +27,10 @@ const CellPhone = sequelize.define('CellPhone', {
         type: DataTypes.TEXT,
         allowNull: true
     },
+    type: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    }
 })
 
 

@@ -18,7 +18,6 @@ function DeviceForm() {
     const [loading, setLoading] = useState(true)
     const [devices, setDevices] = useState(null)
     const [extractionId, setExtractionId] = useState(null)
-
     const Navigate = useNavigate()
     useEffect(() => {
         checkUser()
@@ -36,7 +35,6 @@ function DeviceForm() {
 
     const handleAmount = async (e) => {
         e.preventDefault()
-
         let _amount = []
 
         let query = await apis.getExtractionInfo(searchParams.get("id"))
@@ -63,10 +61,10 @@ function DeviceForm() {
             }
         }
     }
-
     const handleNumber = async () => {
-        let query = await apis.getExtractionInfo(searchParams.get("id"))
 
+        let query = await apis.getExtractionInfo(searchParams.get("id"))
+        console.log(query)
         if (query.status === 200) {
             let _amount = [], _loaded = [...loaded]
             for (let index = 0; index < query.response.numberOfDevices; index++) {
@@ -77,18 +75,25 @@ function DeviceForm() {
                     _loaded.push(phone.deviceNumber)
                 }
             })
+            query.response.Desktops.forEach(desktop => {
+                if (!_loaded.find(element => element === desktop.deviceNumber)) {
+                    _loaded.push(desktop.deviceNumber)
+                }
+            })
+            query.response.Notebooks.forEach(notebook => {
+                if (!_loaded.find(element => element === notebook.deviceNumber)) {
+                    _loaded.push(notebook.deviceNumber)
+                }
+            })
             setLoaded(_loaded)
             setAmount(_amount)
             setExtractionId(query.response.id)
-            setDevices(query.response.CellPhones)
+            setDevices(query.response.CellPhones.concat(query.response.Desktops).concat(query.response.Notebooks))
             setLoading(false)
         } else {
             setLoading(false)
         }
     }
-
-
-
     function filterDevice(index) {
         if (devices) {
             return (devices.filter(device => device.deviceNumber === index))[0]
@@ -103,43 +108,45 @@ function DeviceForm() {
     }
     return (
         <>
-            <h1 className="text-center mt-3">Expediente: <b className="text-secondary">{searchParams.get('file')}</b></h1>
-            {
-                (amount.length > 0)
-                    ?
-                    <>
-                        <ExtractionContext.Provider value={{ id: extractionId }}>
-                            <Pagination amount={amount.length} loaded={loaded} currentPage={currentPage} setCurrentPage={setCurrentPage}></Pagination>
-                            {
-                                amount.map((item, index) => {
-                                    return (
-                                        <FormContent
-                                            deviceNumber={index + 1}
-                                            amount={amount}
-                                            setAmount={setAmount}
-                                            device={filterDevice(index + 1)}
-                                            loaded={loaded}
-                                            setLoaded={setLoaded}
-                                            currentPage={currentPage + 1}
-                                            key={item}>
-                                        </FormContent>
-                                    )
-                                })
-                            }
-                            <Pagination amount={amount.length} loaded={loaded} currentPage={currentPage} setCurrentPage={setCurrentPage}></Pagination>
-                        </ExtractionContext.Provider>
-                    </>
-                    :
-                    <>
-                        <form onSubmit={(e) => handleAmount(e)}>
-                            <h1>Cantidad de dispositivos</h1>
-                            <div className="input-group w-25 mt-5">
-                                <input type="number" value={number} onChange={(e) => setNumber(e.target.value)} className="form-control"></input>
-                                <button className="btn btn-success">Ingresar</button>
-                            </div>
-                        </form>
-                    </>
-            }
+            <fieldset>
+                <h1 className="text-center mt-3">Expediente: <b className="text-secondary">{searchParams.get('file')}</b></h1>
+                {
+                    (amount.length > 0)
+                        ?
+                        <>
+                            <ExtractionContext.Provider value={{ id: extractionId }}>
+                                <Pagination amount={amount.length} loaded={loaded} currentPage={currentPage} setCurrentPage={setCurrentPage}></Pagination>
+                                {
+                                    amount.map((item, index) => {
+                                        return (
+                                            <FormContent
+                                                deviceNumber={index + 1}
+                                                amount={amount}
+                                                setAmount={setAmount}
+                                                device={filterDevice(index + 1)}
+                                                loaded={loaded}
+                                                setLoaded={setLoaded}
+                                                currentPage={currentPage + 1}
+                                                key={item}>
+                                            </FormContent>
+                                        )
+                                    })
+                                }
+                                <Pagination amount={amount.length} loaded={loaded} currentPage={currentPage} setCurrentPage={setCurrentPage}></Pagination>
+                            </ExtractionContext.Provider>
+                        </>
+                        :
+                        <>
+                            <form onSubmit={(e) => handleAmount(e)}>
+                                <h1>Cantidad de dispositivos</h1>
+                                <div className="input-group w-25 mt-5">
+                                    <input type="number" value={number} onChange={(e) => setNumber(e.target.value)} className="form-control"></input>
+                                    <button className="btn btn-success">Ingresar</button>
+                                </div>
+                            </form>
+                        </>
+                }
+            </fieldset>
         </>
     )
 }

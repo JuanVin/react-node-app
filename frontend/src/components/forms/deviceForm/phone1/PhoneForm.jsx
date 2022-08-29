@@ -77,7 +77,6 @@ function PhoneForm({ info, device, amount, setInfo }) {
         let query
         if (formValues.device.id) {
             query = await apis.updateDevice({ ...formValues, info })
-
         } else {
             query = await apis.newDevice({ ...formValues, info })
         }
@@ -116,7 +115,7 @@ function PhoneForm({ info, device, amount, setInfo }) {
     return (
         <div className="p-3">
             {/*<pre>{JSON.stringify(formValues, undefined, 2)}</pre>*/}
-           
+
             <Message props={message}></Message>
             <form onSubmit={handleSubmit}>
                 <fieldset disabled={disabled}>

@@ -21,7 +21,7 @@ const NoteBattery = sequelize.define('NoteBattery', {
     },
 })
 
-Notebook.hasOne(NoteBattery)
+Notebook.hasMany(NoteBattery)
 NoteBattery.belongsTo(Notebook)
 
 module.exports = NoteBattery

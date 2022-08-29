@@ -3,18 +3,9 @@ const sequelize = db.sequelize
 const extractionService = require("../services/extraction.service")
 
 const extractionController = {
-    newExtraction: async (req, res) => {
-        let body = req.body
+    createExtraction: async (req, res) => {
         try {
-            const extraction = await extractionService.newExtraction(body)
-            res.status(200).send({ message: "Extracción cargada con éxito", device: extraction })
-        } catch (e) {
-            res.status(400).send({ message: "error" })
-        }
-    },
-    setExtractionNumber: async (req, res) => {
-        try {
-            const extractionNumber = await extractionService.setExtractionNumber(req.body)
+            const extractionNumber = await extractionService.createExtraction(req.body)
             res.status(200).send({ message: "ok", info: extractionNumber.id })
         } catch (err) {
 
@@ -131,16 +122,28 @@ const extractionController = {
         switch (body.info.type) {
             case 1:
                 try {
-                    res.status(200).send(await extractionService.newPhone(body))
+                    await extractionService.newPhone(body)
+                    res.status(200).send({ message: "Cargado correctamente" })
                 } catch (err) {
                     res.status(500).send(err)
                 }
                 break;
             case 2:
-                await extractionService.newNotebook(body)
+                try {
+                    await extractionService.newNotebook(body)
+                    res.status(200).send({ message: "Cargado correctamente" })
+                } catch (err) {
+                    res.status(500).send(err)
+                }
+
                 break;
             case 3:
-                await extractionService.newDesktop(body)
+                try {
+                    await extractionService.newDesktop(body)
+                    res.status(200).send({ message: "Cargado correctamente" })
+                } catch (err) {
+                    res.status(500).send(err)
+                }
                 break;
             default:
                 break;
@@ -151,16 +154,27 @@ const extractionController = {
         switch (body.info.type) {
             case 1:
                 try {
-                    res.status(200).send({ ...await extractionService.updatePhone(body), message: "Actualizado correctamente" })
+                    await extractionService.updatePhone(body)
+                    res.status(200).send({ message: "Actualizado correctamente" })
                 } catch (err) {
-                    res.status(500).send(err)
+                    res.status(500).send({ message: err })
                 }
                 break;
             case 2:
-                await extractionService.newNotebook(body)
+                try {
+                    await extractionService.updateNotebook(body)
+                    res.status(200).send({ message: "Cargado correctamente" })
+                } catch (err) {
+                    res.status(500).send({ message: err })
+                }
                 break;
             case 3:
-                await extractionService.newDesktop(body)
+                try {
+                    await extractionService.updateDesktop(body)
+                    res.status(200).send({ message: "Cargado correctamente" })
+                } catch (err) {
+                    res.status(500).send({ message: err })
+                }
                 break;
             default:
                 break;

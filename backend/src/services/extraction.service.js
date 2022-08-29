@@ -1,83 +1,9 @@
 
-const { Sequelize, transaction } = require("../database/db")
 const db = require("../models/index")
 const sequelize = db.sequelize
 module.exports = extractionService = {
-    newExtraction: async (body) => {
-        try {
-            let extraction
-            const results = await sequelize.transaction(async (t) => {
-                extraction =
-                    await db.CellPhone.create({
-                        deviceNumber: body.device,
-                        phoneBrand: body.phoneBrand,
-                        phoneModel: body.phoneModel,
-                        type: body.type,
-                        simcardNumber1: body.simcard.simcard1.number,
-                        simcardNumber2: body.simcard.simcard2.number,
-                        simcardCompany1: body.simcard.simcard1.company,
-                        simcardCompany2: body.simcard.simcard2.company,
-                        imeiNumber1: body.imei.imeiNumber1,
-                        imeiNumber2: body.imei.imeiNumber2,
-                        batteryBrand: body.battery.brand,
-                        batteryModel: body.battery.model,
-                        microsdType: body.microsd.type,
-                        microsdCapacity: body.microsd.capacity,
-                        detail: body.detail,
-                        extraction: body.extraction,
-                        ExtractionId: (await db.Extraction.findOne({
-                            where: {
-                                FileId: body.id
-                            }
-                        })).id
-                    }, { transaction: t })
-            })
-            return extraction
-        }
-        catch (err) {
-            return err
-        }
-    },
-    updateExtraction: async (body) => {
-        try {
-            let extraction, extraction2
-            const result = await sequelize.transaction(async (t) => {
-                extraction = await db.CellPhone.findByPk(body.phoneId, { transaction: t })
-                if (extraction.deviceNumber !== body.device) {
-                    extraction2 = await db.CellPhone.findOne({
-                        where: {
-                            deviceNumber: body.device,
-                            ExtractionId: body.extractionId
-                        }
-                    }, { transaction: t })
-                    if (extraction2) {
-                        extraction2.deviceNumber = extraction.deviceNumber
-                        extraction2 = await extraction2.save({ transaction: t })
-                    }
-                }
-                extraction.deviceNumber = body.device
-                extraction.phoneBrand = body.phoneBrand
-                extraction.phoneModel = body.phoneModel
-                extraction.simcardNumber1 = body.simcard.simcard1.number
-                extraction.simcardNumber2 = body.simcard.simcard2.number
-                extraction.simcardCompany1 = body.simcard.simcard1.company
-                extraction.simcardCompany2 = body.simcard.simcard2.company
-                extraction.imeiNumber1 = body.imei.imeiNumber1
-                extraction.imeiNumber2 = body.imei.imeiNumber2
-                extraction.batteryBrand = body.battery.brand
-                extraction.batteryModel = body.battery.model
-                extraction.microsdType = body.microsd.type
-                extraction.microsdCapacity = body.microsd.capacity
-                extraction.detail = body.detail
-                extraction.extraction = body.extraction
-                extraction = await extraction.save({ transaction: t })
-            })
-            return extraction
-        } catch (err) {
-            throw err
-        }
-    },
-    setExtractionNumber: async (body) => {
+
+    createExtraction: async (body) => {
         const { fileId, numberOfDevices } = body
         try {
             let extractionNumber
@@ -102,19 +28,30 @@ module.exports = extractionService = {
                         where: {
                             FileId: id
                         },
-                        include: {
-                            model: db.CellPhone, include: [
-                                { model: db.Simcard, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
-                                { model: db.Microsd, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
-                                { model: db.Imei, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
-                                { model: db.Battery, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
-                            ]
-                        }
+                        include: [
+                            {
+                                model: db.CellPhone, include: [
+                                    { model: db.Simcard, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
+                                    { model: db.Microsd, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
+                                    { model: db.Imei, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
+                                    { model: db.Battery, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
+                                ],
+                            },
+                            { model: db.Desktop, include: { model: db.Disk, attributes: { exclude: ["createdAt", "updatedAt"] } } },
+                            {
+                                model: db.Notebook, include: [
+                                    { model: db.Disk, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                                    { model: db.NoteBattery, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                                ]
+                            }
+                        ]
+
                     }, { transaction: t }
                 )
             })
             return info
         } catch (err) {
+            console.log(err)
             throw err
         }
     },
@@ -134,6 +71,7 @@ module.exports = extractionService = {
             throw err
         }
     },
+
     deletePhone: async (id, extractionId) => {
         try {
             const results = await sequelize.transaction(async (t) => {
@@ -150,6 +88,7 @@ module.exports = extractionService = {
             throw err
         }
     },
+
     newPhone: async (body) => {
         const { device, imei, simcard, battery, microsd, info } = body
         let phone, data
@@ -162,7 +101,8 @@ module.exports = extractionService = {
                     model: device.model,
                     detail: device.detail,
                     extraction: device.extraction,
-                    ExtractionId: info.extractionId
+                    ExtractionId: info.extractionId,
+                    type: info.type
                 }, { transaction: t })
                 for (let index = 0; index < simcard.length; index++) {
                     await phone.createSimcard(simcard[index], { transaction: t })
@@ -177,11 +117,6 @@ module.exports = extractionService = {
                     await phone.createMicrosd(microsd[index], { transaction: t })
                 }
             })
-            data = await db.CellPhone.findByPk(phone.id, {
-                attributes: { exclude: ["createdAt", "updatedAt"] },
-                include: { all: true, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } }
-            })
-            return { data }
         } catch (err) {
             console.log(err)
             throw err
@@ -245,21 +180,119 @@ module.exports = extractionService = {
                 }
                 await phone.save({ transaction: t })
             })
-            data = await db.CellPhone.findByPk(phone.id, {
-                attributes: { exclude: ["createdAt", "updatedAt"] },
-                include: { all: true, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } }
-            })
-            return { data }
         } catch (err) {
             console.log(err)
             throw err
         }
     },
     newDesktop: async (body) => {
-        console.log(body)
+        const { device, disk, info } = body
+        let desktop
+        try {
+            const results = await sequelize.transaction(async (t) => {
+                desktop = await db.Desktop.create({
+                    model: device.model,
+                    brand: device.brand,
+                    sn: device.sn,
+                    detail: device.detail,
+                    type: info.type,
+                    deviceNumber: info.deviceNumber,
+                    ExtractionId: info.extractionId
+                }, { transaction: t })
+                for (let index = 0; index < disk.length; index++) {
+                    await desktop.createDisk(disk[index], { transaction: t })
+                }
+            })
+        }
+        catch (err) {
+            throw err
+        }
         console.log("pc")
     },
+    updateDesktop: async (body) => {
+        const { device, disk, info } = body
+        let desktop
+        try {
+            const results = await sequelize.transaction(async (t) => {
+                desktop = await db.Desktop.findByPk(device.id)
+                desktop.model = device.model
+                desktop.brand = device.brand
+                desktop.sn = device.sn
+                desktop.detail = device.detail
+                desktop.deviceNumber = device.deviceNumber
+                for (let index = 0; index < disk.length; index++) {
+                    if (disk[index].id) {
+                        await sequelize.query(`UPDATE disks SET brand='${disk[index].brand}', model='${disk[index].model}', sn='${disk[index].sn}', capacity='${disk[index].capacity}' WHERE id='${disk[index].id}'`, { transaction: t })
+                    } else {
+                        await desktop.createDisk(disk[index], { transaction: t })
+                    }
+                }
+                await desktop.save({ transaction: t })
+            })
+        }
+        catch (err) {
+            throw err
+        }
+    },
     newNotebook: async (body) => {
-        console.log("notebook")
+        const { device, disk, battery, info } = body
+        let notebook
+        try {
+            const results = await sequelize.transaction(async (t) => {
+                notebook = await db.Notebook.create({
+                    model: device.model,
+                    brand: device.brand,
+                    sn: device.sn,
+                    detail: device.detail,
+                    type: info.type,
+                    deviceNumber: info.deviceNumber,
+                    ExtractionId: info.extractionId
+                }, { transaction: t })
+                for (let index = 0; index < disk.length; index++) {
+                    await notebook.createDisk(disk[index], { transaction: t })
+                }
+                for (let index = 0; index < disk.length; index++) {
+                    await notebook.createNoteBattery(battery[index], { transaction: t })
+                }
+            })
+        }
+        catch (err) {
+            throw err
+        }
+    },
+    updateNotebook: async (body) => {
+        const { device, disk, battery, info } = body
+        let notebook
+        try {
+            const results = await sequelize.transaction(async (t) => {
+
+                notebook = await db.Notebook.findByPk(device.id)
+                notebook.model = device.model
+                notebook.brand = device.brand
+                notebook.sn = device.sn
+                notebook.detail = device.detail
+                notebook.deviceNumber = info.deviceNumber
+
+                for (let index = 0; index < disk.length; index++) {
+                    if (disk[index].id) {
+                        await sequelize.query(`UPDATE disks SET brand='${disk[index].brand}', model='${disk[index].model}', sn='${disk[index].sn}', capacity='${disk[index].capacity}' WHERE id='${disk[index].id}'`, { transaction: t })
+                    } else {
+                        await notebook.createDisk(disk[index], { transaction: t })
+                    }
+                }
+
+                for (let index = 0; index < battery.length; index++) {
+                    if (battery[index].id) {
+                        await sequelize.query(`UPDATE notebatteries SET brand='${battery[index].brand}', model='${battery[index].model}', sn='${battery[index].sn}' WHERE id='${battery[index].id}'`, { transaction: t })
+                    } else {
+                        await notebook.createNoteBattery(battery[index], { transaction: t })
+                    }
+                }
+                await notebook.save({ transaction: t })
+            })
+        }
+        catch (err) {
+            throw err
+        }
     }
 }
