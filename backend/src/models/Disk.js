@@ -3,7 +3,6 @@ const sequelize = require('../database/db')
 const Notebook = require("./Notebook")
 const Desktop = require("./Desktop")
 const Disk = sequelize.define('Disk', {
-
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -24,7 +23,7 @@ const Disk = sequelize.define('Disk', {
     capacity: {
         type: DataTypes.INTEGER,
         allowNull: true
-    }
+    },
 })
 
 Notebook.hasMany(Disk)

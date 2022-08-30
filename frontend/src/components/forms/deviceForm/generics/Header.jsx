@@ -4,8 +4,9 @@ function Header({ title, handleAdd }) {
             <div className="row">
                 <div className="col">
                     <h3>{title}</h3>
+
                 </div>
-                <div className="col">
+                <div className="col text-center">
                     <button type="button" className="btn btn-success" onClick={handleAdd}>Agregar</button>
                 </div>
             </div>

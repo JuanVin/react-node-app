@@ -19,6 +19,7 @@ function DeviceForm() {
     const [devices, setDevices] = useState(null)
     const [extractionId, setExtractionId] = useState(null)
     const Navigate = useNavigate()
+
     useEffect(() => {
         checkUser()
     }, [loading])
@@ -64,7 +65,6 @@ function DeviceForm() {
     const handleNumber = async () => {
 
         let query = await apis.getExtractionInfo(searchParams.get("id"))
-        console.log(query)
         if (query.status === 200) {
             let _amount = [], _loaded = [...loaded]
             for (let index = 0; index < query.response.numberOfDevices; index++) {
@@ -85,6 +85,7 @@ function DeviceForm() {
                     _loaded.push(notebook.deviceNumber)
                 }
             })
+
             setLoaded(_loaded)
             setAmount(_amount)
             setExtractionId(query.response.id)

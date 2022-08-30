@@ -18,8 +18,32 @@ function FormContent({ deviceNumber, device, amount, setAmount, currentPage, loa
   })
 
   useEffect(() => {
+    const handleType = () => {
+      if (device) {
+        switch (device.type) {
+          case 1:
+            setOption(device.type.toString())
+            setCurrentOption(device.type.toString())
+            break;
+          case 2:
+            setOption(device.type.toString())
+            setCurrentOption(device.type.toString())
+            break;
+          case 3:
+            setOption(device.type.toString())
+            setCurrentOption(device.type.toString())
+            break;
+          case 4:
+            setCurrentOption("3")
+            break;
+          default:
+            break;
+        }
+      }
+      setLoading(false)
+    }
     handleType()
-  }, [loading])
+  }, [loading, device])
 
   const handleOption = () => {
     setCurrentOption(option);
@@ -39,32 +63,6 @@ function FormContent({ deviceNumber, device, amount, setAmount, currentPage, loa
         break;
     }
   };
-
-  const handleType = () => {
-    if (device) {
-      switch (device.type) {
-        case 1:
-          setOption(device.type.toString())
-          setCurrentOption(device.type.toString())
-          break;
-        case 2:
-          setOption(device.type.toString())
-          setCurrentOption(device.type.toString())
-          break;
-        case 3:
-          setOption(device.type.toString())
-          setCurrentOption(device.type.toString())
-          break;
-        case 4:
-          setCurrentOption("3")
-          break;
-        default:
-          break;
-      }
-    }
-    setLoading(false)
-  }
-
 
   const getFormBody = () => {
     return (

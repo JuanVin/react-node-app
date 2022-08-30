@@ -122,8 +122,7 @@ const extractionController = {
         switch (body.info.type) {
             case 1:
                 try {
-                    await extractionService.newPhone(body)
-                    res.status(200).send({ message: "Cargado correctamente" })
+                    res.status(200).send(await extractionService.newPhone(body))
                 } catch (err) {
                     res.status(500).send(err)
                 }
@@ -154,8 +153,7 @@ const extractionController = {
         switch (body.info.type) {
             case 1:
                 try {
-                    await extractionService.updatePhone(body)
-                    res.status(200).send({ message: "Actualizado correctamente" })
+                    res.status(200).send(await extractionService.updatePhone(body))
                 } catch (err) {
                     res.status(500).send({ message: err })
                 }

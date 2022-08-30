@@ -308,7 +308,7 @@ const unit = [{
             name: "juan",
             lastname: "vinci",
             active: true,
-            roles: ["technician"]
+            roles: ["technician", "admin"]
         }
     ]
 

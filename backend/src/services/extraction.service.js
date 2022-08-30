@@ -117,6 +117,16 @@ module.exports = extractionService = {
                     await phone.createMicrosd(microsd[index], { transaction: t })
                 }
             })
+            const data = await db.CellPhone.findByPk(phone.id,
+                {
+                    include: [
+                        { model: db.Battery, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: db.Microsd, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: db.Imei, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: db.Simcard, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    ]
+                })
+            return { data, message: "Cargado correctamente" }
         } catch (err) {
             console.log(err)
             throw err
@@ -180,6 +190,16 @@ module.exports = extractionService = {
                 }
                 await phone.save({ transaction: t })
             })
+            const data = await db.CellPhone.findByPk(phone.id,
+                {
+                    include: [
+                        { model: db.Battery, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: db.Microsd, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: db.Imei, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                        { model: db.Simcard, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                    ]
+                })
+            return { data, message: "Actualizado correctamente" }
         } catch (err) {
             console.log(err)
             throw err

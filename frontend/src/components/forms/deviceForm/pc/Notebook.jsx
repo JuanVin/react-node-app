@@ -32,7 +32,7 @@ function Notebook({ device, info, setInfo, amount }) {
         if (device) {
             setInputValues()
         }
-    }, [])
+    }, [device])
 
     const deleteForm = () => {
         console.log("delete")

@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from "react";
+import React, { useState, useEffect, memo } from "react";
 
 import apis from "../../../../services/apiCalls"
 import UpdateButton from "../generics/UpdateButton";
@@ -14,6 +14,7 @@ import Imei from "./generics/Imei";
 import Simcard from "./generics/Simcard";
 import Battery from "./generics/Battery";
 import Microsd from "./generics/Microsd";
+import PhoneDetail from "./PhoneDetail";
 
 function PhoneForm({ info, device, amount, setInfo }) {
 
@@ -80,17 +81,23 @@ function PhoneForm({ info, device, amount, setInfo }) {
         } else {
             query = await apis.newDevice({ ...formValues, info })
         }
-        if (query.status === 200) {
+        if (query) {
             setMessage({ message: query.response.message, status: query.status })
-            setTimeout(() => {
-                window.location.reload()
-            }, 500);
+            if (query.status === 200) {
+                /*
+                setTimeout(() => {
+                    window.location.reload()
+                }, 500);*/
+
+                console.log(query.response)
+                setInputValues(query.response.data)
+            }
         }
-        setMessage({ message: query.response.message, status: query.status })
     }
 
     const handleDelete = async () => {
         const query = await apis.deleteDevice({ ...formValues.device, info })
+        console.lol(query)
         if (query.status === 200) {
             window.location.reload()
         }
@@ -114,6 +121,7 @@ function PhoneForm({ info, device, amount, setInfo }) {
 
     return (
         <div className="p-3">
+            <PhoneDetail formValues={formValues} info={info}></PhoneDetail>
             {/*<pre>{JSON.stringify(formValues, undefined, 2)}</pre>*/}
 
             <Message props={message}></Message>
@@ -134,13 +142,15 @@ function PhoneForm({ info, device, amount, setInfo }) {
                     <hr />
                     <section>
                         <Header title={"Imei"} handleAdd={() => handleAdd("imei", { number: "" })}></Header>
-                        {formValues.imei.map(
-                            (item, index) => {
-                                return (
-                                    <Imei value={item.number} remove={item.remove} name="number" container="imei" title={`Imei ${index + 1}`} handleRemove={() => handleRemove("imei", index)} handleChange={(e) => handleChange(e, index)} key={index}></Imei>
-                                )
-                            }
-                        )}
+                        {
+                            formValues.imei.map(
+                                (item, index) => {
+                                    return (
+                                        <Imei value={item.number} remove={item.remove} name="number" container="imei" title={`Imei ${index + 1}`} handleRemove={() => handleRemove("imei", index)} handleChange={(e) => handleChange(e, index)} key={(item.id ? item.id : "imei" + index)}></Imei>
+                                    )
+                                }
+                            )
+                        }
                     </section>
                     <hr />
                     <section>
@@ -148,7 +158,7 @@ function PhoneForm({ info, device, amount, setInfo }) {
                         {formValues.simcard.map(
                             (item, index) => {
                                 return (
-                                    <Simcard company={item.company} number={item.number} container="simcard" remove={item.remove} handleRemove={() => handleRemove("simcard", index)} handleChange={(e) => handleChange(e, index)} key={index}></Simcard>
+                                    <Simcard company={item.company} number={item.number} container="simcard" remove={item.remove} handleRemove={() => handleRemove("simcard", index)} handleChange={(e) => handleChange(e, index)} key={item.id ? item.id : "sim" + index}></Simcard>
                                 )
                             }
                         )}
@@ -159,7 +169,7 @@ function PhoneForm({ info, device, amount, setInfo }) {
                         {formValues.battery.map(
                             (item, index) => {
                                 return (
-                                    <Battery brand={item.brand} model={item.model} container="battery" handleRemove={() => handleRemove("battery", index)} handleChange={(e) => handleChange(e, index)} key={index}></Battery>
+                                    <Battery brand={item.brand} model={item.model} container="battery" remove={item.remove} handleRemove={() => handleRemove("battery", index)} handleChange={(e) => handleChange(e, index)} key={item.id ? item.id : "battery" + index}></Battery>
                                 )
                             }
                         )}
@@ -170,7 +180,7 @@ function PhoneForm({ info, device, amount, setInfo }) {
                         {formValues.microsd.map(
                             (item, index) => {
                                 return (
-                                    <Microsd type={item.type} capacity={item.capacity} container="microsd" handleRemove={() => handleRemove("microsd", index)} handleChange={(e) => handleChange(e, index)} key={index}></Microsd>
+                                    <Microsd type={item.type} capacity={item.capacity} container="microsd" remove={item.remove} handleRemove={() => handleRemove("microsd", index)} handleChange={(e) => handleChange(e, index)} key={item.id ? item.id : "microsd" + index}></Microsd>
                                 )
                             }
                         )}
