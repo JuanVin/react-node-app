@@ -1,7 +1,7 @@
 function PhoneDetail({ formValues, info }) {
     return (
         <>
-            <p className="text-justify">
+            <p className="border border-success rounded p-2">
                 {
                     `
                     ${info.deviceNumber}) celular marca ${formValues.device.brand.toUpperCase()} modelo ${formValues.device.model.toUpperCase() + ","}
