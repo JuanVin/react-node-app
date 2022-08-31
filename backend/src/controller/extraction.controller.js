@@ -124,7 +124,7 @@ const extractionController = {
                 try {
                     res.status(200).send(await extractionService.newPhone(body))
                 } catch (err) {
-                    res.status(500).send(err)
+                    res.status(err.status).send({ message: err.message })
                 }
                 break;
             case 2:
@@ -155,7 +155,7 @@ const extractionController = {
                 try {
                     res.status(200).send(await extractionService.updatePhone(body))
                 } catch (err) {
-                    res.status(500).send({ message: err })
+                    res.status(err.status).send({ message: err.message })
                 }
                 break;
             case 2:
@@ -179,24 +179,10 @@ const extractionController = {
         }
     },
     deleteDevice: async (req, res) => {
-        const body = req.body
-        console.log(body)
-        switch (body.info.type) {
-            case 1:
-                try {
-                    res.status(200).send(await extractionService.deletePhone(body.id, body.info.extractionId))
-                } catch (err) {
-                    res.status(500).send(err)
-                }
-                break;
-            case 2:
-                await extractionService.newNotebook(body)
-                break;
-            case 3:
-                await extractionService.newDesktop(body)
-                break;
-            default:
-                break;
+        try {
+            res.status(200).send(await extractionService.deleteDevice(req.body))
+        } catch (err) {
+            res.status(500).send({ message: err })
         }
     }
 }

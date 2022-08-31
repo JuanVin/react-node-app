@@ -14,6 +14,10 @@ const Battery = sequelize.define('Battery', {
     model: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    integrated: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true
     }
 })
 

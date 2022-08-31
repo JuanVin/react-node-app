@@ -16,15 +16,16 @@ import Battery from "./generics/Battery";
 import Microsd from "./generics/Microsd";
 import PhoneDetail from "./PhoneDetail";
 
-function PhoneForm({ info, device, amount, setInfo }) {
+function PhoneForm({ info, device, amount, setInfo, loaded, setLoaded }) {
 
+    // Valores iniciales cuando no hay un dispositivo cargado
     const initialFormValues =
     {
         device: {
             brand: "",
             model: "",
             detail: "",
-            extraction: "",
+            extraction: "al que se le realiza",
         },
         imei: [],
         simcard: [],
@@ -42,6 +43,7 @@ function PhoneForm({ info, device, amount, setInfo }) {
         }
     }, [])
 
+    // Función que setea los valores de formValues cuando hay un dispositivo cargado previamente
     const setInputValues = (values) => {
         setFormValues({
             ...formValues,
@@ -60,15 +62,24 @@ function PhoneForm({ info, device, amount, setInfo }) {
         setDisabled(false)
     }
 
+    // Maneja todos los cambios de los inputs del form para insertarlos en formValues
     const handleChange = (e, index) => {
-        const { name, value } = e.target
+        const { name, value, checked } = e.target
         const container = e.target.getAttribute("container")
         const aux = formValues[container]
+
         if (index || index === 0) {
-            aux[index][name] = value
+            if (name === "integrated") {
+                aux[index] = {
+                    brand: "",
+                    model: "",
+                    integrated: checked
+                }
+            } else aux[index][name] = value
         } else {
             aux[name] = value
         }
+
         setFormValues({ ...formValues, [container]: aux })
     }
 
@@ -76,33 +87,57 @@ function PhoneForm({ info, device, amount, setInfo }) {
         e.preventDefault()
         setDisabled(true)
         let query
+        // Comprueba si se debe agregar un nuevo dispositivo o actualizar el actual
         if (formValues.device.id) {
             query = await apis.updateDevice({ ...formValues, info })
         } else {
             query = await apis.newDevice({ ...formValues, info })
         }
+
         if (query) {
+            console.log(query)
             setMessage({ message: query.response.message, status: query.status })
-            if (query.status === 200) {
-                /*
+            if (query.response.reload) { // El parámetro reload indica si se debe recargar la página, útil a la hora de eliminar y mover dispositivos de lugar
                 setTimeout(() => {
                     window.location.reload()
-                }, 500);*/
-
-                console.log(query.response)
-                setInputValues(query.response.data)
+                }, 500);
+            }
+            else if (query.status === 200) {
+                if (isDuplicate(loaded, info.deviceNumber) === false) {
+                    setLoaded([...loaded, parseInt(info.deviceNumber)]) // Si no hay duplicados, actualiza el array de la paginación con un nuevo número de dispositivo 
+                }
+                setInputValues(query.response.data) // Carga los valores obtenidos del backend para ser asignados a los inputs
+            }
+            else {
+                setDisabled(false)
             }
         }
     }
 
+    // Comprueba si hay números duplicados en el array de la paginación
+    const isDuplicate = (oldArray, deviceNumber) => {
+        if (!oldArray.find(element => element === deviceNumber)) {
+            return false
+        }
+        return true
+    }
+
+    // Elimina el dispositivo seleccionado en cascada
     const handleDelete = async () => {
+        setDisabled(true)
         const query = await apis.deleteDevice({ ...formValues.device, info })
-        console.lol(query)
-        if (query.status === 200) {
-            window.location.reload()
+        if (query) {
+            console.log(query)
+            setMessage({ message: query.response.message, status: query.status })
+            if (query.response.reload) {
+                setTimeout(() => {
+                    window.location.reload()
+                }, 500);
+            }
         }
     }
 
+    // Setea un nuevo campo "remove:true" en aquellos datos que se quieren borrar, dicho campo se analiza en el backend para eliminar elementos con su id 
     const handleRemove = (name, index) => {
         const aux = formValues[name]
         if (aux[index].remove) {
@@ -113,17 +148,18 @@ function PhoneForm({ info, device, amount, setInfo }) {
         setFormValues({ ...formValues, [name]: aux })
     }
 
+    // Agrega de forma dinámica campos dentro del array que corresponda para luego ser enviados en formato json al backend
     const handleAdd = (name, options) => {
         const aux = formValues[name]
         aux.push(options)
         setFormValues({ ...formValues, [name]: aux })
     }
 
+
     return (
         <div className="p-3">
-            <PhoneDetail formValues={formValues} info={info}></PhoneDetail>
+            {<PhoneDetail formValues={formValues} info={info}></PhoneDetail>}
             {/*<pre>{JSON.stringify(formValues, undefined, 2)}</pre>*/}
-
             <Message props={message}></Message>
             <form onSubmit={handleSubmit}>
                 <fieldset disabled={disabled}>
@@ -165,11 +201,11 @@ function PhoneForm({ info, device, amount, setInfo }) {
                     </section>
                     <hr />
                     <section>
-                        <Header title={"Batería"} handleAdd={() => handleAdd("battery", { brand: "", model: "" })}></Header>
+                        <Header title={"Batería"} handleAdd={() => handleAdd("battery", { brand: "", model: "", integrated: false })}></Header>
                         {formValues.battery.map(
                             (item, index) => {
                                 return (
-                                    <Battery brand={item.brand} model={item.model} container="battery" remove={item.remove} handleRemove={() => handleRemove("battery", index)} handleChange={(e) => handleChange(e, index)} key={item.id ? item.id : "battery" + index}></Battery>
+                                    <Battery brand={item.brand} model={item.model} integrated={item.integrated} container="battery" remove={item.remove} handleRemove={() => handleRemove("battery", index)} handleChange={(e) => handleChange(e, index)} key={item.id ? item.id : "battery" + index}></Battery>
                                 )
                             }
                         )}

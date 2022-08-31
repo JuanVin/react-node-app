@@ -52,7 +52,7 @@ function FormContent({ deviceNumber, device, amount, setAmount, currentPage, loa
   const optionSwitch = () => {
     switch (currentOption) {
       case "1":
-        return <PhoneForm info={{ ...info, type: 1 }} setInfo={setInfo} device={device} amount={amount}></PhoneForm>
+        return <PhoneForm info={{ ...info, type: 1 }} setInfo={setInfo} device={device} amount={amount} setLoaded={setLoaded} loaded={loaded}></PhoneForm>
       case "2":
         return <Notebook info={{ ...info, type: 2 }} setInfo={setInfo} device={device} amount={amount} loaded={loaded}></Notebook>
       case "3":

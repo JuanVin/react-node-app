@@ -8,20 +8,20 @@ function PhoneDetail({ formValues, info }) {
                     ${formValues.simcard.length > 0 ?
                         formValues.simcard.map(
                             (sim, index) => {
-                                return `SIMCARD #${index + 1} N° ${sim.number} perteneciente a la empresa ${sim.company.toUpperCase()}`
+                                return `SIMCARD #${index + 1} N° ${sim.number} perteneciente a la empresa ${sim.company.toUpperCase()},`
                             }
                         )
                         :
-                        "NO POSEE SIMCARD"
+                        "NO POSEE SIMCARD,"
                     }
                     ${formValues.battery.length > 0 ?
                         formValues.battery.map(
                             (battery, index) => {
-                                return `batería marca ${battery.brand.toUpperCase()} modelo ${battery.model.toUpperCase()},`
+                                return battery.integrated ? "batería INTERNA INTEGRADA," : `batería marca ${battery.brand.toUpperCase()} modelo ${battery.model.toUpperCase()},`
                             }
                         )
                         :
-                        "no posee batería,"
+                        "NO POSEE batería,"
                     }
                     ${formValues.microsd.length > 0 ?
                         formValues.microsd.map(
@@ -42,7 +42,7 @@ function PhoneDetail({ formValues, info }) {
                         "IMEI físico no visible/legible,"
                     }
                     ${formValues.device.detail ? "el cual presenta el siguiente detalle: " + formValues.device.detail + "," : ""} 
-                    ${formValues.device.extraction ? "al que se le realiza: " + formValues.device.extraction : ""}.
+                    ${formValues.device.extraction ? formValues.device.extraction : ""}.
                     `
                 }
             </p>
