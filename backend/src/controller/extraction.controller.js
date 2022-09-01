@@ -122,9 +122,10 @@ const extractionController = {
         switch (body.info.type) {
             case 1:
                 try {
-                    res.status(200).send(await extractionService.newPhone(body))
+                    res.status(201).send(await extractionService.newPhone(body))
                 } catch (err) {
                     res.status(err.status).send({ message: err.message })
+
                 }
                 break;
             case 2:
@@ -153,7 +154,7 @@ const extractionController = {
         switch (body.info.type) {
             case 1:
                 try {
-                    res.status(200).send(await extractionService.updatePhone(body))
+                    res.status(201).send(await extractionService.updatePhone(body))
                 } catch (err) {
                     res.status(err.status).send({ message: err.message })
                 }

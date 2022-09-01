@@ -74,17 +74,21 @@ module.exports = extractionService = {
     },
 
     deleteDevice: async (body) => {
+
         try {
+
             const result = await sequelize.transaction(async (t) => {
-                if (body.info.type === 1) {
-                    await db.CellPhone.destroy({ where: { id: body.id } }, { transaction: t })
-                    console.log("1")
-                }
-                else if (body.info.type === 2) {
-                    await db.Notebook.destroy({ where: { id: body.id } }, { transaction: t })
-                }
-                else {
-                    await db.Desktop.destroy({ where: { id: body.id } }, { transaction: t })
+                if (body.id) {
+                    if (body.info.type === 1) {
+                        await db.CellPhone.destroy({ where: { id: body.id } }, { transaction: t })
+                        console.log("1")
+                    }
+                    else if (body.info.type === 2) {
+                        await db.Notebook.destroy({ where: { id: body.id } }, { transaction: t })
+                    }
+                    else {
+                        await db.Desktop.destroy({ where: { id: body.id } }, { transaction: t })
+                    }
                 }
                 return { message: "Eliminado correctamente", reload: true }
             })
@@ -99,7 +103,7 @@ module.exports = extractionService = {
         try {
             const results = await sequelize.transaction(async (t) => {
                 if (await validate(info.deviceNumber, info.extractionId) === true) {
-                    throw ({ status: 400, message: `Número (${info.deviceNumber}) de dispositivo ya ocupado` })
+                    throw ({ status: 422, message: `Número (${info.deviceNumber}) de dispositivo ya ocupado` })
                 }
                 phone = await db.CellPhone.create({
                     deviceNumber: info.deviceNumber,
@@ -110,17 +114,17 @@ module.exports = extractionService = {
                     ExtractionId: info.extractionId,
                     type: info.type
                 }, { transaction: t })
-                for (let index = 0; index < simcard.length; index++) {
-                    await phone.createSimcard(simcard[index], { transaction: t })
+                for (let x of simcard) {
+                    await phone.createSimcard(x, { transaction: t })
                 }
-                for (let index = 0; index < imei.length; index++) {
-                    await phone.createImei(imei[index], { transaction: t })
+                for (let x of imei) {
+                    await phone.createImei(x, { transaction: t })
                 }
-                for (let index = 0; index < battery.length; index++) {
-                    await phone.createBattery(battery[index], { transaction: t })
+                for (let x of battery) {
+                    await phone.createBattery(x, { transaction: t })
                 }
-                for (let index = 0; index < microsd.length; index++) {
-                    await phone.createMicrosd(microsd[index], { transaction: t })
+                for (let x of microsd) {
+                    await phone.createMicrosd(x, { transaction: t })
                 }
             })
             const data = await db.CellPhone.findByPk(phone.id,
@@ -134,7 +138,6 @@ module.exports = extractionService = {
                 })
             return { data, message: "Cargado correctamente" }
         } catch (err) {
-            console.log(err)
             throw err
         }
     },
@@ -147,7 +150,7 @@ module.exports = extractionService = {
                 reload = phone.deviceNumber !== info.deviceNumber
                 if (reload) {
                     if (await validate(info.deviceNumber, info.extractionId) === true) {
-                        throw ({ status: 400, message: `Número (${info.deviceNumber}) de dispositivo ya ocupado` })
+                        throw ({ status: 422, message: `Número (${info.deviceNumber}) de dispositivo ya ocupado` })
                     }
                 }
                 phone.deviceNumber = info.deviceNumber

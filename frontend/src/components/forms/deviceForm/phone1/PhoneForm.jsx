@@ -14,9 +14,10 @@ import Imei from "./generics/Imei";
 import Simcard from "./generics/Simcard";
 import Battery from "./generics/Battery";
 import Microsd from "./generics/Microsd";
+
 import PhoneDetail from "./PhoneDetail";
 
-function PhoneForm({ info, device, amount, setInfo, loaded, setLoaded }) {
+function PhoneForm({ info, device, amount, setInfo, setLoaded }) {
 
     // Valores iniciales cuando no hay un dispositivo cargado
     const initialFormValues =
@@ -25,7 +26,7 @@ function PhoneForm({ info, device, amount, setInfo, loaded, setLoaded }) {
             brand: "",
             model: "",
             detail: "",
-            extraction: "al que se le realiza",
+            extraction: "",
         },
         imei: [],
         simcard: [],
@@ -61,7 +62,6 @@ function PhoneForm({ info, device, amount, setInfo, loaded, setLoaded }) {
         })
         setDisabled(false)
     }
-
     // Maneja todos los cambios de los inputs del form para insertarlos en formValues
     const handleChange = (e, index) => {
         const { name, value, checked } = e.target
@@ -79,7 +79,6 @@ function PhoneForm({ info, device, amount, setInfo, loaded, setLoaded }) {
         } else {
             aux[name] = value
         }
-
         setFormValues({ ...formValues, [container]: aux })
     }
 
@@ -95,18 +94,21 @@ function PhoneForm({ info, device, amount, setInfo, loaded, setLoaded }) {
         }
 
         if (query) {
-            console.log(query)
             setMessage({ message: query.response.message, status: query.status })
             if (query.response.reload) { // El parámetro reload indica si se debe recargar la página, útil a la hora de eliminar y mover dispositivos de lugar
                 setTimeout(() => {
                     window.location.reload()
                 }, 500);
             }
-            else if (query.status === 200) {
-                if (isDuplicate(loaded, info.deviceNumber) === false) {
-                    setLoaded([...loaded, parseInt(info.deviceNumber)]) // Si no hay duplicados, actualiza el array de la paginación con un nuevo número de dispositivo 
-                }
-                setInputValues(query.response.data) // Carga los valores obtenidos del backend para ser asignados a los inputs
+            else if (query.status >= 200 && query.status <= 210) {
+                // Setea un nuevo estado en caso de que la funcion isDuplicate retorne falso, pintando de verde el número en la paginación
+                setLoaded(oldArray => {
+                    if (isDuplicate(oldArray, info.deviceNumber) === false) {
+                        return [...oldArray, parseInt(info.deviceNumber)]
+                    }
+                    return oldArray
+                })
+                setInputValues(query.response.data) // Carga los valores obtenidos del backend para ser asignados a los inputs con los correspondientes ids, para poder actualizarlos
             }
             else {
                 setDisabled(false)
@@ -116,10 +118,10 @@ function PhoneForm({ info, device, amount, setInfo, loaded, setLoaded }) {
 
     // Comprueba si hay números duplicados en el array de la paginación
     const isDuplicate = (oldArray, deviceNumber) => {
-        if (!oldArray.find(element => element === deviceNumber)) {
-            return false
+        if (oldArray.find(element => element === deviceNumber)) {
+            return true
         }
-        return true
+        return false
     }
 
     // Elimina el dispositivo seleccionado en cascada
@@ -127,7 +129,6 @@ function PhoneForm({ info, device, amount, setInfo, loaded, setLoaded }) {
         setDisabled(true)
         const query = await apis.deleteDevice({ ...formValues.device, info })
         if (query) {
-            console.log(query)
             setMessage({ message: query.response.message, status: query.status })
             if (query.response.reload) {
                 setTimeout(() => {
@@ -159,7 +160,7 @@ function PhoneForm({ info, device, amount, setInfo, loaded, setLoaded }) {
     return (
         <div className="p-3">
             {<PhoneDetail formValues={formValues} info={info}></PhoneDetail>}
-            {/*<pre>{JSON.stringify(formValues, undefined, 2)}</pre>*/}
+            {<pre>{JSON.stringify(formValues, undefined, 2)}</pre>}
             <Message props={message}></Message>
             <form onSubmit={handleSubmit}>
                 <fieldset disabled={disabled}>

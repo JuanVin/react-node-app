@@ -39,7 +39,7 @@ function PhoneDetail({ formValues, info }) {
                             }
                         )
                         :
-                        "IMEI físico no visible/legible,"
+                        "IMEI físico no visible,"
                     }
                     ${formValues.device.detail ? "el cual presenta el siguiente detalle: " + formValues.device.detail + "," : ""} 
                     ${formValues.device.extraction ? formValues.device.extraction : ""}.
