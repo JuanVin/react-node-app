@@ -2,6 +2,9 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../database/db')
 const Notebook = require("./Notebook")
 const Desktop = require("./Desktop")
+
+const uppercaseFirst = str => `${str[0].toUpperCase()}${str.substr(1)}`;
+
 const Disk = sequelize.define('Disk', {
     id: {
         type: DataTypes.INTEGER,
@@ -24,12 +27,36 @@ const Disk = sequelize.define('Disk', {
         type: DataTypes.INTEGER,
         allowNull: true
     },
+    deviceType: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
+}, {
+    getDevice(options) {
+        if (!this.deviceType) return Promise.resolve(null);
+        const mixinMethodName = `get${uppercaseFirst(this.deviceType)}`;
+        return this[mixinMethodName](options);
+    }
 })
 
-Notebook.hasMany(Disk)
-Disk.belongsTo(Notebook)
+Notebook.hasMany(Disk, {
+    foreignKey: 'deviceId',
+    constraints: false,
+    scope: {
+        deviceType: 'notebook'
+    }
+})
 
-Desktop.hasMany(Disk)
-Disk.belongsTo(Desktop)
+Disk.belongsTo(Notebook, { foreignKey: 'deviceId', constraints: false })
+
+Desktop.hasMany(Disk, {
+    foreignKey: 'deviceId',
+    constraints: false,
+    scope: {
+        deviceType: 'desktop'
+    }
+})
+
+Disk.belongsTo(Desktop, { foreignKey: 'deviceId', constraints: false })
 
 module.exports = Disk

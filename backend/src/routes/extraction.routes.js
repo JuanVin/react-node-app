@@ -2,7 +2,7 @@ const extractionController = require("../controller/extraction.controller")
 const { authJwt } = require("../middleware");
 
 module.exports = function (app) {
-    app.get('/api/files/get_extraction/:id', [authJwt.verifyToken], extractionController.getExtractionInfo)
+    app.get('/api/files/get_extraction/:id', [authJwt.verifyToken], extractionController.getExtractionDevices)
     app.get('/api/files/get_extractions_by_id/:id', [authJwt.verifyToken], extractionController.getExtractionsById)
 
     app.post('/api/files/set_extraction_number', [authJwt.verifyToken], extractionController.createExtraction)
@@ -12,6 +12,5 @@ module.exports = function (app) {
     app.post('/api/files/new_device', [authJwt.verifyToken], extractionController.newDevice)
     app.post('/api/files/update_device', [authJwt.verifyToken], extractionController.updateDevice)
 
-    app.delete('/api/files/delete_extraction_form', [authJwt.verifyToken], extractionController.deleteExtraction)
     app.delete('/api/files/delete_device', [authJwt.verifyToken], extractionController.deleteDevice)
 }

@@ -31,6 +31,17 @@ const Desktop = sequelize.define('Desktop', {
         type: DataTypes.INTEGER,
         allowNull: true
     }
+}, {
+    scopes: {
+        async deleteDisk() {
+            const disks = await Desktop.getDisks()
+            if (disks) {
+                for (let x of disks) {
+                    await x.destroy()
+                }
+            }
+        }
+    }
 })
 
 module.exports = Desktop

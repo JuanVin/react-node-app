@@ -14,17 +14,17 @@ module.exports = extractionService = {
                         numberOfDevices: numberOfDevices,
                         FileId: fileId
                     }, { transaction: t })
+                return { info: extractionNumber.id, message: "Creado correctamente" }
             })
-            return extractionNumber
+            return result
         } catch (err) {
             throw err
         }
     },
-    getExtractionInfo: async (id) => {
+    getExtractionDevices: async (id) => {
         try {
-            let info
             const result = await sequelize.transaction(async (t) => {
-                info = await db.Extraction.findOne(
+                const info = await db.Extraction.findOne(
                     {
                         where: {
                             FileId: id
@@ -49,8 +49,9 @@ module.exports = extractionService = {
 
                     }, { transaction: t }
                 )
+                return info
             })
-            return info
+            return result
         } catch (err) {
             console.log(err)
             throw err
@@ -74,20 +75,31 @@ module.exports = extractionService = {
     },
 
     deleteDevice: async (body) => {
-
         try {
-
             const result = await sequelize.transaction(async (t) => {
                 if (body.id) {
                     if (body.info.type === 1) {
                         await db.CellPhone.destroy({ where: { id: body.id } }, { transaction: t })
-                        console.log("1")
                     }
                     else if (body.info.type === 2) {
-                        await db.Notebook.destroy({ where: { id: body.id } }, { transaction: t })
+                        const notebook = await db.Notebook.findByPk(body.id, { transaction: t })
+                        const disks = await notebook.getDisks({ transaction: t })
+                        const batteries = await notebook.getNoteBatteries({ transaction: t })
+                        for (let x of batteries) {
+                            await x.destroy({ transaction: t })
+                        }
+                        for (let x of disks) {
+                            await x.destroy({ transaction: t })
+                        }
+                        await notebook.destroy({ transaction: t })
                     }
                     else {
-                        await db.Desktop.destroy({ where: { id: body.id } }, { transaction: t })
+                        const desktop = await db.Desktop.findByPk(body.id, { transaction: t })
+                        const disks = await desktop.getDisks({ transaction: t })
+                        for (let x of disks) {
+                            await x.destroy({ transaction: t })
+                        }
+                        await desktop.destroy({ transaction: t })
                     }
                 }
                 return { message: "Eliminado correctamente", reload: true }
@@ -99,7 +111,7 @@ module.exports = extractionService = {
     },
     newPhone: async (body) => {
         const { device, imei, simcard, battery, microsd, info } = body
-        let phone, data
+        let phone
         try {
             const results = await sequelize.transaction(async (t) => {
                 if (await validate(info.deviceNumber, info.extractionId) === true) {
@@ -136,7 +148,7 @@ module.exports = extractionService = {
                         { model: db.Simcard, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
                     ]
                 })
-            return { data, message: "Cargado correctamente" }
+            return { data, message: "Cargado ok" }
         } catch (err) {
             throw err
         }
@@ -149,7 +161,7 @@ module.exports = extractionService = {
                 phone = await db.CellPhone.findByPk(device.id)
                 reload = phone.deviceNumber !== info.deviceNumber
                 if (reload) {
-                    if (await validate(info.deviceNumber, info.extractionId) === true) {
+                    if (await validate(info.deviceNumber, info.extractionId)) {
                         throw ({ status: 422, message: `Número (${info.deviceNumber}) de dispositivo ya ocupado` })
                     }
                 }
@@ -158,78 +170,83 @@ module.exports = extractionService = {
                 phone.model = device.model
                 phone.detail = device.detail
                 phone.extraction = device.extraction
-                for (let index = 0; index < imei.length; index++) {
-                    if (imei[index].remove) {
-                        if (imei[index].id) {
-                            await db.Imei.destroy({ where: { id: imei[index].id } }, { transaction: t })
+                for (let x of imei) {
+                    if (x.remove) {
+                        if (x.id) {
+                            await db.Imei.destroy({ where: { id: x.id } }, { transaction: t })
                         }
                     }
                     else if (imei[index].id) {
-                        await sequelize.query(`UPDATE imeis SET number='${imei[index].number}' WHERE id='${imei[index].id}'`, { transaction: t })
+                        await sequelize.query(`UPDATE imeis SET number='${x.number}' WHERE id='${x.id}'`, { transaction: t })
                     } else {
-                        await phone.createImei(imei[index], { transaction: t })
+                        await phone.createImei(x, { transaction: t })
                     }
                 }
-                for (let index = 0; index < simcard.length; index++) {
-                    if (simcard[index].remove) {
+                for (let x of simcard) {
+                    if (x.remove) {
                         if (simcard[index].id) {
-                            await db.Battery.destroy({ where: { id: simcard[index].id } }, { transaction: t })
+                            await db.Battery.destroy({ where: { id: x.id } }, { transaction: t })
                         }
                     }
                     else if (simcard[index].id) {
-                        await sequelize.query(`UPDATE simcards SET company='${simcard[index].company}', number='${simcard[index].number}' WHERE id='${simcard[index].id}'`, { transaction: t })
+                        await sequelize.query(`UPDATE simcards SET company='${x.company}', number='${x.number}' WHERE id='${x.id}'`, { transaction: t })
                     } else {
-                        await phone.createSimcard(simcard[index], { transaction: t })
+                        await phone.createSimcard(x, { transaction: t })
                     }
                 }
-                for (let index = 0; index < battery.length; index++) {
-                    if (battery[index].remove) {
-                        if (battery[index].id) {
-                            await db.Battery.destroy({ where: { id: battery[index].id } }, { transaction: t })
+                for (let x of battery) {
+                    if (x.remove) {
+                        if (x.id) {
+                            await db.Battery.destroy({ where: { id: x.id } }, { transaction: t })
                         }
                     }
                     else if (battery[index].id) {
-                        await sequelize.query(`UPDATE batteries SET brand='${battery[index].brand}', model='${battery[index].model}', integrated='${battery[index].integrated ? 1 : 0}' WHERE id='${battery[index].id}'`, { transaction: t })
+                        await sequelize.query(`UPDATE batteries SET brand='${x.brand}', model='${x.model}', integrated='${x.integrated ? 1 : 0}' WHERE id='${x.id}'`, { transaction: t })
                     }
                     else {
-                        await phone.createBattery(battery[index], { transaction: t })
+                        await phone.createBattery(x, { transaction: t })
                     }
                 }
-                for (let index = 0; index < microsd.length; index++) {
-                    if (microsd[index].remove) {
-                        if (microsd[index].id) {
-                            await db.Battery.destroy({ where: { id: battery[index].id } }, { transaction: t })
+                for (let x of microsd) {
+                    if (x.remove) {
+                        if (x.id) {
+                            await db.Battery.destroy({ where: { id: x.id } }, { transaction: t })
                         }
                     }
-                    else if (microsd[index].id) {
-                        await sequelize.query(`UPDATE microsds SET type='${microsd[index].type}', capacity='${microsd[index].capacity}' WHERE id='${microsd[index].id}'`, { transaction: t })
+                    else if (x.id) {
+                        await sequelize.query(`UPDATE microsds SET type='${x.type}', capacity='${x.capacity}' WHERE id='${x.id}'`, { transaction: t })
                     } else {
-                        await phone.createMicrosd(microsd[index], { transaction: t })
+                        await phone.createMicrosd(x, { transaction: t })
                     }
                 }
                 await phone.save({ transaction: t })
-                const data = await db.CellPhone.findByPk(phone.id,
-                    {
-                        include: [
-                            { model: db.Battery, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
-                            { model: db.Microsd, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
-                            { model: db.Imei, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
-                            { model: db.Simcard, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
-                        ]
-                    })
-                console.log(reload)
-                return { data, message: "Actualizado correctamente", reload: reload }
             })
-            return results
+            const data = await db.CellPhone.findByPk(phone.id,
+                {
+                    include: [
+                        { model: db.Battery, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
+                        { model: db.Microsd, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
+                        { model: db.Imei, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
+                        { model: db.Simcard, attributes: { exclude: ["createdAt", "updatedAt", "CellPhoneId"] } },
+                    ]
+                })
+
+            return { data, message: "Actualizado correctamente", reload: reload }
         } catch (err) {
             throw err
         }
     },
     newDesktop: async (body) => {
         const { device, disk, info } = body
-        let desktop
+        let desktop, reload
         try {
             const results = await sequelize.transaction(async (t) => {
+                reload = device.origin !== info.deviceNumber
+                if (reload) {
+                    if (await validate(info.deviceNumber, info.extractionId)) {
+                        throw ({ status: 422, message: `Número (${info.deviceNumber}) de dispositivo ya ocupado` })
+                    }
+                }
                 desktop = await db.Desktop.create({
                     model: device.model,
                     brand: device.brand,
@@ -239,36 +256,65 @@ module.exports = extractionService = {
                     deviceNumber: info.deviceNumber,
                     ExtractionId: info.extractionId
                 }, { transaction: t })
-                for (let index = 0; index < disk.length; index++) {
-                    await desktop.createDisk(disk[index], { transaction: t })
+                for await (let x of disk) {
+                    await desktop.createDisk(x, { transaction: t })
                 }
             })
+
+            const data = await db.Desktop.findByPk(desktop.id,
+                {
+                    include: { model: db.Disk, attributes: { exclude: ["createdAt", "updatedAt"] } },
+                })
+
+            return { data, message: "Cargado correctamente", reload: reload }
         }
         catch (err) {
+            console.log(err)
             throw err
         }
-        console.log("pc")
     },
     updateDesktop: async (body) => {
         const { device, disk, info } = body
-        let desktop
+        let desktop, reload
         try {
             const results = await sequelize.transaction(async (t) => {
                 desktop = await db.Desktop.findByPk(device.id)
+                reload = desktop.deviceNumber !== info.deviceNumber
+                if (reload) {
+                    if (await validate(info.deviceNumber, info.extractionId) === true) {
+                        throw ({ status: 422, message: `Número (${info.deviceNumber}) de dispositivo ya ocupado` })
+                    }
+                }
                 desktop.model = device.model
                 desktop.brand = device.brand
                 desktop.sn = device.sn
                 desktop.detail = device.detail
-                desktop.deviceNumber = device.deviceNumber
-                for (let index = 0; index < disk.length; index++) {
-                    if (disk[index].id) {
-                        await sequelize.query(`UPDATE disks SET brand='${disk[index].brand}', model='${disk[index].model}', sn='${disk[index].sn}', capacity='${disk[index].capacity}' WHERE id='${disk[index].id}'`, { transaction: t })
+                desktop.deviceNumber = info.deviceNumber
+                for (let x of disk) {
+                    if (x.remove) {
+                        if (x.id) {
+                            await db.Disk.destroy({ where: { id: x.id } }, { transaction: t })
+                        }
+                    }
+                    else if (x.id) {
+                        await sequelize.query(`UPDATE disks SET brand='${x.brand}', model='${x.model}', sn='${x.sn}', capacity='${x.capacity}' WHERE id='${x.id}'`, { transaction: t })
                     } else {
-                        await desktop.createDisk(disk[index], { transaction: t })
+                        await desktop.createDisk(x, { transaction: t })
                     }
                 }
                 await desktop.save({ transaction: t })
             })
+            const data = await db.Desktop.findByPk(desktop.id, {
+                include:
+                    [
+                        { model: db.Disk, attributes: { exclude: ["createdAt, updatedAt"] } }
+                    ]
+                ,
+                attributes: {
+                    exclude: ["createdAt", "updatedAt"]
+                }
+            })
+            return { data, message: "Actualizado correctamente", reload: reload }
         }
         catch (err) {
             throw err
@@ -276,9 +322,17 @@ module.exports = extractionService = {
     },
     newNotebook: async (body) => {
         const { device, disk, battery, info } = body
-        let notebook
+        let notebook, reload
+
         try {
             const results = await sequelize.transaction(async (t) => {
+                reload = device.origin !== info.deviceNumber
+                if (reload) {
+                    console.log(reload)
+                    if (await validate(info.deviceNumber, info.extractionId)) {
+                        throw ({ status: 422, message: `Número (${info.deviceNumber}) de dispositivo ya ocupado` })
+                    }
+                }
                 notebook = await db.Notebook.create({
                     model: device.model,
                     brand: device.brand,
@@ -294,7 +348,17 @@ module.exports = extractionService = {
                 for (let index = 0; index < disk.length; index++) {
                     await notebook.createNoteBattery(battery[index], { transaction: t })
                 }
+
             })
+            const data = await db.Notebook.findByPk(notebook.id,
+                {
+                    include: [
+                        { model: db.NoteBattery, attributes: { exclude: ["updatedAt", "createdAt"] } },
+                        { model: db.Disk, attributes: { exclude: ["updatedAt", "createdAt"] } }
+                    ]
+                }
+            )
+            return { data, message: "Cargado correctamente", reload: reload }
         }
         catch (err) {
             throw err
@@ -302,11 +366,16 @@ module.exports = extractionService = {
     },
     updateNotebook: async (body) => {
         const { device, disk, battery, info } = body
-        let notebook
+        let notebook, reload
         try {
             const results = await sequelize.transaction(async (t) => {
-
                 notebook = await db.Notebook.findByPk(device.id)
+                reload = notebook.deviceNumber !== info.deviceNumber
+                if (reload) {
+                    if (await validate(info.deviceNumber, info.extractionId) === true) {
+                        throw ({ status: 422, message: `Número (${info.deviceNumber}) de dispositivo ya ocupado` })
+                    }
+                }
                 notebook.model = device.model
                 notebook.brand = device.brand
                 notebook.sn = device.sn
@@ -330,14 +399,25 @@ module.exports = extractionService = {
                 }
                 await notebook.save({ transaction: t })
             })
+            const data = await db.Notebook.findByPk(notebook.id,
+                {
+                    include: [
+                        { model: db.NoteBattery, attributes: { exclude: ["updatedAt", "createdAt"] } },
+                        { model: db.Disk, attributes: { exclude: ["updatedAt", "createdAt"] } }
+                    ]
+                }
+            )
+            return { data, message: "Cargado correctamente", reload: reload }
         }
         catch (err) {
+            console.log(err)
             throw err
         }
     }
 }
 
 const validate = async (deviceNumber, extractionId) => {
+
     const extraction = await db.Extraction.findByPk(extractionId)
     const phone = await extraction.getCellPhones({
         where: {
@@ -358,4 +438,6 @@ const validate = async (deviceNumber, extractionId) => {
     if (phone.length > 0 || desktop.length > 0 || notebook.length > 0) return true
 
     return false
+
+
 }   

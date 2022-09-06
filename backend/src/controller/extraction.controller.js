@@ -5,16 +5,15 @@ const extractionService = require("../services/extraction.service")
 const extractionController = {
     createExtraction: async (req, res) => {
         try {
-            const extractionNumber = await extractionService.createExtraction(req.body)
-            res.status(200).send({ message: "ok", info: extractionNumber.id })
+            res.status(200).send(await extractionService.createExtraction(req.body))
         } catch (err) {
 
             res.status(400).send({ message: err })
         }
     },
-    getExtractionInfo: async (req, res) => {
+    getExtractionDevices: async (req, res) => {
         try {
-            const info = await extractionService.getExtractionInfo(req.params.id)
+            const info = await extractionService.getExtractionDevices(req.params.id)
             if (info) {
                 res.status(200).send(info)
             } else {
@@ -69,30 +68,6 @@ const extractionController = {
             res.status(400).send({ message: err })
         }
     },
-    deleteExtraction: async (req, res) => {
-        let id = req.body.id
-        try {
-            const result = await sequelize.transaction(async (t) => {
-                const phone = await db.CellPhone.findByPk(id, { transaction: t })
-                const phones = await db.CellPhone.findAll({
-                    where: {
-                        ExtractionId: phone.ExtractionId
-                    }
-                })
-                for (let index = 0; index < phones.length; index++) {
-                    if (phones[index].deviceNumber > phone.deviceNumber) {
-                        phones[index].deviceNumber = (phones[index].deviceNumber) - 1
-                        await phones[index].save({ transaction: t })
-                    }
-                }
-                await phone.destroy({ transaction: t })
-                res.status(200).send({ message: "Borrado correctamente" })
-            })
-        } catch (e) {
-            console.log(e)
-            res.status(400).send({ message: "error" })
-        }
-    },
     updateDeviceNumbers: async (req, res) => {
         let id = req.body.id,
             number = req.body.number
@@ -124,14 +99,14 @@ const extractionController = {
                 try {
                     res.status(201).send(await extractionService.newPhone(body))
                 } catch (err) {
-                    res.status(err.status).send({ message: err.message })
+                    res.status(500).send({ message: err.message })
 
                 }
                 break;
             case 2:
                 try {
-                    await extractionService.newNotebook(body)
-                    res.status(200).send({ message: "Cargado correctamente" })
+
+                    res.status(200).send(await extractionService.newNotebook(body))
                 } catch (err) {
                     res.status(500).send(err)
                 }
@@ -139,8 +114,7 @@ const extractionController = {
                 break;
             case 3:
                 try {
-                    await extractionService.newDesktop(body)
-                    res.status(200).send({ message: "Cargado correctamente" })
+                    res.status(200).send(await extractionService.newDesktop(body))
                 } catch (err) {
                     res.status(500).send(err)
                 }
@@ -162,17 +136,17 @@ const extractionController = {
             case 2:
                 try {
                     await extractionService.updateNotebook(body)
-                    res.status(200).send({ message: "Cargado correctamente" })
+                    res.status(200).send(await extractionService.updateNotebook(body))
                 } catch (err) {
-                    res.status(500).send({ message: err })
+                    console.log(err)
+                    res.status(err.status).send({ message: err.message })
                 }
                 break;
             case 3:
                 try {
-                    await extractionService.updateDesktop(body)
-                    res.status(200).send({ message: "Cargado correctamente" })
+                    res.status(200).send(await extractionService.updateDesktop(body))
                 } catch (err) {
-                    res.status(500).send({ message: err })
+                    res.status(err.status).send({ message: err.message })
                 }
                 break;
             default:
