@@ -130,7 +130,7 @@ const extractionController = {
                 try {
                     res.status(201).send(await extractionService.updatePhone(body))
                 } catch (err) {
-                    res.status(err.status).send({ message: err.message })
+                    res.status(err.status ? err.status : 500).send({ message: err.message })
                 }
                 break;
             case 2:
@@ -139,14 +139,14 @@ const extractionController = {
                     res.status(200).send(await extractionService.updateNotebook(body))
                 } catch (err) {
                     console.log(err)
-                    res.status(err.status).send({ message: err.message })
+                    res.status(err.status ? err.status : 500).send({ message: err.message })
                 }
                 break;
             case 3:
                 try {
                     res.status(200).send(await extractionService.updateDesktop(body))
                 } catch (err) {
-                    res.status(err.status).send({ message: err.message })
+                    res.status(err.status ? err.status : 500).send({ message: err.message })
                 }
                 break;
             default:

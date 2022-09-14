@@ -30,6 +30,10 @@ const Disk = sequelize.define('Disk', {
     deviceType: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    integrated: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true
     }
 }, {
     getDevice(options) {

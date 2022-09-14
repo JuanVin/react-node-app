@@ -19,6 +19,10 @@ const NoteBattery = sequelize.define('NoteBattery', {
         type: DataTypes.TEXT,
         allowNull: true
     },
+    integrated: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true
+    }
 })
 
 Notebook.hasMany(NoteBattery)

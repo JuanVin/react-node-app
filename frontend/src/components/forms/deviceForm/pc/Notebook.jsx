@@ -11,7 +11,7 @@ import Battery from "./generic/Battery"
 import Message from "../../../commons/Message"
 import { useState, useEffect } from "react"
 
-function Notebook({ device, info, setInfo, amount }) {
+function Notebook({ device, info, setInfo, amount, setLoaded }) {
 
     const initialValues = {
         device: {
@@ -19,6 +19,7 @@ function Notebook({ device, info, setInfo, amount }) {
             brand: "",
             sn: "",
             detail: "",
+            origin: info.deviceNumber
         },
         battery: [],
         disk: [],
@@ -30,13 +31,9 @@ function Notebook({ device, info, setInfo, amount }) {
 
     useEffect(() => {
         if (device) {
-            setInputValues()
+            setInputValues(device)
         }
     }, [device])
-
-    const deleteForm = () => {
-        console.log("delete")
-    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -49,27 +46,34 @@ function Notebook({ device, info, setInfo, amount }) {
         }
         if (query) {
             setMessage({ message: query.response.message, status: query.status })
-            if (query.status === 200) {
+            if (query.response.reload) {
                 setTimeout(() => {
                     window.location.reload()
-                }, 500);
+                }, 500)
+            }
+            else if (query.status === 200) {
+                setLoaded(oldArray => {
+                    if (isDuplicate(oldArray, info.deviceNumber) === false) {
+                        return [...oldArray, parseInt(info.deviceNumber)]
+                    }
+                    return oldArray
+                })
+                setInputValues(query.response.data)
+            }
+            else {
+                setDisabled(false)
             }
         }
     }
 
-    const handleChange = (e, index) => {
-        const { name, value } = e.target
-        const container = e.target.getAttribute("container")
-        const aux = formValues[container]
-        if (index || index === 0) {
-            aux[index][name] = value
-        } else {
-            aux[name] = value
+    const isDuplicate = (oldArray, deviceNumber) => {
+        if (oldArray.find(element => element === deviceNumber)) {
+            return true
         }
-        setFormValues({ ...formValues, [container]: aux })
+        return false
     }
 
-    const setInputValues = () => {
+    const setInputValues = (device) => {
         setFormValues({
             ...formValues,
             device: {
@@ -82,6 +86,37 @@ function Notebook({ device, info, setInfo, amount }) {
             battery: device.NoteBatteries,
             disk: device.Disks,
         })
+        setDisabled(false)
+    }
+
+    const handleChange = (e, index) => {
+        const { name, value, checked } = e.target
+        const container = e.target.getAttribute("container")
+        const aux = formValues[container]
+
+        if (index || index === 0) {
+            if (name === "integrated") {
+                if (container === "disk") {
+                    aux[index] = {
+                        brand: "",
+                        model: "",
+                        sn: "",
+                        capacity: "",
+                        integrated: checked
+                    }
+                } else {
+                    aux[index] = {
+                        brand: "",
+                        model: "",
+                        sn: "",
+                        integrated: checked
+                    }
+                }
+            } else aux[index][name] = value
+        } else {
+            aux[name] = value
+        }
+        setFormValues({ ...formValues, [container]: aux })
     }
 
     const handleAdd = (name, options) => {
@@ -90,6 +125,30 @@ function Notebook({ device, info, setInfo, amount }) {
         setFormValues({ ...formValues, [name]: aux })
     }
 
+    const handleRemove = (name, index) => {
+        const aux = formValues[name]
+        console.log(aux)
+        if (aux[index].remove) {
+            delete aux[index].remove
+        } else {
+            aux[index].remove = true
+        }
+        setFormValues({ ...formValues, [name]: aux })
+    }
+
+    const handleDelete = async () => {
+        setDisabled(true)
+        const query = await apis.deleteDevice({ ...formValues.device, info })
+        if (query) {
+            setMessage({ message: query.response.message, status: query.status })
+
+            if (query.response.reload) {
+                setTimeout(() => {
+                    window.location.reload()
+                }, 500);
+            }
+        }
+    }
     return (
         <>
             <div className="m-3">
@@ -115,20 +174,20 @@ function Notebook({ device, info, setInfo, amount }) {
                             </div>
                         </div>
                         <hr />
-                        <Header title="Batería" handleAdd={() => handleAdd("battery", { brand: "", model: "", sn: "" })}></Header>
+                        <Header title="Batería" handleAdd={() => handleAdd("battery", { brand: "", model: "", sn: "", integrated: false })}></Header>
                         {formValues.battery.map(
                             (item, index) => {
                                 return (
-                                    <Battery brand={item.brand} model={item.model} sn={item.sn} container="battery" handleChange={(e) => handleChange(e, index)} key={index}></Battery>
+                                    <Battery info={item} container="battery" handleRemove={() => { handleRemove("battery", index) }} handleChange={(e) => handleChange(e, index)} key={index}></Battery>
                                 )
                             }
                         )}
                         <hr />
-                        <Header title="Disco" handleAdd={() => handleAdd("disk", { brand: "", model: "", sn: "", capacity: "" })}></Header>
+                        <Header title="Disco" handleAdd={() => handleAdd("disk", { brand: "", model: "", sn: "", capacity: "", integrated: false })}></Header>
                         {formValues.disk.map(
                             (item, index) => {
                                 return (
-                                    <Disk brand={item.brand} model={item.model} sn={item.sn} capacity={item.capacity} title={`Disco ${index + 1}`} container="disk" handleChange={(e) => handleChange(e, index)} key={index}></Disk>
+                                    <Disk info={item} container="disk" handleRemove={() => { handleRemove("disk", index) }} title={`Disco ${index + 1}`} handleChange={(e) => handleChange(e, index)} key={index}></Disk>
                                 )
                             }
                         )}
@@ -136,8 +195,8 @@ function Notebook({ device, info, setInfo, amount }) {
                         <h3>Detalle</h3>
                         <GenericTextArea name="detail" value={formValues.device.detail} container="device" handleChange={handleChange} title=""></GenericTextArea>
                         <div className="text-center mt-1">
-                            <UpdateButton deviceInfo={device}></UpdateButton>
-                            <DeleteButton deviceInfo={device} deleteForm={deleteForm}></DeleteButton>
+                            <UpdateButton deviceInfo={formValues.device.id}></UpdateButton>
+                            <DeleteButton deviceInfo={device} handleDelete={handleDelete}></DeleteButton>
                         </div>
                     </form>
                 </fieldset>

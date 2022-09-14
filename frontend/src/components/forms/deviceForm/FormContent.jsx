@@ -54,9 +54,9 @@ function FormContent({ deviceNumber, device, amount, setAmount, currentPage, loa
       case "1":
         return <PhoneForm info={{ ...info, type: 1 }} setInfo={setInfo} device={device} amount={amount} setLoaded={setLoaded}></PhoneForm>
       case "2":
-        return <Notebook info={{ ...info, type: 2 }} setInfo={setInfo} device={device} amount={amount} loaded={loaded}></Notebook>
+        return <Notebook info={{ ...info, type: 2 }} setInfo={setInfo} device={device} amount={amount} setLoaded={setLoaded}></Notebook>
       case "3":
-        return <Desktop info={{ ...info, type: 3 }} setInfo={setInfo} device={device} amount={amount}></Desktop>
+        return <Desktop info={{ ...info, type: 3 }} setInfo={setInfo} device={device} amount={amount} setLoaded={setLoaded}></Desktop>
       case "4":
         return "Formulario de algo mas";
       default:
